@@ -4,7 +4,9 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 ----------
 
 ## Features
-- HandlerMethodArgumentResolver
+- HandlerMethodArgumentResolver used to intercept the request to check and get a value from header by declaring an annotation
+- AbstractMongoEventListener used to persist a history data for each POST, UPDATE, and DELETE operations
+- AuditorAware used to insert the values for auditable attributes such as current user and date of operations into the Document that has been persisted 
 
 ----------
 
@@ -20,7 +22,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 ----------
 
 ## Run App
-Run the SpringMongoDBDemoApplication.java as Java Application
+Run the SpringMongoDBDemoApplication class as Java Application
 
 ----------
 

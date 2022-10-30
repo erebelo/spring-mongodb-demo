@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 class RegistrationIdArgumentResolverTest {
 
-    private RegistrationIdArgumentResolver registrationIdArgumentResolver = new RegistrationIdArgumentResolver();
+    private UserIdArgumentResolver registrationIdArgumentResolver = new UserIdArgumentResolver();
     private MethodParameter methodParameter = mock(MethodParameter.class);
 
     private static final String stringClass = "java.lang.String";

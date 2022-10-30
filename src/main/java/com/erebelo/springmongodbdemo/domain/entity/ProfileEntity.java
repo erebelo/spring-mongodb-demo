@@ -6,6 +6,7 @@ import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
@@ -27,12 +28,19 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "profile")
 @DocumentHistory(collection = "profile-history")
 public class ProfileEntity extends BaseEntity implements Serializable {
 
     @Id
     private String id;
+
+    @NotBlank(message = "userId is mandatory")
+    private String userId;
+
+    @NotBlank(message = "registrationName is mandatory")
+    private String registrationName;
 
     @NotBlank(message = "fistName is mandatory")
     private String fistName;

@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.context;
 
 import com.erebelo.springmongodbdemo.annotation.RegistrationName;
-import com.erebelo.springmongodbdemo.utils.RegistrationUtils;
+import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -18,7 +18,6 @@ public class RegistrationNameArgumentResolver implements HandlerMethodArgumentRe
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-
-        return RegistrationUtils.getRegistrationName();
+        return AuthenticationUtils.getRegistrationName();
     }
 }
