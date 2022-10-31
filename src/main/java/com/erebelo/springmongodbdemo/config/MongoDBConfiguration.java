@@ -16,7 +16,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s%s/%s?replicaSet=rs0&authSource=admin";
 
     @Autowired
-    private Environment environment;
+    private Environment env;
 
     @Value("${database.clusterURL:localhost}")
     protected String clusterURL;
@@ -24,7 +24,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     @Value("${database.clusterPort:27017}")
     protected String clusterPort;
 
-    @Value("${database.dbName:resolver-demo-db}")
+    @Value("${database.dbName:demo-db}")
     protected String dbName;
 
     @Value("${database.dbUsername:}")
@@ -37,7 +37,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     // Heap memory security breach: do not use @Value annotation to get passwords
     private String getDbPassword() {
-        return environment.getProperty("database.password");
+        return env.getProperty("database.password");
     }
 
     @Override
