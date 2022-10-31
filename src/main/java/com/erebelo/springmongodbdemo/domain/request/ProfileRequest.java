@@ -1,16 +1,15 @@
-package com.erebelo.springmongodbdemo.domain.entity;
+package com.erebelo.springmongodbdemo.domain.request;
 
-import com.erebelo.springmongodbdemo.context.history.DocumentHistory;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
@@ -19,7 +18,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,19 +26,10 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Document(collection = "profile")
-@DocumentHistory(collection = "profile-history")
-public class ProfileEntity extends BaseEntity implements Serializable {
-
-    @Id
-    private String id;
-
-    @NotBlank(message = "userId is mandatory")
-    private String userId;
-
-    @NotBlank(message = "registrationName is mandatory")
-    private String registrationName;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(name = "ProfileRequest")
+public class ProfileRequest {
 
     @NotBlank(message = "firstName is mandatory")
     private String firstName;
@@ -69,13 +58,13 @@ public class ProfileEntity extends BaseEntity implements Serializable {
 
     @Valid
     @NotNull
-    private List<ProfileContact> contactNumbers;
+    private List<ProfileContactDTO> contactNumbers;
 
     @Valid
     @NotNull
-    private ProfileLocation currentLocation;
+    private ProfileLocationDTO currentLocation;
 
     @Valid
-    private SpouseProfile spouseProfile;
+    private SpouseProfileDTO spouseProfile;
 
 }

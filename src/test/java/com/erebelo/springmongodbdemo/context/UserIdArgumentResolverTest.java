@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context;
 
-import com.erebelo.springmongodbdemo.utils.RegistrationUtils;
+import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -12,14 +12,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class RegistrationIdArgumentResolverTest {
+class UserIdArgumentResolverTest {
 
-    private UserIdArgumentResolver registrationIdArgumentResolver = new UserIdArgumentResolver();
+    private UserIdArgumentResolver userIdArgumentResolver = new UserIdArgumentResolver();
     private MethodParameter methodParameter = mock(MethodParameter.class);
 
     private static final String stringClass = "java.lang.String";
     private static final String booleanClass = "java.lang.Boolean";
-    private static final String registrationId = "12345";
+    private static final String userId = "12345";
 
     @Test
     void whenTestSupportsParameterThenReturnTrue() throws ClassNotFoundException {
@@ -28,7 +28,7 @@ class RegistrationIdArgumentResolverTest {
         when(methodParameter.getParameterType()).thenReturn(myClass);
         when(methodParameter.hasParameterAnnotation(any())).thenReturn(true);
 
-        Boolean result = registrationIdArgumentResolver.supportsParameter(methodParameter);
+        Boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
 
         then(result).isTrue();
     }
@@ -40,7 +40,7 @@ class RegistrationIdArgumentResolverTest {
         when(methodParameter.getParameterType()).thenReturn(myClass);
         when(methodParameter.hasParameterAnnotation(any())).thenReturn(true);
 
-        Boolean result = registrationIdArgumentResolver.supportsParameter(methodParameter);
+        Boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
 
         then(result).isFalse();
     }
@@ -52,20 +52,20 @@ class RegistrationIdArgumentResolverTest {
         when(methodParameter.getParameterType()).thenReturn(myClass);
         when(methodParameter.hasParameterAnnotation(any())).thenReturn(false);
 
-        Boolean result = registrationIdArgumentResolver.supportsParameter(methodParameter);
+        Boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
 
         then(result).isFalse();
     }
 
     @Test
     void whenTestResolveArgumentThenReturnObject() {
-        try (MockedStatic<RegistrationUtils> registrationUtils = Mockito.mockStatic(RegistrationUtils.class)) {
-            registrationUtils.when(() -> RegistrationUtils.getRegistrationId()).thenReturn(registrationId);
-            assertEquals(registrationId, RegistrationUtils.getRegistrationId());
+        try (MockedStatic<AuthenticationUtils> authenticationUtils = Mockito.mockStatic(AuthenticationUtils.class)) {
+            authenticationUtils.when(() -> AuthenticationUtils.getLoggedInUser()).thenReturn(userId);
+            assertEquals(userId, AuthenticationUtils.getLoggedInUser());
 
-            Object result = registrationIdArgumentResolver.resolveArgument(null, null, null, null);
+            Object result = userIdArgumentResolver.resolveArgument(null, null, null, null);
 
-            then(result).isEqualTo(registrationId);
+            then(result).isEqualTo(userId);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.context;
 
 import com.erebelo.springmongodbdemo.annotation.UserId;
-import com.erebelo.springmongodbdemo.utils.RegistrationUtils;
+import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -18,6 +18,6 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        return RegistrationUtils.getRegistrationId();
+        return AuthenticationUtils.getLoggedInUser();
     }
 }

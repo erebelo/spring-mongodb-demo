@@ -4,13 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class RegistrationUtilsTest {
-
-    @Test
-    void whenTestGetRegistrationIdThenReturnObject() {
-        Object result = RegistrationUtils.getRegistrationId();
-        then(result).isNotNull();
-    }
+class RegistrationUtilsTest {
 
     @Test
     void whenTestGetRegistrationNameThenReturnObject() {

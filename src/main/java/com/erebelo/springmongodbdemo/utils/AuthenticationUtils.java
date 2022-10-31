@@ -13,17 +13,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN_USER_ID_HEADER;
-import static com.erebelo.springmongodbdemo.constants.ProfileConstants.REGISTRATION_NAME_HEADER;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthenticationUtils {
 
     public static String getLoggedInUser() {
         return getHeaderByName(LOGGED_IN_USER_ID_HEADER);
-    }
-
-    public static String getRegistrationName() {
-        return getHeaderByName(REGISTRATION_NAME_HEADER);
     }
 
     private static String getHeaderByName(String headerName) {

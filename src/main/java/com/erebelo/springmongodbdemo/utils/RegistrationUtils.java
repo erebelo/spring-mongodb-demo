@@ -11,12 +11,8 @@ public class RegistrationUtils {
     private static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUMBERS = "1234567890";
 
-    public static String getRegistrationId() {
-        return generateRegistration(20, LETTERS + NUMBERS);
-    }
-
     public static String getRegistrationName() {
-        return generateRegistration(10, LETTERS);
+        return generateRegistration(10, LETTERS + NUMBERS);
     }
 
     private static String generateRegistration(int length, String combination) {

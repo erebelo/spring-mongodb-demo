@@ -19,7 +19,7 @@ class RegistrationNameArgumentResolverTest {
 
     private static final String stringClass = "java.lang.String";
     private static final String booleanClass = "java.lang.Boolean";
-    private static final String registrationName = "ED123ANQ45";
+    private static final String registrationName = "JDH2JDK190041ED123A3";
 
     @Test
     void whenTestSupportsParameterThenReturnTrue() throws ClassNotFoundException {
