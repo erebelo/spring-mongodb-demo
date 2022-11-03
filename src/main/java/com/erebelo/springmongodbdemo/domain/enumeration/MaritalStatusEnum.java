@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @ToString
 @AllArgsConstructor
-public enum MaritalStatusEnum {
+public enum MaritalStatusEnum implements EnumTypeId {
 
     SINGLE(1, "SINGLE"),
     MARRIED(2, "MARRIED"),
@@ -21,6 +21,7 @@ public enum MaritalStatusEnum {
 
     private final Integer id;
     private final String value;
+
     private static final Map<String, MaritalStatusEnum> ENUM_MAP;
 
     static {

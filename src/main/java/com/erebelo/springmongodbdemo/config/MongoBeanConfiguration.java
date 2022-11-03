@@ -21,7 +21,7 @@ public class MongoBeanConfiguration {
 
     @Bean
     public MongoHistoryEventListener mongoEventListener() {
-        // Enable the mongo event listener to manipulate the entity before persist it
+        // Enable the mongodb event listener to manipulate the entity/document before/after persist it
         return new MongoHistoryEventListener();
     }
 

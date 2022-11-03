@@ -18,6 +18,7 @@ public enum EmploymentStatusEnum {
     RETIRED("RETIRED");
 
     private final String value;
+
     private static final Map<String, EmploymentStatusEnum> ENUM_MAP;
 
     static {

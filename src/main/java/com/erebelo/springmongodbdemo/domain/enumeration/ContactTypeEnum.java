@@ -17,6 +17,7 @@ public enum ContactTypeEnum {
     EMAIL("EMAIL");
 
     private final String value;
+
     private static final Map<String, ContactTypeEnum> ENUM_MAP;
 
     static {

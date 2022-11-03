@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @ToString
 @AllArgsConstructor
-public enum GenderEnum {
+public enum GenderEnum implements EnumTypeId {
 
     MALE(1, "MALE"),
     FEMALE(2, "FEMALE"),
@@ -19,6 +19,7 @@ public enum GenderEnum {
 
     private final Integer id;
     private final String value;
+
     private static final Map<String, GenderEnum> ENUM_MAP;
 
     static {
