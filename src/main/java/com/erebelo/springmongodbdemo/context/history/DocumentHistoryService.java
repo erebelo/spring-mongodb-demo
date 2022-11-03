@@ -48,7 +48,7 @@ public class DocumentHistoryService {
         try {
             return clazz.isAnnotationPresent(DocumentHistory.class);
         } catch (NullPointerException e) {
-            LOGGER.error("Error when verifying whether Document contains @DocumentHistory annotation", e);
+            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation", e);
             throw e;
         }
     }
