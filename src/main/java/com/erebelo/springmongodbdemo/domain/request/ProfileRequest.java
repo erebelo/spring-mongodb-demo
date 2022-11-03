@@ -3,6 +3,7 @@ package com.erebelo.springmongodbdemo.domain.request;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +18,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,10 +39,11 @@ public class ProfileRequest {
     @NotBlank(message = "lastName is mandatory")
     private String lastName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "dateOfBirth is mandatory")
     private LocalDate dateOfBirth;
 
-    @Min(value = 1, message = "numberOfDependents must be greater than or equal to 0")
+    @Min(value = 0, message = "numberOfDependents must be greater than or equal to 0")
     @Max(value = 20, message = "numberOfDependents must be less than or equal to 20")
     private Integer numberOfDependents;
 
@@ -57,11 +60,11 @@ public class ProfileRequest {
     private EmploymentStatusEnum employmentStatus;
 
     @Valid
-    @NotNull
+    @NotEmpty(message = "contactNumbers is mandatory")
     private List<ProfileContactDTO> contactNumbers;
 
     @Valid
-    @NotNull
+    @NotNull(message = "currentLocation is mandatory")
     private ProfileLocationDTO currentLocation;
 
     @Valid

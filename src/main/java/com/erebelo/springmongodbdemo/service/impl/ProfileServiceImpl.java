@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
-import com.erebelo.springmongodbdemo.annotation.RegistrationName;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
@@ -31,8 +30,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ProfileRepository repository;
 
-    @RegistrationName
-    private String registrationName;
+    private static final String REGISTRATION_NAME = "test";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
     private static final String CHECK_OBJ_LOGGER = "Checking whether profile object exists by userId: {}";
@@ -57,7 +55,7 @@ public class ProfileServiceImpl implements ProfileService {
         });
 
         var profileEntity = mapper.requestToEntity(profileRequest);
-        profileEntity.setRegistrationName(registrationName);
+        setInsertAttributes(profileEntity, userId);
 
         LOGGER.info("Inserting profile: {}", profileEntity);
         profileEntity = repository.insert(profileEntity);
@@ -97,6 +95,11 @@ public class ProfileServiceImpl implements ProfileService {
 
         LOGGER.info("Deleting profile: {}", profileEntity);
         repository.delete(profileEntity);
+    }
+
+    private void setInsertAttributes(ProfileEntity profileEntity, String userId) {
+        profileEntity.setUserId(userId);
+        profileEntity.setRegistrationName(REGISTRATION_NAME);
     }
 
     private void setUpdateAttributes(ProfileEntity profileEntity, ProfileEntity requestToEntity) {

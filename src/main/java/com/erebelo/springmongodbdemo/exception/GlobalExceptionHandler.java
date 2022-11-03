@@ -7,6 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -63,6 +64,13 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ExceptionResponse httpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
+        LOGGER.error("HttpMessageNotReadableException thrown", exception);
+        return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
+    }
+
+    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ExceptionResponse methodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletResponse response) {
         LOGGER.error("MethodArgumentNotValidException thrown", exception);
@@ -76,7 +84,6 @@ public class GlobalExceptionHandler {
         }
         return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), message, response);
     }
-
 
     @ResponseBody
     @ExceptionHandler(StandardException.class)
