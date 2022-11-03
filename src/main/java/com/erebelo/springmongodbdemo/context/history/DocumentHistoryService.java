@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.context.history;
 
-import com.erebelo.springmongodbdemo.context.history.enumeration.HistoryActionEnum;
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;

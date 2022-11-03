@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context;
+package com.erebelo.springmongodbdemo.context.resolver;
 
 import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;

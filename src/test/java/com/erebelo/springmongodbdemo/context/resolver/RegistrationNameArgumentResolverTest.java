@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context;
+package com.erebelo.springmongodbdemo.context.resolver;
 
 import com.erebelo.springmongodbdemo.context.resolver.RegistrationNameArgumentResolver;
 import com.erebelo.springmongodbdemo.utils.RegistrationUtils;

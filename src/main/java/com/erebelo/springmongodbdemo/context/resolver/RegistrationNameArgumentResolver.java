@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.context.resolver;
 
-import com.erebelo.springmongodbdemo.annotation.RegistrationName;
 import com.erebelo.springmongodbdemo.utils.RegistrationUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import com.erebelo.springmongodbdemo.annotation.UserId;
+import com.erebelo.springmongodbdemo.context.resolver.UserId;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.service.ProfileService;

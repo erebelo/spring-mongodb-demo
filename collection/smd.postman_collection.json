@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "f0f1b693-c960-445a-bef5-56de12a56f9b",
+		"name": "Spring MongoDB Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3559566"
+	},
+	"item": [
+		{
+			"name": "GET Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/spring-mongodb-demo/healthcheck",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"spring-mongodb-demo",
+						"healthcheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"spring-mongodb-demo",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Profile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Eduardo\",\r\n    \"lastName\": \"Rebelo\",\r\n    \"dateOfBirth\": \"2000-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"MALE\",\r\n    \"maritalStatus\": \"MARRIED\",\r\n    \"employmentStatus\": \"EMPLOYED\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"PHONE\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"EMAIL\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\",\r\n        \"gender\": \"FEMALE\",\r\n        \"employmentStatus\": \"EMPLOYED\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"spring-mongodb-demo",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Profile",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Eduardo\",\r\n    \"lastName\": \"Rebelo\",\r\n    \"dateOfBirth\": \"2001-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"MALE\",\r\n    \"maritalStatus\": \"SINGLE\",\r\n    \"employmentStatus\": \"EMPLOYED\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"PHONE\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"EMAIL\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"spring-mongodb-demo",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Profile",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"spring-mongodb-demo",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

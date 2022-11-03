@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context.history.enumeration;
+package com.erebelo.springmongodbdemo.context.history;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
