@@ -45,7 +45,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
-        // Enable the mongodb to convert the enum type to a document before persisting it and the document to an enum type after fetching the data
+        // Enable the mongodb to convert the enum type to an object in the document before persisting it and the object to an enum type after fetching the data
         adapter.registerConverter(EnumTypeIdToDocumentConverter.INSTANCE);
         adapter.registerConverterFactory(DocumentToEnumTypeIdConverterFactory.INSTANCE);
     }
