@@ -38,6 +38,9 @@ public class ProfileEntity extends BaseEntity implements Serializable {
     @Id
     private String id;
 
+    @NotBlank(message = "hashObject is mandatory")
+    private String hashObject;
+
     @NotBlank(message = "userId is mandatory")
     private String userId;
 

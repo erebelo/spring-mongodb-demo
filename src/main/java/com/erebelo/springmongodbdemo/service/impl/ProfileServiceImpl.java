@@ -20,6 +20,7 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_409_001;
 import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteArrayComparison;
 import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteGenerator;
+import static com.erebelo.springmongodbdemo.utils.HashAlgorithmUtils.generateSHAHashObject;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -100,6 +101,7 @@ public class ProfileServiceImpl implements ProfileService {
     private void setInsertAttributes(ProfileEntity profileEntity, String userId) {
         profileEntity.setUserId(userId);
         profileEntity.setRegistrationName(REGISTRATION_NAME);
+        profileEntity.setHashObject(generateSHAHashObject(profileEntity.toString()));
     }
 
     private void setUpdateAttributes(ProfileEntity profileEntity, ProfileEntity requestToEntity) {
