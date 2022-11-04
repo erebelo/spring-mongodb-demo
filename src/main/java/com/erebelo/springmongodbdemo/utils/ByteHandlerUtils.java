@@ -21,7 +21,6 @@ public class ByteHandlerUtils {
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(obj);
             return new ByteWrapperObject(baos.toByteArray());
-
         } catch (IOException e) {
             LOGGER.error("Error generating byte array from object", e);
             return null;

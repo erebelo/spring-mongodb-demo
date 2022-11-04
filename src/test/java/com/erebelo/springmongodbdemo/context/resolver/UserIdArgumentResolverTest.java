@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.context.resolver;
 
-import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

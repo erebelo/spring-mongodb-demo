@@ -15,9 +15,9 @@ import java.util.Date;
 @Service
 public class DocumentHistoryService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentHistoryService.class);
     public static final String OBJECT_ID = "_id";
     public static final String VERSION = "version";
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentHistoryService.class);
 
     @Autowired
     private MongoTemplate mongoTemplate;

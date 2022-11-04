@@ -7,6 +7,5 @@ import lombok.NoArgsConstructor;
 public final class ProfileConstants {
 
     public static final String LOGGED_IN_USER_ID_HEADER = "X-UserId";
-    public static final String REGISTRATION_NAME_HEADER = "X-RegistrationName";
 
 }

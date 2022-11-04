@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context.resolver;
+package com.erebelo.springmongodbdemo.context.interceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface RegistrationName {
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface HeaderLoggedInUser {
 
 }

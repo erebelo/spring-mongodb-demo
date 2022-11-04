@@ -2,6 +2,8 @@ package com.erebelo.springmongodbdemo.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,19 +19,18 @@ import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthenticationUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationUtils.class);
+
     public static String getLoggedInUser() {
         return getHeaderByName(LOGGED_IN_USER_ID_HEADER);
     }
 
     private static String getHeaderByName(String headerName) {
-        String headerValue = getHttpServletRequest().getHeader(headerName);
-        if (headerValue == null) {
-            throw new IllegalStateException(String.format("Missing %s attribute in HttpHeaders", headerName));
-        }
-        return headerValue;
+        return getHttpServletRequest().getHeader(headerName);
     }
 
     private static HttpHeaders getHttpHeaders() {
+        LOGGER.info("Collecting the request http headers");
         HttpServletRequest request = getHttpServletRequest();
         return Collections.list(request.getHeaderNames())
                 .stream()
@@ -40,8 +41,10 @@ public class AuthenticationUtils {
     }
 
     private static HttpServletRequest getHttpServletRequest() {
+        LOGGER.info("Getting HttpServletRequest by RequestContextHolder");
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
+            LOGGER.error("Error getting request attributes by RequestContextHolder");
             throw new IllegalStateException("No current request attributes found in RequestContextHolder");
         }
         return ((ServletRequestAttributes) requestAttributes).getRequest();

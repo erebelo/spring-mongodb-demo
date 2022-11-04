@@ -1,5 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
+import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
 import com.erebelo.springmongodbdemo.context.resolver.UserId;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
@@ -26,6 +27,7 @@ import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
 
 @Validated
 @RestController
+@HeaderLoggedInUser
 @Tag(name = "Profile API")
 public class ProfileController {
 

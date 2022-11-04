@@ -21,6 +21,7 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteArrayComparison;
 import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteGenerator;
 import static com.erebelo.springmongodbdemo.utils.HashAlgorithmUtils.generateSHAHashObject;
+import static com.erebelo.springmongodbdemo.utils.RegistrationUtils.getRegistrationName;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -30,8 +31,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Autowired
     private ProfileRepository repository;
-
-    private static final String REGISTRATION_NAME = "test";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
     private static final String CHECK_OBJ_LOGGER = "Checking whether profile object exists by userId: {}";
@@ -100,7 +99,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void setInsertAttributes(ProfileEntity profileEntity, String userId) {
         profileEntity.setUserId(userId);
-        profileEntity.setRegistrationName(REGISTRATION_NAME);
+        profileEntity.setRegistrationName(getRegistrationName());
         profileEntity.setHashObject(generateSHAHashObject(profileEntity.toString()));
     }
 
