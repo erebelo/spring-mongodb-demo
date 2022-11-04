@@ -48,7 +48,7 @@ public class DocumentHistoryService {
         try {
             return clazz.isAnnotationPresent(DocumentHistory.class);
         } catch (NullPointerException e) {
-            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation", e);
+            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation");
             throw e;
         }
     }
@@ -57,7 +57,7 @@ public class DocumentHistoryService {
         try {
             return clazz.getAnnotation(DocumentHistory.class).collection();
         } catch (NullPointerException e) {
-            LOGGER.error("Something went wrong when trying to get the history collection name", e);
+            LOGGER.error("Something went wrong when trying to get the history collection name");
             throw e;
         }
     }
