@@ -44,13 +44,6 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionResponse constraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
-        LOGGER.error("ConstraintViolationException thrown", exception);
-        return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
-    }
-
-    @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
     public ExceptionResponse illegalStateException(IllegalStateException exception, HttpServletResponse response) {
         LOGGER.error("IllegalStateException thrown", exception);
@@ -62,6 +55,13 @@ public class GlobalExceptionHandler {
     public ExceptionResponse illegalArgumentException(IllegalArgumentException exception, HttpServletResponse response) {
         LOGGER.error("IllegalArgumentException thrown", exception);
         return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ExceptionResponse constraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
+        LOGGER.error("ConstraintViolationException thrown", exception);
+        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody

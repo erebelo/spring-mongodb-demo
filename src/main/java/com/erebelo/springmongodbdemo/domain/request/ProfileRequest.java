@@ -3,6 +3,7 @@ package com.erebelo.springmongodbdemo.domain.request;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -30,6 +31,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ProfileValidator
 @Schema(name = "ProfileRequest")
 public class ProfileRequest {
 
@@ -56,7 +58,10 @@ public class ProfileRequest {
     private BigDecimal estimatedNetWorth;
 
     private GenderEnum gender;
+
+    @NotNull(message = "maritalStatus is mandatory")
     private MaritalStatusEnum maritalStatus;
+
     private EmploymentStatusEnum employmentStatus;
 
     @Valid

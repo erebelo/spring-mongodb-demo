@@ -70,7 +70,10 @@ public class ProfileEntity extends BaseEntity implements Serializable {
     private BigDecimal estimatedNetWorth;
 
     private GenderEnum gender;
+
+    @NotNull(message = "maritalStatus is mandatory")
     private MaritalStatusEnum maritalStatus;
+
     private EmploymentStatusEnum employmentStatus;
 
     @Valid
