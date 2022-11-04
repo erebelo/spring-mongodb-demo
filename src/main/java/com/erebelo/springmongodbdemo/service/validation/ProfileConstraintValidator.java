@@ -2,6 +2,8 @@ package com.erebelo.springmongodbdemo.service.validation;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,6 +14,8 @@ import java.util.Objects;
 
 public class ProfileConstraintValidator implements ConstraintValidator<ProfileValidator, ProfileRequest> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileConstraintValidator.class);
+
     @Override
     public void initialize(ProfileValidator constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
@@ -19,6 +23,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     @Override
     public boolean isValid(ProfileRequest request, ConstraintValidatorContext context) {
+        LOGGER.info("Validating the profile request: {}", request);
         List<FieldMessage> errorMessages = new ArrayList<>();
 
         validateSpouseProfile(request, errorMessages);
@@ -33,6 +38,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     private void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
+        LOGGER.info("Validating spouseProfile object");
         MaritalStatusEnum maritalStatus = request.getMaritalStatus();
         if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&
                 (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED) || maritalStatus.equals(MaritalStatusEnum.WIDOWED))) {
@@ -42,6 +48,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     private void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
+        LOGGER.info("Validating dateOfBirth fields");
         LocalDate dob = request.getDateOfBirth();
         if (Objects.nonNull(dob) && dob.compareTo(LocalDate.now()) >= 0) {
             errorMessages.add(new FieldMessage("dateOfBirth", "dateOfBirth must be less than current date"));

@@ -53,6 +53,12 @@
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
             <version>${spring.mongodb.version}</version>
         </dependency>
+        <!--HttpClient Template-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
         <!--Swagger Annotations-->
         <dependency>
             <groupId>org.springdoc</groupId>
