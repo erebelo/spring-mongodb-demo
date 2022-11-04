@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN_USER_ID_HEADER;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_401_001;
+import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_401_000;
 
 @Component
 public class HeaderInterceptor implements HandlerInterceptor {
@@ -37,7 +37,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                 }
                 try {
                     ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(401),
-                            COMMON_ERROR_401_001.toString().replace('_', '-'),
+                            COMMON_ERROR_401_000.toString().replace('_', '-'),
                             String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis());
                     response.setStatus(401);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);

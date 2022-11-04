@@ -21,10 +21,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_000;
+import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_000;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 
 @ControllerAdvice
-@PropertySources({@PropertySource("classpath:common_error_messages.properties")})
+@PropertySources(@PropertySource("classpath:common_error_messages.properties"))
 public class GlobalExceptionHandler {
 
     private final Environment env;
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ExceptionResponse httpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
         LOGGER.error("HttpMessageNotReadableException thrown", exception);
-        return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
+        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
@@ -77,12 +78,12 @@ public class GlobalExceptionHandler {
 
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         String message = "No message found";
-        if (fieldErrors != null && !fieldErrors.isEmpty()) {
+        if (!fieldErrors.isEmpty()) {
             message = fieldErrors.stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList()).toString();
         }
-        return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), message, response);
+        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), message, response);
     }
 
     @ResponseBody
