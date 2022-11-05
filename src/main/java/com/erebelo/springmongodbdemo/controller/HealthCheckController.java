@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.HEALTH_CHECK;
 
-
 @RestController
 @Tag(name = "Health Check API")
 public class HealthCheckController {

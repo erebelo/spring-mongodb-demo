@@ -41,7 +41,7 @@ public class ProfileController {
     @GetMapping(value = PROFILE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfileByUserId(@UserId String userId) {
         LOGGER.info("Getting profile by userId");
-        ProfileResponse response = service.getProfileByUserId(userId);
+        var response = service.getProfileByUserId(userId);
 
         LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -51,7 +51,7 @@ public class ProfileController {
     @PostMapping(value = PROFILE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Inserting profile - Request body: {}", profileRequest);
-        ProfileResponse response = service.insertProfile(userId, profileRequest);
+        var response = service.insertProfile(userId, profileRequest);
 
         LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -61,7 +61,7 @@ public class ProfileController {
     @PutMapping(value = PROFILE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Updating profile - Request body: {}", profileRequest);
-        ProfileResponse response = service.updateProfile(userId, profileRequest);
+        var response = service.updateProfile(userId, profileRequest);
 
         LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);

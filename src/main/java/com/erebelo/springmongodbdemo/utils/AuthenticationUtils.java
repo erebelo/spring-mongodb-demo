@@ -5,12 +5,15 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,15 +32,22 @@ public class AuthenticationUtils {
         return getHttpServletRequest().getHeader(headerName);
     }
 
-    private static HttpHeaders getHttpHeaders() {
+    public static HttpHeaders getHttpHeaders() {
         LOGGER.info("Collecting the request http headers");
         HttpServletRequest request = getHttpServletRequest();
-        return Collections.list(request.getHeaderNames())
+
+        HttpHeaders httpHeaders = Collections.list(request.getHeaderNames())
                 .stream()
                 .collect(Collectors.toMap(
                         Function.identity(), h -> Collections.list(request.getHeaders(h)),
                         (oldValue, newValue) -> newValue,
                         HttpHeaders::new));
+
+        httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setAcceptCharset(List.of(StandardCharsets.UTF_8));
+
+        return httpHeaders;
     }
 
     private static HttpServletRequest getHttpServletRequest() {
