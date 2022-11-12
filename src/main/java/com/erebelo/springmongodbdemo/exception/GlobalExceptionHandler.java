@@ -1,8 +1,8 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
@@ -25,16 +25,13 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 @PropertySources(@PropertySource("classpath:common_error_messages.properties"))
 public class GlobalExceptionHandler {
 
     private final Environment env;
-    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @Autowired
-    public GlobalExceptionHandler(Environment env) {
-        this.env = env;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ResponseBody
     @ExceptionHandler(Exception.class)

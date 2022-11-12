@@ -1,11 +1,11 @@
 package com.erebelo.springmongodbdemo.context.history;
 
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +13,14 @@ import java.time.Instant;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class DocumentHistoryService {
+
+    private final MongoTemplate mongoTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentHistoryService.class);
     public static final String OBJECT_ID = "_id";
     public static final String VERSION = "version";
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     public void saveChangeHistory(Document document, Object source) {
         if (isToSaveHistory(source.getClass())) {

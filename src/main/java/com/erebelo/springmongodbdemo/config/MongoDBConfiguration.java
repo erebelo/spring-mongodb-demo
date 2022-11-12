@@ -4,7 +4,7 @@ import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumTypeIdConve
 import com.erebelo.springmongodbdemo.context.converter.EnumTypeIdToDocumentConverter;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,12 +14,12 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 @Configuration
 @Profile("!local")
+@RequiredArgsConstructor
 public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s%s/%s?replicaSet=rs0&authSource=admin";
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     @Value("${database.clusterURL:localhost}")
     protected String clusterURL;
@@ -45,7 +45,8 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
-        // Enable the mongodb to convert the enum type to an object in the document before persisting it and the object to an enum type after fetching the data
+        // Enable the mongodb to convert the enum type to an object in the document before persisting it and the object to an enum type after
+        // fetching the data
         adapter.registerConverter(EnumTypeIdToDocumentConverter.INSTANCE);
         adapter.registerConverterFactory(DocumentToEnumTypeIdConverterFactory.INSTANCE);
     }

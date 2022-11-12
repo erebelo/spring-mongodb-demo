@@ -8,9 +8,9 @@ import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.erebelo.springmongodbdemo.utils.ByteWrapperObject;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +24,11 @@ import static com.erebelo.springmongodbdemo.utils.HashAlgorithmUtils.generateSHA
 import static com.erebelo.springmongodbdemo.utils.RegistrationUtils.getRegistrationName;
 
 @Service
+@RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
-    @Autowired
-    private ProfileMapper mapper;
-
-    @Autowired
-    private ProfileRepository repository;
+    private final ProfileMapper mapper;
+    private final ProfileRepository repository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
     private static final String CHECK_OBJ_LOGGER = "Checking whether profile object exists by userId: {}";

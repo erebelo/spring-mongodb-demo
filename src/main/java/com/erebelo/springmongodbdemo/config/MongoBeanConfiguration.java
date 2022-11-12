@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.config;
 
-import com.erebelo.springmongodbdemo.context.history.MongoHistoryEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -26,12 +25,6 @@ public class MongoBeanConfiguration {
     public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
         // Enables through @Transactional annotation rollback the REST operations if any exception occurs
         return new MongoTransactionManager(dbFactory);
-    }
-
-    @Bean
-    public MongoHistoryEventListener mongoEventListener() {
-        // Enables the mongodb event listener to manipulate the entity/document before/after persist it
-        return new MongoHistoryEventListener();
     }
 
     @Bean

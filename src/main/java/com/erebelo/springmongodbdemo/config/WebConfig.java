@@ -2,7 +2,7 @@ package com.erebelo.springmongodbdemo.config;
 
 import com.erebelo.springmongodbdemo.context.interceptor.HeaderInterceptor;
 import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -11,10 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private HeaderInterceptor headerInterceptor;
+    private final HeaderInterceptor headerInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

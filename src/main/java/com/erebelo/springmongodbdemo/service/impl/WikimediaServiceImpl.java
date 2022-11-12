@@ -4,9 +4,9 @@ import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.StandardException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,10 +20,10 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getHttpHeaders;
 
 @Service
+@RequiredArgsConstructor
 public class WikimediaServiceImpl implements WikimediaService {
 
-    @Autowired
-    private HttpClient httpClient;
+    private final HttpClient httpClient;
 
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
@@ -34,7 +34,7 @@ public class WikimediaServiceImpl implements WikimediaService {
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
         LOGGER.info("Getting daily aggregated Wikimedia pageviews for all projects");
-        WikimediaResponse wikimediaPageViews = null;
+        WikimediaResponse wikimediaPageViews;
 
         try {
             ResponseEntity<WikimediaResponse> response = httpClient.invokeService(wikimediaPublicApiUrl, getHttpHeaders(),

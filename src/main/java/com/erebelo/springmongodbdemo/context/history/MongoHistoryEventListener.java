@@ -1,14 +1,18 @@
 package com.erebelo.springmongodbdemo.context.history;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
+import org.springframework.stereotype.Component;
 
+/* Mongo event listener that handles the entity/document before/after persist it */
+
+@Component
+@RequiredArgsConstructor
 public class MongoHistoryEventListener extends AbstractMongoEventListener<Object> {
 
-    @Autowired
-    private DocumentHistoryService service;
+    private final DocumentHistoryService service;
 
     @Override
     public void onAfterSave(AfterSaveEvent<Object> event) {
