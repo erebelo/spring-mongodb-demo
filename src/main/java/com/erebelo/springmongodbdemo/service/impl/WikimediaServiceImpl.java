@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_001;
 import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getHttpHeaders;
 
 @Service
@@ -42,7 +41,7 @@ public class WikimediaServiceImpl implements WikimediaService {
                     }, HttpMethod.GET);
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (Exception e) {
-            throw new StandardException(COMMON_ERROR_422_001, e);
+            throw new IllegalStateException("Error getting Wikimedia project pageviews. Error message: " + e.getMessage(), e);
         }
 
         if (Objects.isNull(wikimediaPageViews) || wikimediaPageViews.getItems().isEmpty()) {

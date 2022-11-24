@@ -1,15 +1,9 @@
 package com.erebelo.springmongodbdemo.rest;
 
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.util.PublicSuffixMatcherLoader;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Objects;
 
@@ -47,11 +43,12 @@ public class HttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
     private static final String INVOKE_SERVICE_MESSAGE = "Invoking the service by URL: {}";
 
-    public HttpClient() {
+    public HttpClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this(new RestTemplate(), new ConnectionProps());
     }
 
-    public HttpClient(RestTemplate restTemplate, ConnectionProps connProps) {
+    public HttpClient(RestTemplate restTemplate, ConnectionProps connProps)
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         LOGGER.info("Instantiating RestTemplate http client");
         this.restTemplate = restTemplate;
 
@@ -70,26 +67,6 @@ public class HttpClient {
         HttpClientBuilder clientBuilder = HttpClientBuilder.create();
         clientBuilder.useSystemProperties();
         try {
-            String proxy = System.getenv("http_proxy");
-            if (Objects.nonNull(proxy) && !proxy.isEmpty()) {
-                LOGGER.info("Setting proxy for ServiceTemplate");
-                URL urlProxy = new URL(proxy);
-                LOGGER.info("Proxy: {}, Host: {}, Port: {}", urlProxy, urlProxy.getHost(), urlProxy.getPort());
-                clientBuilder.setProxy(new HttpHost(urlProxy.getHost(), urlProxy.getPort()));
-
-                if (urlProxy.getUserInfo() != null) {
-                    String[] userInfo = urlProxy.getUserInfo().split(":");
-                    LOGGER.info("User: {}", userInfo[0]);
-
-                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                    credentialsProvider.setCredentials(new AuthScope(urlProxy.getHost(), urlProxy.getPort()),
-                            new UsernamePasswordCredentials(userInfo[0], userInfo[1]));
-
-                    clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                    clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
-                }
-            }
-
             LOGGER.info("Setting SSL certificate");
             SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
             sslContextBuilder.loadTrustMaterial(null, (X509Certificate[] chain, String authType) -> true);
@@ -102,7 +79,8 @@ public class HttpClient {
             factory.setReadTimeout(Integer.parseInt(connProps.getRead().getTimeout()));
             this.restTemplate.setRequestFactory(factory);
         } catch (Exception e) {
-            LOGGER.error("ReatTemplate error: RestTemplate creation with proxy and authentication has been not completed");
+            LOGGER.error("Error creating RestTemplate");
+            throw e;
         }
     }
 
