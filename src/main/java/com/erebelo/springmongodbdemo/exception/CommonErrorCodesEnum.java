@@ -2,6 +2,7 @@ package com.erebelo.springmongodbdemo.exception;
 
 public enum CommonErrorCodesEnum implements ErrorCode {
 
+    // TODO try removing parentheses
     COMMON_ERROR_400_000(),
     COMMON_ERROR_401_000(),
     COMMON_ERROR_422_000(),
