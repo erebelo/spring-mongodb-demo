@@ -18,16 +18,15 @@ public class StandardException extends RuntimeException {
         this.args = args;
     }
 
-    public StandardException(ErrorCode errorCode, Throwable cause, Object... args) {
-        super(cause);
-        this.errorCode = errorCode;
-        this.args = args;
-
-    }
-
     public StandardException(ErrorCode errorCode, Throwable cause) {
         super(cause);
         this.errorCode = errorCode;
         this.args = null;
+    }
+
+    public StandardException(ErrorCode errorCode, Throwable cause, Object... args) {
+        super(cause);
+        this.errorCode = errorCode;
+        this.args = args;
     }
 }
