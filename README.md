@@ -30,4 +30,4 @@ Run the SpringMongoDBDemoApplication class as Java Application
 
 ----------
 
-[1] https://github.com/erebelo/spring-mongodb-demo/tree/develop/collection
+[1]: https://github.com/erebelo/spring-mongodb-demo/tree/develop/collection
