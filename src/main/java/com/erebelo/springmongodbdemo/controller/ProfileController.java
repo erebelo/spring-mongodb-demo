@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
 
 @Validated
 @RestController
+@RequestMapping(PROFILE)
 @HeaderLoggedInUser
 @RequiredArgsConstructor
 @Tag(name = "Profile API")
@@ -38,7 +40,7 @@ public class ProfileController {
     private static final String PROFILE_RESPONSE = "Profile response: {}";
 
     @Operation(summary = "GET profile")
-    @GetMapping(value = PROFILE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfileByUserId(@UserId String userId) {
         LOGGER.info("Getting profile by userId");
         var response = service.getProfileByUserId(userId);
@@ -48,7 +50,7 @@ public class ProfileController {
     }
 
     @Operation(summary = "Insert profile")
-    @PostMapping(value = PROFILE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Inserting profile - Request body: {}", profileRequest);
         var response = service.insertProfile(userId, profileRequest);
@@ -58,7 +60,7 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update profile")
-    @PutMapping(value = PROFILE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Updating profile - Request body: {}", profileRequest);
         var response = service.updateProfile(userId, profileRequest);
@@ -68,7 +70,7 @@ public class ProfileController {
     }
 
     @Operation(summary = "Delete profile by userId")
-    @DeleteMapping(value = PROFILE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
         LOGGER.info("Deleting profile");
         service.deleteProfile(userId);

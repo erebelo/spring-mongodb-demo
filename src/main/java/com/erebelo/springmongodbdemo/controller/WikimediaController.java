@@ -11,11 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.WIKIMEDIA;
 
 @RestController
+@RequestMapping(WIKIMEDIA)
 @RequiredArgsConstructor
 @Tag(name = "Wikimedia API")
 public class WikimediaController {
@@ -26,7 +28,7 @@ public class WikimediaController {
     private static final String WIKIMEDIA_RESPONSE = "Wikimedia response: {}";
 
     @Operation(summary = "GET Wikimedia project pageviews")
-    @GetMapping(value = WIKIMEDIA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WikimediaResponse> getWikimediaProjectPageviews() {
         LOGGER.info("Getting Wikimedia project pageviews");
         var response = service.getWikimediaProjectPageviews();

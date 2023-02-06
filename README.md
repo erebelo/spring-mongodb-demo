@@ -20,19 +20,14 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 
 ----------
 
-## Environment Variables
-
-----------
-
 ## Run App
 Run the SpringMongoDBDemoApplication class as Java Application
 
 ----------
 
-## Releases
+## Collection
+[Project Collection][1]
 
 ----------
 
-## Demo
-
-----------
+[1] https://github.com/erebelo/spring-mongodb-demo/tree/develop/collection
