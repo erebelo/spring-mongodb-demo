@@ -20,13 +20,11 @@ abstract class BaseControllerTest {
 
     @BeforeEach
     void setUp() {
-        ObjectMapper objMapper = new ObjectMapper();
+        var objMapper = new ObjectMapper();
         objMapper.registerModule(new JavaTimeModule());
-        JacksonTester.initFields(this, objMapper);
-
         mockMvc = MockMvcBuilders.standaloneSetup(getControllerClass())
-                .setMessageConverters(new MappingJackson2HttpMessageConverter(objMapper))
-                .build();
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(objMapper)).build();
+        JacksonTester.initFields(this, objMapper);
     }
 
     protected abstract Object getControllerClass();
