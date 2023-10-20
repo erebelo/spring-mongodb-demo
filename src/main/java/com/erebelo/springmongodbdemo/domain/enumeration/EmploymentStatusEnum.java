@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.domain.enumeration;
 
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,11 +13,16 @@ import java.util.Map;
 @Getter
 @ToString
 @AllArgsConstructor
-public enum EmploymentStatusEnum {
+public enum EmploymentStatusEnum implements EnumType {
 
-    EMPLOYED("EMPLOYED"),
-    NOT_EMPLOYED("NOT_EMPLOYED"),
-    RETIRED("RETIRED");
+    @JsonProperty("Employed")
+    EMPLOYED("Employed"),
+
+    @JsonProperty("Not Employed")
+    NOT_EMPLOYED("Not Employed"),
+
+    @JsonProperty("Retired")
+    RETIRED("Retired");
 
     private final String value;
 

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -34,9 +33,9 @@ public class AuthenticationUtils {
 
     public static HttpHeaders getHttpHeaders() {
         LOGGER.info("Collecting the request http headers");
-        HttpServletRequest request = getHttpServletRequest();
+        var request = getHttpServletRequest();
 
-        HttpHeaders httpHeaders = Collections.list(request.getHeaderNames())
+        var httpHeaders = Collections.list(request.getHeaderNames())
                 .stream()
                 .collect(Collectors.toMap(
                         Function.identity(), h -> Collections.list(request.getHeaders(h)),
@@ -52,11 +51,13 @@ public class AuthenticationUtils {
 
     private static HttpServletRequest getHttpServletRequest() {
         LOGGER.info("Getting HttpServletRequest by RequestContextHolder");
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        var requestAttributes = RequestContextHolder.getRequestAttributes();
+
         if (requestAttributes == null) {
             LOGGER.error("Error getting request attributes by RequestContextHolder");
             throw new IllegalStateException("No current request attributes found in RequestContextHolder");
         }
+
         return ((ServletRequestAttributes) requestAttributes).getRequest();
     }
 }

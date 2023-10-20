@@ -1,7 +1,13 @@
 package com.erebelo.springmongodbdemo.config;
 
-import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumTypeIdConverterFactory;
-import com.erebelo.springmongodbdemo.context.converter.EnumTypeIdToDocumentConverter;
+import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumCodeValueTypeConverter;
+import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumIdTypeConverter;
+import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumTypeConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeToDocumentConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumIdTypeToDocumentConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumTypeToDocumentConverter;
+import com.erebelo.springmongodbdemo.context.converter.LocalDateToStringConverter;
+import com.erebelo.springmongodbdemo.context.converter.StringToLocalDateConverter;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import lombok.RequiredArgsConstructor;
@@ -45,24 +51,34 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
-        // Enable the mongodb to convert the enum type to an object in the document before persisting it and the object to an enum type after
-        // fetching the data
-        adapter.registerConverter(EnumTypeIdToDocumentConverter.INSTANCE);
-        adapter.registerConverterFactory(DocumentToEnumTypeIdConverterFactory.INSTANCE);
+        // Converts before persisting the document in the database and after fetching it
+
+        //LocalDate
+        adapter.registerConverter(LocalDateToStringConverter.INSTANCE);
+        adapter.registerConverter(StringToLocalDateConverter.INSTANCE);
+
+        // EnumType
+        adapter.registerConverter(EnumTypeToDocumentConverter.INSTANCE);
+        adapter.registerConverterFactory(DocumentToEnumTypeConverter.INSTANCE);
+
+        // EnumIdType
+        adapter.registerConverter(EnumIdTypeToDocumentConverter.INSTANCE);
+        adapter.registerConverterFactory(DocumentToEnumIdTypeConverter.INSTANCE);
+
+        // EnumCodeValueType
+        adapter.registerConverter(EnumCodeValueTypeToDocumentConverter.INSTANCE);
+        adapter.registerConverterFactory(DocumentToEnumCodeValueTypeConverter.INSTANCE);
     }
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.applyConnectionString(getConnectionString())
-                .retryReads(Boolean.FALSE)
-                .retryWrites(Boolean.FALSE);
+        builder.applyConnectionString(getConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE);
     }
 
     private ConnectionString getConnectionString() {
         var databaseCredentials = String.format("%s:%s@", dbUsername, getDbPassword());
         var clusterEndpoint = String.format("%s:%s", clusterURL, clusterPort);
 
-        return new ConnectionString(String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint,
-                getDatabaseName()));
+        return new ConnectionString(String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint, getDatabaseName()));
     }
 }

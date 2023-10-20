@@ -1,14 +1,10 @@
-package com.erebelo.springmongodbdemo.domain.request;
+package com.erebelo.springmongodbdemo.domain.entity;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.HealthLevelEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
-import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +18,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,11 +27,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@ProfileValidator
-@Schema(name = "ProfileRequest")
-public class ProfileRequest {
+public class UserProfile implements Serializable {
 
     @NotBlank(message = "firstName is mandatory")
     private String firstName;
@@ -69,13 +62,13 @@ public class ProfileRequest {
 
     @Valid
     @NotEmpty(message = "contactNumbers is mandatory")
-    private List<ProfileContactDTO> contactNumbers;
+    private List<ProfileContact> contactNumbers;
 
     @Valid
     @NotNull(message = "currentLocation is mandatory")
-    private ProfileLocationDTO currentLocation;
+    private ProfileLocation currentLocation;
 
     @Valid
-    private SpouseProfileDTO spouseProfile;
+    private SpouseProfile spouseProfile;
 
 }

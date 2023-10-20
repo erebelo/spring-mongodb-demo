@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.domain.enumeration;
 
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,10 +13,13 @@ import java.util.Map;
 @Getter
 @ToString
 @AllArgsConstructor
-public enum ContactTypeEnum {
+public enum ContactTypeEnum implements EnumType {
 
-    PHONE("PHONE"),
-    EMAIL("EMAIL");
+    @JsonProperty("Phone")
+    PHONE("Phone"),
+
+    @JsonProperty("Email")
+    EMAIL("Email");
 
     private final String value;
 

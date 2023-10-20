@@ -2,6 +2,7 @@ package com.erebelo.springmongodbdemo.domain.response;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
+import com.erebelo.springmongodbdemo.domain.enumeration.HealthLevelEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
 import com.erebelo.springmongodbdemo.domain.request.ProfileLocationDTO;
@@ -36,6 +37,7 @@ public class ProfileResponse {
     private GenderEnum gender;
     private MaritalStatusEnum maritalStatus;
     private EmploymentStatusEnum employmentStatus;
+    private HealthLevelEnum healthLevel;
     private List<ProfileContactDTO> contactNumbers;
     private ProfileLocationDTO currentLocation;
     private SpouseProfileDTO spouseProfile;
