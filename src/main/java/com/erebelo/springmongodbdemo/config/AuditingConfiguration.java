@@ -2,14 +2,16 @@ package com.erebelo.springmongodbdemo.config;
 
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-public class AuditConfiguration implements AuditorAware<String> {
+@Component
+public class AuditingConfiguration implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        // Set the value for the attributes annotated by @CreatedBy and @LastModifiedBy in BaseEntity
+        // Sets the values for attributes annotated by @CreatedBy and @LastModifiedBy in BaseEntity
         return Optional.ofNullable(AuthenticationUtils.getLoggedInUser());
     }
 }
