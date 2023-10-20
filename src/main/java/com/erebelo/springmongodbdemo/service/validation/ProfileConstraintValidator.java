@@ -39,7 +39,8 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     private void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
         LOGGER.info("Validating spouseProfile object");
-        MaritalStatusEnum maritalStatus = request.getMaritalStatus();
+        var maritalStatus = request.getMaritalStatus();
+
         if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&
                 (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED) || maritalStatus.equals(MaritalStatusEnum.WIDOWED))) {
             errorMessages.add(new FieldMessage("spouseProfile",
@@ -49,10 +50,12 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     private void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
         LOGGER.info("Validating dateOfBirth fields");
-        LocalDate dob = request.getDateOfBirth();
+        var dob = request.getDateOfBirth();
+
         if (Objects.nonNull(dob) && dob.compareTo(LocalDate.now()) >= 0) {
             errorMessages.add(new FieldMessage("dateOfBirth", "dateOfBirth must be less than current date"));
         }
+
         dob = request.getSpouseProfile() != null ? request.getSpouseProfile().getDateOfBirth() : null;
         if (Objects.nonNull(dob) && dob.compareTo(LocalDate.now()) >= 0) {
             errorMessages.add(new FieldMessage("spouseProfile.dateOfBirth", "spouseProfile.dateOfBirth must be less than current date"));

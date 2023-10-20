@@ -3,7 +3,6 @@ package com.erebelo.springmongodbdemo.context.history;
 import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -24,23 +23,20 @@ public class DocumentHistoryService {
 
     public void saveChangeHistory(Document document, Object source) {
         if (isToSaveHistory(source.getClass())) {
-            Document historyDocument = new Document(document);
-            ObjectId objectId = historyDocument.getObjectId(OBJECT_ID);
+            var historyDocument = new Document(document);
+            var objectId = historyDocument.getObjectId(OBJECT_ID);
             historyDocument.remove(OBJECT_ID);
 
-            Long version = historyDocument.getLong(VERSION);
-            HistoryActionEnum actionEnum = version == null || version == 0 ? HistoryActionEnum.INSERT :
-                    HistoryActionEnum.UPDATE;
+            var version = historyDocument.getLong(VERSION);
+            var actionEnum = version == null || version == 0 ? HistoryActionEnum.INSERT : HistoryActionEnum.UPDATE;
 
-            createAndSaveHistoryDocument(actionEnum, objectId.toString(), getCollectionName(source.getClass()),
-                    historyDocument);
+            createAndSaveHistoryDocument(actionEnum, objectId.toString(), getCollectionName(source.getClass()), historyDocument);
         }
     }
 
     public void saveDeleteHistory(Document document, Class<?> clazz) {
         if (isToSaveHistory(clazz)) {
-            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(),
-                    getCollectionName(clazz), null);
+            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(), getCollectionName(clazz), null);
         }
     }
 
@@ -64,7 +60,7 @@ public class DocumentHistoryService {
 
     private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName,
             Document document) {
-        Document history = new Document()
+        var history = new Document()
                 .append("action", actionEnum.getValue())
                 .append("documentId", documentId);
 
