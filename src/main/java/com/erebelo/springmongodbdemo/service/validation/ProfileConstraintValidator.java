@@ -37,7 +37,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         return errorMessages.isEmpty();
     }
 
-    private void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
+    public static void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
         LOGGER.info("Validating spouseProfile object");
         var maritalStatus = request.getMaritalStatus();
 
@@ -48,7 +48,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         }
     }
 
-    private void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
+    public static void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
         LOGGER.info("Validating dateOfBirth fields");
         var dob = request.getDateOfBirth();
 

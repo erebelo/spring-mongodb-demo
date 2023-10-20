@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
+import static com.erebelo.springmongodbdemo.constants.BusinessConstants.MERGE_PATCH_MEDIA_TYPE;
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
 
 @Validated
@@ -39,7 +42,7 @@ public class ProfileController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
     private static final String PROFILE_RESPONSE = "Profile response: {}";
 
-    @Operation(summary = "GET profile")
+    @Operation(summary = "Get profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfileByUserId(@UserId String userId) {
         LOGGER.info("Getting profile by userId");
@@ -69,7 +72,17 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete profile by userId")
+    @Operation(summary = "Patch profile")
+    @PatchMapping(consumes = MERGE_PATCH_MEDIA_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProfileResponse> patchProfile(@UserId String userId, @Valid @RequestBody Map<String, Object> profileRequestMap) {
+        LOGGER.info("Patching profile");
+        var response = service.patchProfile(userId, profileRequestMap);
+
+        LOGGER.info(PROFILE_RESPONSE, response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Delete profile")
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
         LOGGER.info("Deleting profile");

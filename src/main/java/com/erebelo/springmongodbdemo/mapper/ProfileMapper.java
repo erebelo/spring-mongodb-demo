@@ -22,6 +22,8 @@ public interface ProfileMapper {
     @Mapping(target = "employmentStatus", expression = "java(checkSpouseEmploymentStatus(spouseProfile.getEmploymentStatus()))")
     SpouseProfile map(SpouseProfileDTO spouseProfile);
 
+    ProfileRequest entityToRequest(UserProfile entity);
+
     default EmploymentStatusEnum checkSpouseEmploymentStatus(EmploymentStatusEnum spouseEmploymentStatus) {
         if (isNull(spouseEmploymentStatus)) {
             return EmploymentStatusEnum.NOT_EMPLOYED;
