@@ -22,12 +22,12 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.USER_ID;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileEntity;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponse;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
@@ -46,11 +46,11 @@ class ProfileServiceTest {
 
     @Test
     void givenValidParamsWhenGetProfileByUserIdThenReturnProfileResponse() {
-        when(repository.findByUserId(anyString())).thenReturn((getProfileEntity()));
+        given(repository.findByUserId(anyString())).willReturn((getProfileEntity()));
 
         var result = service.getProfileByUserId(USER_ID);
 
-        then(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
+        assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToResponse(any(UserProfile.class));
@@ -58,7 +58,7 @@ class ProfileServiceTest {
 
     @Test
     void givenValidParamsWhenGetProfileByUserIdThenThrowNotFoundException() {
-        when(repository.findByUserId(anyString())).thenReturn(Optional.empty());
+        given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(StandardException.class).isThrownBy(() -> service.getProfileByUserId(USER_ID)).hasFieldOrPropertyWithValue(
                 "errorCode", COMMON_ERROR_404_001);

@@ -2,11 +2,11 @@ package com.erebelo.springmongodbdemo.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 @Profile("local")
 public class MongoDBLocalConfiguration extends MongoDBConfiguration {
 

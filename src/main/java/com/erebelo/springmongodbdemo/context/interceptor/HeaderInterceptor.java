@@ -1,7 +1,8 @@
 package com.erebelo.springmongodbdemo.context.interceptor;
 
 import com.erebelo.springmongodbdemo.exception.ExceptionResponse;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,10 @@ import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_401_000;
 
 @Component
+@RequiredArgsConstructor
 public class HeaderInterceptor implements HandlerInterceptor {
+
+    private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeaderInterceptor.class);
 
@@ -32,7 +36,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
             if (annotation != null) {
                 LOGGER.info("Checking whether request contains the loggedInUser http headers");
                 String loggedInUser = request.getHeader(LOGGED_IN_USER_ID_HEADER);
-                if (loggedInUser != null && loggedInUser.trim().length() > 0) {
+                if (loggedInUser != null && !loggedInUser.trim().isEmpty()) {
                     return true;
                 }
                 try {
@@ -41,7 +45,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                             String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis());
                     response.setStatus(401);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write(new Gson().toJson(exceptionResponse));
+                    response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
                 } catch (IOException e) {
                     throw new IllegalStateException("Interceptor handling failure: error writing into HttpServletResponse", e);
                 }
