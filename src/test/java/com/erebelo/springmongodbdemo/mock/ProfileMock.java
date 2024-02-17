@@ -12,6 +12,7 @@ import com.erebelo.springmongodbdemo.domain.enumeration.HealthLevelEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
 import com.erebelo.springmongodbdemo.domain.request.ProfileLocationDTO;
+import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.request.SpouseProfileDTO;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import lombok.AccessLevel;
@@ -38,8 +39,9 @@ public final class ProfileMock {
     private static final String LAST_NAME = "Wayne";
     private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1980, 10, 22);
     private static final Integer NUMBER_OF_DEPENDENTS = 1;
-    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05);
-    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01);
+    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05).setScale(2, BigDecimal.ROUND_HALF_UP);
+    public static final BigDecimal NEW_ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(475000.80).setScale(2, BigDecimal.ROUND_HALF_UP);
+    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01).setScale(2, BigDecimal.ROUND_HALF_UP);
     private static final GenderEnum GENDER = GenderEnum.MALE;
     private static final MaritalStatusEnum MARITAL_STATUS = MaritalStatusEnum.SINGLE;
     private static final EmploymentStatusEnum EMPLOYMENT_STATUS = EmploymentStatusEnum.EMPLOYED;
@@ -57,8 +59,12 @@ public final class ProfileMock {
     private static final GenderEnum SPOUSE_GENDER = GenderEnum.FEMALE;
     private static final EmploymentStatusEnum SPOUSE_EMPLOYMENT_STATUS = EmploymentStatusEnum.NOT_EMPLOYED;
 
-    public static Optional<ProfileEntity> getProfileEntity() {
-        return Optional.ofNullable(ProfileEntity.builder()
+    public static Optional<ProfileEntity> getOptionalProfileEntity() {
+        return Optional.ofNullable(getProfileEntity());
+    }
+
+    public static ProfileEntity getProfileEntity() {
+        return ProfileEntity.builder()
                 .id(ID)
                 .hashObject(HASH_OBJECT)
                 .userId(USER_ID)
@@ -97,39 +103,59 @@ public final class ProfileMock {
                                 .employmentStatus(SPOUSE_EMPLOYMENT_STATUS)
                                 .build())
                         .build())
-                .build());
+                .build();
+    }
+
+    public static ProfileRequest getProfileRequest() {
+        var request = getProfileEntity().getProfile();
+        return ProfileRequest.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .dateOfBirth(request.getDateOfBirth())
+                .numberOfDependents(request.getNumberOfDependents())
+                .estimatedAnnualIncome(request.getEstimatedAnnualIncome())
+                .estimatedNetWorth(request.getEstimatedNetWorth())
+                .gender(request.getGender())
+                .maritalStatus(request.getMaritalStatus())
+                .employmentStatus(request.getEmploymentStatus())
+                .healthLevel(request.getHealthLevel())
+                .contactNumbers(Collections.singletonList(ProfileContactDTO.builder()
+                        .contactType(request.getContactNumbers().get(0).getContactType())
+                        .contactValue(request.getContactNumbers().get(0).getContactValue())
+                        .build()))
+                .currentLocation(ProfileLocationDTO.builder()
+                        .address(request.getCurrentLocation().getAddress())
+                        .city(request.getCurrentLocation().getCity())
+                        .state(request.getCurrentLocation().getState())
+                        .country(request.getCurrentLocation().getCountry())
+                        .postalCode(request.getCurrentLocation().getPostalCode())
+                        .build())
+                .spouseProfile(SpouseProfileDTO.builder()
+                        .firstName(request.getSpouseProfile().getFirstName())
+                        .lastName(request.getSpouseProfile().getLastName())
+                        .dateOfBirth(request.getSpouseProfile().getDateOfBirth())
+                        .gender(request.getSpouseProfile().getGender())
+                        .employmentStatus(request.getSpouseProfile().getEmploymentStatus())
+                        .build())
+                .build();
     }
 
     public static ProfileResponse getProfileResponse() {
+        var response = getProfileRequest();
         return ProfileResponse.builder()
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .dateOfBirth(DATE_OF_BIRTH)
-                .numberOfDependents(NUMBER_OF_DEPENDENTS)
-                .estimatedAnnualIncome(ESTIMATED_ANNUAL_INCOME)
-                .estimatedNetWorth(ESTIMATED_NET_WORTH)
-                .gender(GENDER)
-                .maritalStatus(MARITAL_STATUS)
-                .employmentStatus(EMPLOYMENT_STATUS)
-                .healthLevel(HEALTH_LEVEL)
-                .contactNumbers(Collections.singletonList(ProfileContactDTO.builder()
-                        .contactType(CONTACT_TYPE)
-                        .contactValue(CONTACT_VALUE)
-                        .build()))
-                .currentLocation(ProfileLocationDTO.builder()
-                        .address(ADDRESS)
-                        .city(CITY)
-                        .state(STATE)
-                        .country(COUNTRY)
-                        .postalCode(POSTAL_CODE)
-                        .build())
-                .spouseProfile(SpouseProfileDTO.builder()
-                        .firstName(SPOUSE_FIRST_NAME)
-                        .lastName(SPOUSE_LAST_NAME)
-                        .dateOfBirth(SPOUSE_DATE_OF_BIRTH)
-                        .gender(SPOUSE_GENDER)
-                        .employmentStatus(SPOUSE_EMPLOYMENT_STATUS)
-                        .build())
+                .firstName(response.getFirstName())
+                .lastName(response.getLastName())
+                .dateOfBirth(response.getDateOfBirth())
+                .numberOfDependents(response.getNumberOfDependents())
+                .estimatedAnnualIncome(response.getEstimatedAnnualIncome())
+                .estimatedNetWorth(response.getEstimatedNetWorth())
+                .gender(response.getGender())
+                .maritalStatus(response.getMaritalStatus())
+                .employmentStatus(response.getEmploymentStatus())
+                .healthLevel(response.getHealthLevel())
+                .contactNumbers(response.getContactNumbers())
+                .currentLocation(response.getCurrentLocation())
+                .spouseProfile(response.getSpouseProfile())
                 .build();
     }
 }
