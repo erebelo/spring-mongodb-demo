@@ -52,12 +52,12 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         LOGGER.info("Validating dateOfBirth fields");
         var dob = request.getDateOfBirth();
 
-        if (Objects.nonNull(dob) && dob.compareTo(LocalDate.now()) >= 0) {
+        if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {
             errorMessages.add(new FieldMessage("dateOfBirth", "dateOfBirth must be less than current date"));
         }
 
         dob = request.getSpouseProfile() != null ? request.getSpouseProfile().getDateOfBirth() : null;
-        if (Objects.nonNull(dob) && dob.compareTo(LocalDate.now()) >= 0) {
+        if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {
             errorMessages.add(new FieldMessage("spouseProfile.dateOfBirth", "spouseProfile.dateOfBirth must be less than current date"));
         }
     }

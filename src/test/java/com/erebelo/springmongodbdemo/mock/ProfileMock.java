@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -39,11 +40,11 @@ public final class ProfileMock {
     private static final String LAST_NAME = "Wayne";
     private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1980, 10, 22);
     private static final Integer NUMBER_OF_DEPENDENTS = 1;
-    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05).setScale(2, BigDecimal.ROUND_HALF_UP);
-    public static final BigDecimal NEW_ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(475000.80).setScale(2, BigDecimal.ROUND_HALF_UP);
-    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01).setScale(2, BigDecimal.ROUND_HALF_UP);
+    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05).setScale(2, RoundingMode.HALF_UP);
+    public static final BigDecimal NEW_ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(475000.80).setScale(2, RoundingMode.HALF_UP);
+    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01).setScale(2, RoundingMode.HALF_UP);
     private static final GenderEnum GENDER = GenderEnum.MALE;
-    private static final MaritalStatusEnum MARITAL_STATUS = MaritalStatusEnum.SINGLE;
+    private static final MaritalStatusEnum MARITAL_STATUS = MaritalStatusEnum.MARRIED;
     private static final EmploymentStatusEnum EMPLOYMENT_STATUS = EmploymentStatusEnum.EMPLOYED;
     private static final HealthLevelEnum HEALTH_LEVEL = HealthLevelEnum.AVERAGE;
     private static final ContactTypeEnum CONTACT_TYPE = ContactTypeEnum.EMAIL;

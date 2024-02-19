@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_001;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_002;
+import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_003;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_409_001;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.NEW_ESTIMATED_ANNUAL_INCOME;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.USER_ID;
@@ -36,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -76,6 +78,7 @@ class ProfileServiceTest {
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
 
         verify(repository).findByUserId(USER_ID);
+        verify(mapper, never()).entityToResponse(any(UserProfile.class));
     }
 
     @Test
@@ -107,6 +110,9 @@ class ProfileServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_409_001);
 
         verify(repository).findByUserId(USER_ID);
+        verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
+        verify(repository, never()).insert(entityArgumentCaptor.capture());
+        verify(mapper, never()).entityToResponse(any(UserProfile.class));
     }
 
     @Test
@@ -170,5 +176,32 @@ class ProfileServiceTest {
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
 
         verify(repository).findByUserId(USER_ID);
+        verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
+        verify(repository, never()).save(entityArgumentCaptor.capture());
+        verify(mapper, never()).entityToResponse(any(UserProfile.class));
+    }
+
+    @Test
+    void givenValidParamsWhenDeleteProfileThenReturnNothing() {
+        given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
+        willDoNothing().given(repository).delete(any(ProfileEntity.class));
+
+        service.deleteProfile(USER_ID);
+
+        verify(repository).findByUserId(USER_ID);
+        verify(repository).delete(any(ProfileEntity.class));
+    }
+
+    @Test
+    void givenValidParamsWhenDeleteProfileThenThrowNotFoundException() {
+        given(repository.findByUserId(anyString())).willReturn(Optional.empty());
+
+        assertThatExceptionOfType(StandardException.class)
+                .isThrownBy(() -> service.deleteProfile(USER_ID))
+                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_003)
+                .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
+
+        verify(repository).findByUserId(USER_ID);
+        verify(repository, never()).delete(any(ProfileEntity.class));
     }
 }
