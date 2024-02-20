@@ -48,8 +48,8 @@ public class ProfileServiceImpl implements ProfileService {
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 
     @Override
-    public ProfileResponse getProfileByUserId(String userId) {
-        LOGGER.info("Getting profile by userId: {}", userId);
+    public ProfileResponse getProfile(String userId) {
+        LOGGER.info("Getting profile: {}", userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
                 new StandardException(COMMON_ERROR_404_001, userId));
 

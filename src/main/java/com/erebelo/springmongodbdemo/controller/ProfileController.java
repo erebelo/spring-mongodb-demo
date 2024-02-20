@@ -44,9 +44,9 @@ public class ProfileController {
 
     @Operation(summary = "Get profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProfileResponse> getProfileByUserId(@UserId String userId) {
-        LOGGER.info("Getting profile by userId");
-        var response = service.getProfileByUserId(userId);
+    public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
+        LOGGER.info("Getting profile");
+        var response = service.getProfile(userId);
 
         LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
