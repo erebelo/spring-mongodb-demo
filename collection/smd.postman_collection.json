@@ -202,6 +202,40 @@
 			"name": "Wikimedia API",
 			"item": [
 				{
+					"name": "Client",
+					"item": [
+						{
+							"name": "GET Wikimedia Downstream",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/all-projects/all-access/all-agents/daily/2015100100/2015103000",
+									"protocol": "https",
+									"host": [
+										"wikimedia",
+										"org"
+									],
+									"path": [
+										"api",
+										"rest_v1",
+										"metrics",
+										"pageviews",
+										"aggregate",
+										"all-projects",
+										"all-access",
+										"all-agents",
+										"daily",
+										"2015100100",
+										"2015103000"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "GET Wikimedia",
 					"request": {
 						"method": "GET",
@@ -216,6 +250,63 @@
 							"path": [
 								"spring-mongodb-demo",
 								"wikimedia"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Articles API",
+			"item": [
+				{
+					"name": "Client",
+					"item": [
+						{
+							"name": "GET Articles Downstream",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://jsonmock.hackerrank.com/api/articles?page=1",
+									"protocol": "https",
+									"host": [
+										"jsonmock",
+										"hackerrank",
+										"com"
+									],
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET Articles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/spring-mongodb-demo/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-mongodb-demo",
+								"articles"
 							]
 						}
 					},
