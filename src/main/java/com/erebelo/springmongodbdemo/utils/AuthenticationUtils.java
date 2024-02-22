@@ -31,14 +31,22 @@ public class AuthenticationUtils {
         return getHttpServletRequest().getHeader(headerName);
     }
 
+    public static HttpHeaders getBasicHttpHeaders() {
+        LOGGER.info("Building basic http headers");
+        var httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return httpHeaders;
+    }
+
     public static HttpHeaders getHttpHeaders() {
         LOGGER.info("Collecting the request http headers");
-        var request = getHttpServletRequest();
+        var requestHttpHeaders = getHttpServletRequest();
 
-        var httpHeaders = Collections.list(request.getHeaderNames())
+        var httpHeaders = Collections.list(requestHttpHeaders.getHeaderNames())
                 .stream()
                 .collect(Collectors.toMap(
-                        Function.identity(), h -> Collections.list(request.getHeaders(h)),
+                        Function.identity(), h -> Collections.list(requestHttpHeaders.getHeaders(h)),
                         (oldValue, newValue) -> newValue,
                         HttpHeaders::new));
 

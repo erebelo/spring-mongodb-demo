@@ -12,5 +12,6 @@ public final class BusinessConstants {
     public static final String HEALTH_CHECK = "/healthcheck";
     public static final String PROFILE = "/profile";
     public static final String WIKIMEDIA = "/wikimedia";
+    public static final String ARTICLES = "/articles";
 
 }

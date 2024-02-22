@@ -9,6 +9,7 @@ public enum CommonErrorCodesEnum implements ErrorCode {
     COMMON_ERROR_404_002,
     COMMON_ERROR_404_003,
     COMMON_ERROR_404_004,
+    COMMON_ERROR_404_005,
     COMMON_ERROR_409_001,
     COMMON_ERROR_422_000,
     COMMON_ERROR_422_001,

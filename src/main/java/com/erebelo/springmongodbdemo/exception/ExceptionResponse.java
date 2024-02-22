@@ -13,6 +13,6 @@ public class ExceptionResponse {
     private HttpStatus status;
     private String code;
     private String message;
-    private Long timeStamp;
+    private Long timestamp;
 
 }

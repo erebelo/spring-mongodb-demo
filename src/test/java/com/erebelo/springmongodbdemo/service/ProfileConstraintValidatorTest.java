@@ -1,6 +1,8 @@
-package com.erebelo.springmongodbdemo.service.validation;
+package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
+import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
