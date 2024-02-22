@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.service;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
- import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.exception.StandardException;
@@ -11,9 +11,13 @@ import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
 import com.erebelo.springmongodbdemo.utils.ByteHandlerUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -25,6 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,7 +44,6 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_000;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_001;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_002;
-import static com.erebelo.springmongodbdemo.mock.ObjectMapperMock.initObjectMapper;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.FIRST_NAME;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.NEW_ESTIMATED_ANNUAL_INCOME;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.USER_ID;
@@ -73,10 +77,18 @@ class ProfileServiceTest {
     private final ProfileMapper mapper = Mappers.getMapper(ProfileMapper.class);
 
     @Spy
-    private ObjectMapper objectMapper = initObjectMapper();
+    private ObjectMapper objectMapper;
 
     @Captor
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
+
+    @BeforeEach
+    void init() {
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+    }
 
     @Test
     void testGetProfileSuccessfully() {
