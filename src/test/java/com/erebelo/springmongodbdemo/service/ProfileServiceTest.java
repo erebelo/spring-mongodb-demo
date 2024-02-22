@@ -164,7 +164,8 @@ class ProfileServiceTest {
 
         var result = service.updateProfile(USER_ID, profileRequest);
 
-        assertThat(result).usingRecursiveComparison()
+        assertThat(result)
+                .usingRecursiveComparison()
                 .ignoringFields("estimatedAnnualIncome", "employmentStatus")
                 .isEqualTo(getProfileResponse());
         assertThat(result.getEstimatedAnnualIncome()).isEqualTo(NEW_ESTIMATED_ANNUAL_INCOME);
@@ -175,7 +176,8 @@ class ProfileServiceTest {
         verify(repository).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
 
-        assertThat(entityArgumentCaptor.getValue()).usingRecursiveComparison()
+        assertThat(entityArgumentCaptor.getValue())
+                .usingRecursiveComparison()
                 .ignoringFields("hashObject")
                 .isEqualTo(profileEntity);
     }
@@ -231,7 +233,8 @@ class ProfileServiceTest {
         verify(repository).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
 
-        assertThat(entityArgumentCaptor.getValue()).usingRecursiveComparison()
+        assertThat(entityArgumentCaptor.getValue())
+                .usingRecursiveComparison()
                 .ignoringFields("hashObject")
                 .isEqualTo(getProfileEntityPatch());
     }
