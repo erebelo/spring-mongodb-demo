@@ -1,5 +1,6 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
+import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
 import com.erebelo.springmongodbdemo.exception.StandardException;
@@ -18,8 +19,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_005;
+import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getBasicHttpHeaders;
 
 @Service
@@ -33,28 +38,75 @@ public class ArticlesServiceImpl implements ArticlesService {
     private String articlesApiUrl;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticlesServiceImpl.class);
-    private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
+    private static final int INITIAL_PAGE = 1;
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
-        LOGGER.info("Getting articles from downstream API");
-        ArticlesResponse articlesResponse;
+        LOGGER.info("Getting articles from downstream API: {}", articlesApiUrl);
+        int totalPages = INITIAL_PAGE;
+
+        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);
+
+        if (Objects.nonNull(firstArticlesResponse)) {
+            totalPages = firstArticlesResponse.getTotalPages();
+        } else {
+            LOGGER.warn("Empty or null response for the first articles downstream API call");
+        }
+
+        long startTime = System.currentTimeMillis();
+        LOGGER.info("Fetching articles asynchronously through CompletableFuture");
+        List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
+                .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page)))
+                .collect(Collectors.toList());
+
+        LOGGER.info("Combining all CompletableFuture results");
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
         try {
+            LOGGER.info("Waiting for all CompletableFuture to complete");
+            allOf.join();
+        } catch (CompletionException e) {
+            LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", e.getMessage());
+        }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        LOGGER.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages, totalTime);
+
+        LOGGER.info("Collecting results from completed CompletableFutures");
+        List<ArticlesResponse> allArticlesResponses = futures.stream()
+                .map(CompletableFuture::join)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (Objects.nonNull(firstArticlesResponse)) {
+            allArticlesResponses.add(0, firstArticlesResponse);
+        }
+
+        List<ArticlesDataResponse> allArticlesDataResponses = allArticlesResponses.stream()
+                .flatMap(response -> response.getData().stream())
+                .collect(Collectors.toList());
+
+        if (allArticlesDataResponses.isEmpty()) {
+            throw new StandardException(COMMON_ERROR_422_003);
+        }
+
+        LOGGER.info("{} articles found", allArticlesDataResponses.size());
+        return mapper.responseToResponseDTO(allArticlesDataResponses);
+    }
+
+    private ArticlesResponse fetchData(int page) {
+        try {
+            LOGGER.info("Retrieving articles for page {}", page);
             ResponseEntity<ArticlesResponse> response = httpClient.invokeService(
-                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", "1").toUriString(),
+                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
                     getBasicHttpHeaders(), new ParameterizedTypeReference<>() {
                     }, HttpMethod.GET);
-            articlesResponse = response.hasBody() ? response.getBody() : null;
+
+            LOGGER.info("Articles for page {} retrieved successfully", page);
+            return response.hasBody() ? response.getBody() : null;
         } catch (Exception e) {
-            throw new IllegalStateException("Error getting articles from downstream API. Error message: " + e.getMessage(), e);
+            LOGGER.error("Error getting articles from downstream API for page: {}. Error message: {}", page, e.getMessage());
+            return null;
         }
-
-        if (Objects.isNull(articlesResponse) || articlesResponse.getData().isEmpty()) {
-            throw new StandardException(COMMON_ERROR_404_005);
-        }
-
-        LOGGER.info(RESPONSE_BODY_LOGGER, articlesResponse);
-        return mapper.responseToResponseDTO(articlesResponse.getData());
     }
 }

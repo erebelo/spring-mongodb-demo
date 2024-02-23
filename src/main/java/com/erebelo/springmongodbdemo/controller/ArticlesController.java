@@ -27,7 +27,6 @@ public class ArticlesController {
     private final ArticlesService service;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticlesController.class);
-    private static final String ARTICLES_RESPONSE = "Articles response: {}";
 
     @Operation(summary = "GET Articles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +34,6 @@ public class ArticlesController {
         LOGGER.info("Getting articles");
         var response = service.getArticles();
 
-        LOGGER.info(ARTICLES_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
