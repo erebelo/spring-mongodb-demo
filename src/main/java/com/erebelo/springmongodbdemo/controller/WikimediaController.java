@@ -25,7 +25,6 @@ public class WikimediaController {
     private final WikimediaService service;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WikimediaController.class);
-    private static final String WIKIMEDIA_RESPONSE = "Wikimedia response: {}";
 
     @Operation(summary = "GET Wikimedia project pageviews")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +32,6 @@ public class WikimediaController {
         LOGGER.info("Getting Wikimedia project pageviews");
         var response = service.getWikimediaProjectPageviews();
 
-        LOGGER.info(WIKIMEDIA_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

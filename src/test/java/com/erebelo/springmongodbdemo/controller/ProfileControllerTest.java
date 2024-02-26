@@ -318,7 +318,7 @@ class ProfileControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn();
 
-        verify(service).deleteProfile(eq(USER_ID));
+        verify(service).deleteProfile(USER_ID);
     }
 
     @Test
@@ -331,7 +331,7 @@ class ProfileControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
 
-        verify(service).deleteProfile(eq(USER_ID));
+        verify(service).deleteProfile(USER_ID);
     }
 
     private void assertPatchArgumentCaptorValues(Map<String, Object> profileRequestMap) {

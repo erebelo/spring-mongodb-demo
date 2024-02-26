@@ -106,7 +106,8 @@ class ProfileServiceTest {
     void testGetProfileThrowNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(StandardException.class).isThrownBy(() -> service.getProfile(USER_ID))
+        assertThatExceptionOfType(StandardException.class)
+                .isThrownBy(() -> service.getProfile(USER_ID))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_001)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
 

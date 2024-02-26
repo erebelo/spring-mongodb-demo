@@ -28,7 +28,6 @@ public class WikimediaServiceImpl implements WikimediaService {
     private String wikimediaPublicApiUrl;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WikimediaServiceImpl.class);
-    private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
@@ -44,11 +43,11 @@ public class WikimediaServiceImpl implements WikimediaService {
             throw new IllegalStateException("Error getting Wikimedia project pageviews. Error message: " + e.getMessage(), e);
         }
 
-        if (Objects.isNull(wikimediaPageViews) || wikimediaPageViews.getItems().isEmpty()) {
+        if (Objects.isNull(wikimediaPageViews) || Objects.isNull(wikimediaPageViews.getItems()) || wikimediaPageViews.getItems().isEmpty()) {
             throw new StandardException(COMMON_ERROR_404_004);
         }
 
-        LOGGER.info(RESPONSE_BODY_LOGGER, wikimediaPageViews);
+        LOGGER.info("{} wikimedia items found", wikimediaPageViews.getItems().size());
         return wikimediaPageViews;
     }
 }
