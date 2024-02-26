@@ -70,5 +70,7 @@ class WikimediaControllerTest {
         assertThatThrownBy(() -> mockMvc.perform(get(WIKIMEDIA)
                 .accept(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
+
+        verify(service).getWikimediaProjectPageviews();
     }
 }

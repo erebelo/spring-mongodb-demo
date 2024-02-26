@@ -137,6 +137,8 @@ class ProfileControllerTest {
                 .param("userId", USER_ID)
                 .accept(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
+
+        verify(service).getProfile(USER_ID);
     }
 
     @Test
