@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -66,12 +65,13 @@ public class ArticlesServiceImpl implements ArticlesService {
             LOGGER.info("Combining all CompletableFuture results");
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-            try {
-                LOGGER.info("Waiting for all CompletableFuture to complete");
-                allOf.join();
-            } catch (CompletionException e) {
-                LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", e.getMessage());
-            }
+            CompletableFuture<Void> exceptionalResult = allOf.exceptionally(throwable -> {
+                LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", throwable.getCause().getMessage());
+                return null;
+            });
+
+            LOGGER.info("Waiting for all CompletableFuture to complete");
+            exceptionalResult.join();
 
             long totalTime = System.currentTimeMillis() - startTime;
             LOGGER.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages, totalTime);

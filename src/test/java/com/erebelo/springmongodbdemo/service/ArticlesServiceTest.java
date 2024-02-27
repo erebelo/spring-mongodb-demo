@@ -1,7 +1,6 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
 import com.erebelo.springmongodbdemo.exception.StandardException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
@@ -23,8 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.ARTICLES_URL;
@@ -109,30 +106,6 @@ class ArticlesServiceImplTest {
         given(httpClient.invokeService(eq(ARTICLES_URL + "?page=1"), any(), any(), any())).willReturn(ResponseEntity.ok(getArticlesResponse()));
         given(httpClient.invokeService(eq(ARTICLES_URL + "?page=2"), any(), any(), any())).willThrow(new RuntimeException("Async error"));
 
-        var result = service.getArticles();
-
-        assertThat(result).hasSize(1);
-        assertThat(result).usingRecursiveComparison().isEqualTo(getArticlesDataResponseDTO());
-
-        verify(httpClient).invokeService(eq(ARTICLES_URL + "?page=1"), httpHeadersArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class), eq(HttpMethod.GET));
-        assertThat(httpHeadersArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
-
-        verify(httpClient).invokeService(eq(ARTICLES_URL + "?page=2"), httpHeadersArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class), eq(HttpMethod.GET));
-        assertThat(httpHeadersArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
-
-        verify(mapper).responseToResponseDTO(anyList());
-    }
-
-    @Test
-    void testGetArticlesIgnoreCompletionException() {
-        given(httpClient.invokeService(eq(ARTICLES_URL + "?page=1"), any(), any(), any())).willReturn(ResponseEntity.ok(getArticlesResponse()));
-        given(httpClient.invokeService(eq(ARTICLES_URL + "?page=2"), any(), any(), any())).willAnswer(invocation -> {
-            CompletableFuture<ArticlesResponse> future = new CompletableFuture<>();
-            future.completeExceptionally(new CompletionException(new RuntimeException("Async error")));
-            return future;
-        });
         var result = service.getArticles();
 
         assertThat(result).hasSize(1);
