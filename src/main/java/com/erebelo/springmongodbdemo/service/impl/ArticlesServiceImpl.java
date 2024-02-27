@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +44,7 @@ public class ArticlesServiceImpl implements ArticlesService {
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
         LOGGER.info("Getting articles from downstream API: {}", articlesApiUrl);
-        int totalPages = INITIAL_PAGE;
+        Integer totalPages = INITIAL_PAGE;
 
         ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);
 
@@ -53,36 +54,41 @@ public class ArticlesServiceImpl implements ArticlesService {
             LOGGER.warn("Empty or null response for the first articles downstream API call");
         }
 
-        long startTime = System.currentTimeMillis();
-        LOGGER.info("Fetching articles asynchronously through CompletableFuture");
-        List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
-                .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page)))
-                .collect(Collectors.toList());
+        List<ArticlesResponse> allArticlesResponses = new ArrayList<>();
+        if (Objects.nonNull(totalPages) && totalPages > INITIAL_PAGE) {
+            long startTime = System.currentTimeMillis();
 
-        LOGGER.info("Combining all CompletableFuture results");
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+            LOGGER.info("Fetching articles asynchronously through CompletableFuture");
+            List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
+                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page)))
+                    .collect(Collectors.toList());
 
-        try {
-            LOGGER.info("Waiting for all CompletableFuture to complete");
-            allOf.join();
-        } catch (CompletionException e) {
-            LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", e.getMessage());
+            LOGGER.info("Combining all CompletableFuture results");
+            CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+            try {
+                LOGGER.info("Waiting for all CompletableFuture to complete");
+                allOf.join();
+            } catch (CompletionException e) {
+                LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", e.getMessage());
+            }
+
+            long totalTime = System.currentTimeMillis() - startTime;
+            LOGGER.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages, totalTime);
+
+            LOGGER.info("Collecting results from completed CompletableFutures");
+            allArticlesResponses = futures.stream()
+                    .map(CompletableFuture::join)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         }
-
-        long totalTime = System.currentTimeMillis() - startTime;
-        LOGGER.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages, totalTime);
-
-        LOGGER.info("Collecting results from completed CompletableFutures");
-        List<ArticlesResponse> allArticlesResponses = futures.stream()
-                .map(CompletableFuture::join)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
 
         if (Objects.nonNull(firstArticlesResponse)) {
             allArticlesResponses.add(0, firstArticlesResponse);
         }
 
         List<ArticlesDataResponse> allArticlesDataResponses = allArticlesResponses.stream()
+                .filter(response -> response.getData() != null)
                 .flatMap(response -> response.getData().stream())
                 .collect(Collectors.toList());
 

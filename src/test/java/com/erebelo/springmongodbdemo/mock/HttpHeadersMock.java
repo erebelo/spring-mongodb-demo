@@ -34,4 +34,11 @@ public final class HttpHeadersMock {
 
         return httpHeaders;
     }
+
+    public static HttpHeaders getBasicHttpHeaders() {
+        var httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return httpHeaders;
+    }
 }

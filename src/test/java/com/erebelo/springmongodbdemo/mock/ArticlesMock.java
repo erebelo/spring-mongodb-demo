@@ -12,8 +12,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ArticlesMock {
 
+    public static final String ARTICLES_URL = "https://jsonmock.hackerrank.com/api/articles";
     private static final String TITLE = "A Message to Our Customers";
+    private static final String NEW_TITLE = "Chrome";
     private static final String URL = "http://www.apple.com/customer-letter";
+    private static final String NEW_URL = "http://www.google.com/customer-letter";
     private static final String AUTHOR = "epaga";
     private static final Integer NUM_COMMENTS = 967;
     private static final Integer STORY_ID = null;
@@ -22,9 +25,10 @@ public final class ArticlesMock {
     private static final Integer PARENT_ID = 6547669;
     private static final Integer CREATED_AT = 1455698317;
     private static final Integer PAGE = 1;
-    private static final Integer PER_PAGE = 10;
-    private static final Integer TOTAL = 41;
-    private static final Integer TOTAL_PAGES = 5;
+    private static final Integer NEXT_PAGE = 2;
+    private static final Integer PER_PAGE = 1;
+    private static final Integer TOTAL = 2;
+    public static final Integer TOTAL_PAGES = 2;
 
     public static List<ArticlesDataResponseDTO> getArticlesDataResponseDTO() {
         return Collections.singletonList(ArticlesDataResponseDTO.builder()
@@ -37,6 +41,22 @@ public final class ArticlesMock {
                 .storyUrl(STORY_URL)
                 .parentId(PARENT_ID)
                 .createdAt(CREATED_AT)
+                .build()
+        );
+    }
+
+    public static List<ArticlesDataResponseDTO> getArticlesDataResponseDTONextPage() {
+        var responseDTO = getArticlesDataResponseDTO();
+        return Collections.singletonList(ArticlesDataResponseDTO.builder()
+                .title(NEW_TITLE)
+                .url(NEW_URL)
+                .author(responseDTO.get(0).getAuthor())
+                .numComments(responseDTO.get(0).getNumComments())
+                .storyId(responseDTO.get(0).getStoryId())
+                .storyTitle(responseDTO.get(0).getStoryTitle())
+                .storyUrl(responseDTO.get(0).getStoryUrl())
+                .parentId(responseDTO.get(0).getParentId())
+                .createdAt(responseDTO.get(0).getCreatedAt())
                 .build()
         );
     }
@@ -57,6 +77,27 @@ public final class ArticlesMock {
                         .storyUrl(STORY_URL)
                         .parentId(PARENT_ID)
                         .createdAt(CREATED_AT)
+                        .build()))
+                .build();
+    }
+
+    public static ArticlesResponse getArticlesResponseNextPage() {
+        var response = getArticlesResponse();
+        return ArticlesResponse.builder()
+                .page(NEXT_PAGE)
+                .perPage(response.getPerPage())
+                .total(response.getTotal())
+                .totalPages(response.getTotalPages())
+                .data(Collections.singletonList(ArticlesDataResponse.builder()
+                        .title(NEW_TITLE)
+                        .url(NEW_URL)
+                        .author(response.getData().get(0).getAuthor())
+                        .numComments(response.getData().get(0).getNumComments())
+                        .storyId(response.getData().get(0).getStoryId())
+                        .storyTitle(response.getData().get(0).getStoryTitle())
+                        .storyUrl(response.getData().get(0).getStoryUrl())
+                        .parentId(response.getData().get(0).getParentId())
+                        .createdAt(response.getData().get(0).getCreatedAt())
                         .build()))
                 .build();
     }
