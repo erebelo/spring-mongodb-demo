@@ -50,7 +50,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         if (Objects.nonNull(firstArticlesResponse)) {
             totalPages = firstArticlesResponse.getTotalPages();
         } else {
-            LOGGER.warn("Empty or null response for the first articles downstream API call");
+            LOGGER.warn("Empty or null response from first articles downstream API call");
         }
 
         List<ArticlesResponse> allArticlesResponses = new ArrayList<>();

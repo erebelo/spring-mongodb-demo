@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Console Appender -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender -->
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/spring-mongodb-demo.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Set the maximum size of the log file (e.g., 10MB) -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Set the maximum history to keep (e.g., 7 days) -->
+            <maxHistory>7</maxHistory>
+            <!-- Set the total size of the directory (optional) -->
+            <!--<totalSizeCap>1GB</totalSizeCap>-->
+            <!-- Set the file name pattern -->
+            <fileNamePattern>logs/spring-mongodb-demo-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger with both Console and File Appenders -->
+    <root level="info">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="fileAppender"/>
+    </root>
+
+</configuration>
