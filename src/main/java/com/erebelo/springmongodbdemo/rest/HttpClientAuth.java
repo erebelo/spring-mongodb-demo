@@ -1,10 +1,13 @@
 package com.erebelo.springmongodbdemo.rest;
 
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.util.PublicSuffixMatcherLoader;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class HttpClientAuth extends AbstractRestTemplate {
@@ -31,24 +34,36 @@ public class HttpClientAuth extends AbstractRestTemplate {
     protected void restTemplateSetup() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         try {
             LOGGER.info("Instantiating HttpClientAuth RestTemplate");
-            HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-            clientBuilder.useSystemProperties();
+            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+            requestFactory.setHttpClient(buildHttpClient());
+            requestFactory.setConnectTimeout(Integer.parseInt(this.connProps.getTimeout()));
+            requestFactory.setConnectionRequestTimeout(Integer.parseInt(this.connProps.getTimeout()));
 
-            LOGGER.info("Setting SSL certificate");
-            SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
-            sslContextBuilder.loadTrustMaterial(null, (X509Certificate[] chain, String authType) -> true);
-            clientBuilder.setSSLContext(sslContextBuilder.build()).setSSLHostnameVerifier(new DefaultHostnameVerifier(PublicSuffixMatcherLoader.getDefault()));
-            CloseableHttpClient client = clientBuilder.disableCookieManagement().build();
-
-            var factory = new HttpComponentsClientHttpRequestFactory();
-            factory.setHttpClient(client);
-            factory.setConnectTimeout(Integer.parseInt(this.connProps.getTimeout()));
-            factory.setReadTimeout(Integer.parseInt(this.connProps.getRead().getTimeout()));
-
-            this.restTemplate.setRequestFactory(factory);
+            this.restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e) {
             LOGGER.error("Error creating HttpClientAuth RestTemplate");
             throw e;
         }
+    }
+
+    private CloseableHttpClient buildHttpClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        return HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig())
+                .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+                        .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+                                .setSslContext(SSLContextBuilder.create()
+                                        .loadTrustMaterial(TrustAllStrategy.INSTANCE)
+                                        .build())
+                                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private RequestConfig requestConfig() {
+        return RequestConfig.custom()
+                .setResponseTimeout(Long.parseLong(this.connProps.getRead().getTimeout()), TimeUnit.MILLISECONDS)
+                .setConnectionRequestTimeout(Long.parseLong(this.connProps.getTimeout()), TimeUnit.MILLISECONDS)
+                .build();
     }
 }

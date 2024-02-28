@@ -14,8 +14,8 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 ----------
 
 ## Requirements
-- Java 11
-- Spring Boot 2.7.1
+- Java 17
+- Spring Boot 3.2.3
 - Apache Maven 3.8.6
 
 ----------

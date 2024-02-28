@@ -3,13 +3,13 @@ package com.erebelo.springmongodbdemo.service;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
 import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;

@@ -7,6 +7,7 @@ import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.Map;
 
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.MERGE_PATCH_MEDIA_TYPE;

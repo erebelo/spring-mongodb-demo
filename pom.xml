@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <version>3.2.3</version>
         <relativePath/>
     </parent>
 
@@ -18,14 +18,15 @@
     <description>Java project using Spring Boot framework and MongoDB</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.mongodb.version>2.6.7</spring.mongodb.version>
-        <springdoc.openapi.version>1.6.11</springdoc.openapi.version>
-        <mockito.inline.version>4.5.1</mockito.inline.version>
+        <httpclient5.version>5.3</httpclient5.version>
+        <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
-        <snakeyaml.version>1.31</snakeyaml.version>
+        <mockito.inline.version>4.5.1</mockito.inline.version>
     </properties>
 
     <dependencies>
@@ -40,13 +41,14 @@
         </dependency>
         <!--HttpClient Template-->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpclient5.version}</version>
         </dependency>
         <!--Swagger Annotations-->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.openapi.version}</version>
         </dependency>
         <!--Validation-->
@@ -55,8 +57,9 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
         </dependency>
         <!--MapStruct-->
         <dependency>
