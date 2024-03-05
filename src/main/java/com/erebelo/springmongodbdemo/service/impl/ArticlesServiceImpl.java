@@ -5,13 +5,14 @@ import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
 import com.erebelo.springmongodbdemo.exception.StandardException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
-import com.erebelo.springmongodbdemo.rest.HttpClient;
+import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getBasicHt
 @RequiredArgsConstructor
 public class ArticlesServiceImpl implements ArticlesService {
 
-    private final HttpClient httpClient;
+    private final HttpClientAuth httpClientAuth;
     private final ArticlesMapper mapper;
 
     @Value("${articles.api.url}")
@@ -60,7 +61,7 @@ public class ArticlesServiceImpl implements ArticlesService {
             LOGGER.info("Fetching articles asynchronously through CompletableFuture");
             List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
                     .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page)))
-                    .collect(Collectors.toList());
+                    .toList();
 
             LOGGER.info("Combining all CompletableFuture results");
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
@@ -90,7 +91,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         List<ArticlesDataResponse> allArticlesDataResponses = allArticlesResponses.stream()
                 .filter(response -> response.getData() != null)
                 .flatMap(response -> response.getData().stream())
-                .collect(Collectors.toList());
+                .toList();
 
         if (allArticlesDataResponses.isEmpty()) {
             throw new StandardException(COMMON_ERROR_422_003);
@@ -103,10 +104,10 @@ public class ArticlesServiceImpl implements ArticlesService {
     private ArticlesResponse fetchData(int page) {
         try {
             LOGGER.info("Retrieving articles for page {}", page);
-            ResponseEntity<ArticlesResponse> response = httpClient.invokeService(
-                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
-                    getBasicHttpHeaders(), new ParameterizedTypeReference<>() {
-                    }, HttpMethod.GET);
+            ResponseEntity<ArticlesResponse> response = httpClientAuth.getRestTemplate().exchange(
+                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(), HttpMethod.GET,
+                    new HttpEntity<>(getBasicHttpHeaders()), new ParameterizedTypeReference<>() {
+                    });
 
             LOGGER.info("Articles for page {} retrieved successfully", page);
             return response.hasBody() ? response.getBody() : null;

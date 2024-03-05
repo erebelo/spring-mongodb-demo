@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,9 @@ public class WikimediaServiceImpl implements WikimediaService {
         WikimediaResponse wikimediaPageViews;
 
         try {
-            ResponseEntity<WikimediaResponse> response = httpClient.invokeService(wikimediaPublicApiUrl, getHttpHeaders(),
-                    new ParameterizedTypeReference<>() {
-                    }, HttpMethod.GET);
+            ResponseEntity<WikimediaResponse> response = httpClient.getRestTemplate().exchange(wikimediaPublicApiUrl, HttpMethod.GET,
+                    new HttpEntity<>(getHttpHeaders()), new ParameterizedTypeReference<>() {
+                    });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (Exception e) {
             throw new IllegalStateException("Error getting Wikimedia project pageviews. Error message: " + e.getMessage(), e);

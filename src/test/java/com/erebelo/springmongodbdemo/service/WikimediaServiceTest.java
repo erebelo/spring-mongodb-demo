@@ -15,10 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Objects;
@@ -34,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 
@@ -47,13 +49,14 @@ class WikimediaServiceTest {
     private HttpClient httpClient;
 
     @Captor
-    private ArgumentCaptor<HttpHeaders> httpHeadersArgumentCaptor;
+    private ArgumentCaptor<HttpEntity<?>> httpEntityArgumentCaptor;
 
     private final MockedStatic<RequestContextHolder> mockedStatic = mockStatic(RequestContextHolder.class);
 
     @BeforeEach
     void init() {
         ReflectionTestUtils.setField(service, "wikimediaPublicApiUrl", WIKIMEDIA_URL);
+        given(httpClient.getRestTemplate()).willReturn(mock(RestTemplate.class));
         mockedStatic.when(RequestContextHolder::getRequestAttributes).thenReturn(getServletRequestAttributes());
     }
 
@@ -66,43 +69,46 @@ class WikimediaServiceTest {
 
     @Test
     void testGetWikimediaProjectPageviewsSuccessfully() {
-        given(httpClient.invokeService(anyString(), any(), any(), any())).willReturn(ResponseEntity.ok(getWikimediaResponse()));
+        given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .willReturn(ResponseEntity.ok(getWikimediaResponse()));
 
         var result = service.getWikimediaProjectPageviews();
 
         assertThat(result).usingRecursiveComparison().isEqualTo(getWikimediaResponse());
 
-        verify(httpClient).invokeService(eq(WIKIMEDIA_URL), httpHeadersArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class), eq(HttpMethod.GET));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+                any(ParameterizedTypeReference.class));
 
-        assertThat(httpHeadersArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
     }
 
     @Test
     void testGetWikimediaProjectPageviewsThrowIllegalStateException() {
-        given(httpClient.invokeService(anyString(), any(), any(), any())).willThrow(new IllegalStateException("Internal Server Error"));
+        given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .willThrow(new IllegalStateException("Internal Server Error"));
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .withMessage("Error getting Wikimedia project pageviews. Error message: Internal Server Error");
 
-        verify(httpClient).invokeService(eq(WIKIMEDIA_URL), httpHeadersArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class), eq(HttpMethod.GET));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+                any(ParameterizedTypeReference.class));
 
-        assertThat(httpHeadersArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
     }
 
     @Test
     void testGetWikimediaProjectPageviewsThrowNotFoundException() {
-        given(httpClient.invokeService(anyString(), any(), any(), any())).willReturn(ResponseEntity.ok(new WikimediaResponse()));
+        given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 
         assertThatExceptionOfType(StandardException.class)
                 .isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_004);
 
-        verify(httpClient).invokeService(eq(WIKIMEDIA_URL), httpHeadersArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class), eq(HttpMethod.GET));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+                any(ParameterizedTypeReference.class));
 
-        assertThat(httpHeadersArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
     }
 }
