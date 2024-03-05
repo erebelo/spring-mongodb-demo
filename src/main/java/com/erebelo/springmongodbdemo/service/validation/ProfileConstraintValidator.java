@@ -23,7 +23,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     @Override
     public boolean isValid(ProfileRequest request, ConstraintValidatorContext context) {
-        LOGGER.info("Validating the profile request: {}", request);
+        LOGGER.info("Validating the profile request object");
         List<FieldMessage> errorMessages = new ArrayList<>();
 
         validateSpouseProfile(request, errorMessages);
@@ -49,7 +49,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     public static void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
-        LOGGER.info("Validating dateOfBirth fields");
+        LOGGER.info("Validating dateOfBirth field");
         var dob = request.getDateOfBirth();
 
         if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {

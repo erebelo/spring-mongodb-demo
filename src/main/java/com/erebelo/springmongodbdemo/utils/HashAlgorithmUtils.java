@@ -25,11 +25,10 @@ public class HashAlgorithmUtils {
     }
 
     public static synchronized String generateSHAHashObject(String objString) {
-        var objStringBuilder = new StringBuilder(objString);
-        objStringBuilder.append(String.format(", currentTimeMillis=%s", System.currentTimeMillis()));
+        var newObjString = objString + ", currentTimeMillis=" + System.currentTimeMillis();
 
-        LOGGER.info("Generating a hash object through object: {}", objStringBuilder);
-        byte[] hash = digest.digest(objStringBuilder.toString().getBytes(StandardCharsets.UTF_8));
+        LOGGER.info("Generating a hash value by the provided object");
+        byte[] hash = digest.digest(newObjString.getBytes(StandardCharsets.UTF_8));
 
         return bytesToHex(hash);
     }

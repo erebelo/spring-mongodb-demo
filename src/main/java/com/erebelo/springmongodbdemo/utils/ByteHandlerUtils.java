@@ -16,7 +16,7 @@ public class ByteHandlerUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteHandlerUtils.class);
 
     public static ByteWrapperObject byteGenerator(Object obj) {
-        LOGGER.info("Generating a byte array from object: {}", obj);
+        LOGGER.info("Generating a byte array from object");
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(obj);

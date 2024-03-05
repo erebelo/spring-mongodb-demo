@@ -16,10 +16,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ProfileContact implements Serializable {
 
-    @NotNull(message = "contactType is mandatory")
+    @NotNull(message = "contactNumbers.contactType is mandatory")
     private ContactTypeEnum contactType;
 
-    @NotBlank(message = "contactValue is mandatory")
+    @NotBlank(message = "contactNumbers.contactValue is mandatory")
     private String contactValue;
 
 }

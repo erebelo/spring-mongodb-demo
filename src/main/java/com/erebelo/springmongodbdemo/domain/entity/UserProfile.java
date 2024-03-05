@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -71,4 +72,8 @@ public class UserProfile implements Serializable {
     @Valid
     private SpouseProfile spouseProfile;
 
+    @ToString.Include(name = "dateOfBirth", rank = 1)
+    public String maskDateOfBirth() {
+        return "****-**-" + dateOfBirth.getDayOfMonth();
+    }
 }

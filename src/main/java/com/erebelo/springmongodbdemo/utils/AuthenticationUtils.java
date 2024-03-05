@@ -32,7 +32,6 @@ public class AuthenticationUtils {
     }
 
     public static HttpHeaders getBasicHttpHeaders() {
-        LOGGER.info("Building basic http headers");
         var httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
@@ -40,7 +39,6 @@ public class AuthenticationUtils {
     }
 
     public static HttpHeaders getHttpHeaders() {
-        LOGGER.info("Collecting the request http headers");
         var requestHttpHeaders = getHttpServletRequest();
 
         var httpHeaders = Collections.list(requestHttpHeaders.getHeaderNames())
@@ -58,7 +56,6 @@ public class AuthenticationUtils {
     }
 
     private static HttpServletRequest getHttpServletRequest() {
-        LOGGER.info("Getting HttpServletRequest by RequestContextHolder");
         var requestAttributes = RequestContextHolder.getRequestAttributes();
 
         if (requestAttributes == null) {

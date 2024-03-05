@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,7 +28,6 @@ import java.util.Map;
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.MERGE_PATCH_MEDIA_TYPE;
 import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
 
-@Validated
 @RestController
 @RequestMapping(PROFILE)
 @HeaderLoggedInUser
@@ -40,7 +38,6 @@ public class ProfileController {
     private final ProfileService service;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
-    private static final String PROFILE_RESPONSE = "Profile response: {}";
 
     @Operation(summary = "Get profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,27 +45,24 @@ public class ProfileController {
         LOGGER.info("Getting profile");
         var response = service.getProfile(userId);
 
-        LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Insert profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
-        LOGGER.info("Inserting profile - Request body: {}", profileRequest);
+        LOGGER.info("Inserting profile");
         var response = service.insertProfile(userId, profileRequest);
 
-        LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update profile")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
-        LOGGER.info("Updating profile - Request body: {}", profileRequest);
+        LOGGER.info("Updating profile");
         var response = service.updateProfile(userId, profileRequest);
 
-        LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -78,7 +72,6 @@ public class ProfileController {
         LOGGER.info("Patching profile");
         var response = service.patchProfile(userId, profileRequestMap);
 
-        LOGGER.info(PROFILE_RESPONSE, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

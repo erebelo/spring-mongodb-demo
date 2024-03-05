@@ -57,8 +57,8 @@ public class ProfileServiceImpl implements ProfileService {
         return mapper.entityToResponse(profile.getProfile());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ProfileResponse insertProfile(String userId, ProfileRequest profileRequest) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         repository.findByUserId(userId).ifPresent(o -> {
@@ -77,14 +77,14 @@ public class ProfileServiceImpl implements ProfileService {
         return mapper.entityToResponse(profile.getProfile());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ProfileResponse updateProfile(String userId, ProfileRequest profileRequest) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
                 new StandardException(COMMON_ERROR_404_002, userId));
 
-        LOGGER.info("Generating byte arrays for the objects");
+        LOGGER.info("Generating byte arrays for profile objects");
         var profileBytes = byteGenerator(profile.getProfile());
 
         profile.setProfile(mapper.requestToEntity(profileRequest));
@@ -96,6 +96,8 @@ public class ProfileServiceImpl implements ProfileService {
         if (!byteArrayComparison(profileBytes, newProfileBytes)) {
             LOGGER.info("Updating profile: {}", profile);
             profile = repository.save(profile);
+        } else {
+            LOGGER.info("No updates are needed for the profile object");
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, profile);
@@ -126,7 +128,7 @@ public class ProfileServiceImpl implements ProfileService {
             LOGGER.info("Recursively merging profile request with database profile object");
             recursiveMapMerge(profileRequestMap, dbProfileRequestMap);
 
-            LOGGER.info("Serializing/deserializing profile object after merging");
+            LOGGER.info("Serializing/deserializing profile object after merging objects");
             dbProfileRequest = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequestMap), ProfileRequest.class);
         } catch (Exception e) {
             throw new StandardException(COMMON_ERROR_422_001, e, e.getMessage());
@@ -147,14 +149,16 @@ public class ProfileServiceImpl implements ProfileService {
         if (!byteArrayComparison(profileBytes, newProfileBytes)) {
             LOGGER.info("Updating profile: {}", profile);
             profile = repository.save(profile);
+        } else {
+            LOGGER.info("No updates are needed for the profile object");
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, profile);
         return mapper.entityToResponse(profile.getProfile());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteProfile(String userId) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
@@ -190,7 +194,6 @@ public class ProfileServiceImpl implements ProfileService {
             for (FieldMessage field : errorMessages) {
                 joiner.add(field.getMessage());
             }
-
             throw new StandardException(COMMON_ERROR_422_000, joiner.toString());
         }
     }

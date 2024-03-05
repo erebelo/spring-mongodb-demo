@@ -18,16 +18,16 @@ import lombok.NoArgsConstructor;
 @Schema(name = "ProfileLocationDTO")
 public class ProfileLocationDTO {
 
-    @NotBlank(message = "address is mandatory")
+    @NotBlank(message = "currentLocation.address is mandatory")
     private String address;
 
-    @NotBlank(message = "city is mandatory")
+    @NotBlank(message = "currentLocation.city is mandatory")
     private String city;
 
-    @NotBlank(message = "state is mandatory")
+    @NotBlank(message = "currentLocation.state is mandatory")
     private String state;
 
-    @NotBlank(message = "country is mandatory")
+    @NotBlank(message = "currentLocation.country is mandatory")
     private String country;
 
     private String postalCode;

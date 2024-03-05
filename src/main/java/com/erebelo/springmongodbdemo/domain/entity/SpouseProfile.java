@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -18,16 +19,20 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SpouseProfile implements Serializable {
 
-    @NotBlank(message = "firstName is mandatory")
+    @NotBlank(message = "spouseProfile.firstName is mandatory")
     private String firstName;
 
-    @NotBlank(message = "lastName is mandatory")
+    @NotBlank(message = "spouseProfile.lastName is mandatory")
     private String lastName;
 
-    @NotNull(message = "dateOfBirth is mandatory")
+    @NotNull(message = "spouseProfile.dateOfBirth is mandatory")
     private LocalDate dateOfBirth;
 
     private GenderEnum gender;
     private EmploymentStatusEnum employmentStatus;
 
+    @ToString.Include(name = "dateOfBirth", rank = 1)
+    public String maskDateOfBirth() {
+        return "****-**-" + dateOfBirth.getDayOfMonth();
+    }
 }
