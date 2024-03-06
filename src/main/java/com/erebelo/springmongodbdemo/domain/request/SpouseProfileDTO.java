@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -38,6 +39,9 @@ public class SpouseProfileDTO {
 
     @ToString.Include(name = "dateOfBirth", rank = 1)
     public String maskDateOfBirth() {
-        return "****-**-" + dateOfBirth.getDayOfMonth();
+        if (Objects.nonNull(dateOfBirth)) {
+            return "****-**-" + dateOfBirth.getDayOfMonth();
+        }
+        return null;
     }
 }

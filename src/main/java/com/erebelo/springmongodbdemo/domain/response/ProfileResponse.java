@@ -19,6 +19,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -45,6 +46,9 @@ public class ProfileResponse {
 
     @ToString.Include(name = "dateOfBirth", rank = 1)
     public String maskDateOfBirth() {
-        return "****-**-" + dateOfBirth.getDayOfMonth();
+        if (Objects.nonNull(dateOfBirth)) {
+            return "****-**-" + dateOfBirth.getDayOfMonth();
+        }
+        return null;
     }
 }

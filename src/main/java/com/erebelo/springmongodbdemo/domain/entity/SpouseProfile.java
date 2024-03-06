@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -33,6 +34,9 @@ public class SpouseProfile implements Serializable {
 
     @ToString.Include(name = "dateOfBirth", rank = 1)
     public String maskDateOfBirth() {
-        return "****-**-" + dateOfBirth.getDayOfMonth();
+        if (Objects.nonNull(dateOfBirth)) {
+            return "****-**-" + dateOfBirth.getDayOfMonth();
+        }
+        return null;
     }
 }

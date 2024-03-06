@@ -10,6 +10,10 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,10 +21,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
-class HttpClientTest {
+class HttpClientAuthTest {
 
     @InjectMocks
-    private HttpClient httpClient;
+    private HttpClientAuth httpClientAuth;
 
     @Mock
     private ConnectionProps connectionProps;
@@ -30,18 +34,18 @@ class HttpClientTest {
 
     @BeforeEach
     void init() {
-        ReflectionTestUtils.setField(httpClient, "connProps", connectionProps);
-        ReflectionTestUtils.setField(httpClient, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(httpClientAuth, "connProps", connectionProps);
+        ReflectionTestUtils.setField(httpClientAuth, "restTemplate", restTemplate);
     }
 
     @Test
-    void testRestTemplateSetupSuccessfully() {
+    void testRestTemplateSetupSuccessfully() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         given(connectionProps.getTimeout()).willReturn("3000");
         given(connectionProps.getRead()).willReturn(new ConnectionProps.Read("5000"));
 
-        httpClient.restTemplateSetup();
+        httpClientAuth.restTemplateSetup();
 
-        assertNotNull(httpClient);
+        assertNotNull(httpClientAuth);
     }
 
     @Test
@@ -51,6 +55,6 @@ class HttpClientTest {
 
         willThrow(new RuntimeException("Simulated restTemplate error")).given(restTemplate).setRequestFactory(any(ClientHttpRequestFactory.class));
 
-        assertThrows(RuntimeException.class, () -> httpClient.restTemplateSetup());
+        assertThrows(RuntimeException.class, () -> httpClientAuth.restTemplateSetup());
     }
 }
