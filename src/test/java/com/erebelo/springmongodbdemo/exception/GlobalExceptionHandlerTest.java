@@ -159,9 +159,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testHttpMessageNotReadableException() {
-        var httpInputMessageMock = mock(HttpInputMessage.class);
         var exceptionResponse = handler.httpMessageNotReadableException(
-                new HttpMessageNotReadableException("HttpMessageNotReadableException error", httpInputMessageMock), response);
+                new HttpMessageNotReadableException("HttpMessageNotReadableException error", mock(HttpInputMessage.class)), response);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatus());
