@@ -258,9 +258,6 @@ class ProfileServiceTest {
         given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(
                 ProfileEntity.builder().profile(UserProfile.builder().firstName(FIRST_NAME).build()).build()));
 
-        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
-        byteHandlerMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
-
         Map<String, Object> profileRequestMap = new LinkedHashMap<>() {{
             put("firstName", FIRST_NAME);
         }};
@@ -270,13 +267,13 @@ class ProfileServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(
                 ProfileResponse.builder().firstName(FIRST_NAME).employmentStatus(EmploymentStatusEnum.NOT_EMPLOYED).build());
 
-        verify(repository, times(2)).findByUserId(USER_ID);
+        verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
         verify(objectMapper, times(2)).writeValueAsString(any());
         verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
-        verify(service).updateProfile(eq(USER_ID), any(ProfileRequest.class));
-        verify(mapper).requestToEntity(any(ProfileRequest.class));
-        verify(repository, never()).save(any(ProfileEntity.class));
+        verify(service, never()).updateProfile(eq(USER_ID), any(ProfileRequest.class));
+        verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
+        verify(repository, never()).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
     }
 

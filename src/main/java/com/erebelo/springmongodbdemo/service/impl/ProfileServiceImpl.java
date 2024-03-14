@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_001;
@@ -98,7 +99,7 @@ public class ProfileServiceImpl implements ProfileService {
             LOGGER.info("Updating profile: {}", profile);
             profile = repository.save(profile);
         } else {
-            LOGGER.info("No updates are needed for the profile object");
+            LOGGER.info("No updates found for profile object by put request");
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, profile);
@@ -121,13 +122,14 @@ public class ProfileServiceImpl implements ProfileService {
             throw new StandardException(COMMON_ERROR_422_002);
         }
 
+        int patchCounter;
         var dbProfileRequest = mapper.entityToRequest(profile.getProfile());
         try {
             LOGGER.info("Serializing/deserializing database profile object");
             var dbProfileRequestMap = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequest), Map.class);
 
             LOGGER.info("Recursively merging profile request with database profile object");
-            recursiveMapMerge(profileRequestMap, dbProfileRequestMap);
+            patchCounter = recursiveMapMerge(profileRequestMap, dbProfileRequestMap);
 
             LOGGER.info("Serializing/deserializing profile object after merging objects");
             dbProfileRequest = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequestMap), ProfileRequest.class);
@@ -135,10 +137,17 @@ public class ProfileServiceImpl implements ProfileService {
             throw new StandardException(COMMON_ERROR_422_001, e, e.getMessage());
         }
 
-        LOGGER.info("Validating merged request attributes");
-        validateRequestAttributes(dbProfileRequest);
+        if (patchCounter > 0) {
+            LOGGER.info("Validating merged request attributes");
+            validateRequestAttributes(dbProfileRequest);
 
-        return this.updateProfile(userId, dbProfileRequest);
+            LOGGER.info("Updating {} field(s) by patch request", patchCounter);
+            return this.updateProfile(userId, dbProfileRequest);
+        } else {
+            LOGGER.info("No updates found for profile object by patch request");
+            LOGGER.info(RESPONSE_BODY_LOGGER, profile);
+            return mapper.entityToResponse(profile.getProfile());
+        }
     }
 
     @Override
@@ -152,18 +161,21 @@ public class ProfileServiceImpl implements ProfileService {
         repository.delete(profile);
     }
 
-    private void recursiveMapMerge(Map<String, Object> source, Map<String, Object> target) {
+    private int recursiveMapMerge(Map<String, Object> source, Map<String, Object> target) {
+        int counter = 0;
         for (var entry : source.entrySet()) {
             var key = entry.getKey();
             var sourceValue = entry.getValue();
             var targetValue = target.get(key);
 
             if (targetValue instanceof Map && sourceValue instanceof Map && ((Map<?, ?>) sourceValue).size() > 0) {
-                recursiveMapMerge((Map<String, Object>) sourceValue, (Map<String, Object>) targetValue);
-            } else {
+                counter += recursiveMapMerge((Map<String, Object>) sourceValue, (Map<String, Object>) targetValue);
+            } else if (!Objects.equals(sourceValue, targetValue)) {
                 target.put(key, sourceValue);
+                counter++;
             }
         }
+        return counter;
     }
 
     private void validateRequestAttributes(ProfileRequest dbProfileRequest) {
