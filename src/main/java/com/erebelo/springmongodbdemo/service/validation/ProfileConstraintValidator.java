@@ -44,7 +44,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&
                 (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED) || maritalStatus.equals(MaritalStatusEnum.WIDOWED))) {
             errorMessages.add(new FieldMessage("spouseProfile",
-                    "spouseProfile should not be filled in when marital status equals SINGLE, DIVORCE OR WIDOWED"));
+                    "spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or WIDOWED"));
         }
     }
 
