@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
 import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
 import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -57,6 +59,21 @@ class ProfileConstraintValidatorTest {
         var profileRequest = getProfileRequest();
         profileRequest.setDateOfBirth(LocalDate.now());
         profileRequest.getSpouseProfile().setDateOfBirth(LocalDate.now());
+
+        boolean isValid = validator.isValid(profileRequest, context);
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    void testInvalidContactNumbers() {
+        given(context.buildConstraintViolationWithTemplate(anyString())).willReturn(builderContext);
+        given(builderContext.addPropertyNode(anyString())).willReturn(nodeBuilderContext);
+
+        var contactNumbers = new ArrayList<ProfileContactDTO>();
+        contactNumbers.add(null);
+        var profileRequest = getProfileRequest();
+        profileRequest.setContactNumbers(contactNumbers);
 
         boolean isValid = validator.isValid(profileRequest, context);
 

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_001;
@@ -84,12 +87,21 @@ class ProfileServiceTest {
     @Captor
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
 
+    private MockedStatic<ByteHandlerUtils> byteHandlerMockedStatic;
+
     @BeforeEach
     void init() {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+    }
+
+    @AfterEach
+    void clear() {
+        if (Objects.nonNull(byteHandlerMockedStatic)) {
+            byteHandlerMockedStatic.close();
+        }
     }
 
     @Test
@@ -189,8 +201,8 @@ class ProfileServiceTest {
     void testUpdateProfileWhenMatchingProfileIsFound() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        var byteHandlerUtilsMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
-        byteHandlerUtilsMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
+        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
+        byteHandlerMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
 
         var result = service.updateProfile(USER_ID, getProfileRequest());
 
@@ -200,8 +212,6 @@ class ProfileServiceTest {
         verify(mapper).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper).entityToResponse(any(UserProfile.class));
-
-        byteHandlerUtilsMockedStatic.close();
     }
 
     @Test
@@ -248,8 +258,8 @@ class ProfileServiceTest {
         given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(
                 ProfileEntity.builder().profile(UserProfile.builder().firstName(FIRST_NAME).build()).build()));
 
-        var byteHandlerUtilsMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
-        byteHandlerUtilsMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
+        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
+        byteHandlerMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
 
         Map<String, Object> profileRequestMap = new LinkedHashMap<>() {{
             put("firstName", FIRST_NAME);
@@ -268,8 +278,6 @@ class ProfileServiceTest {
         verify(mapper).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper).entityToResponse(any(UserProfile.class));
-
-        byteHandlerUtilsMockedStatic.close();
     }
 
     @Test

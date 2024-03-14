@@ -28,6 +28,7 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_000;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_001;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_002;
+import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateContactNumbers;
 import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateDateOfBirth;
 import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateSpouseProfile;
 import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteArrayComparison;
@@ -168,8 +169,9 @@ public class ProfileServiceImpl implements ProfileService {
     private void validateRequestAttributes(ProfileRequest dbProfileRequest) {
         var errorMessages = new ArrayList<FieldMessage>();
 
-        validateSpouseProfile(dbProfileRequest, errorMessages);
         validateDateOfBirth(dbProfileRequest, errorMessages);
+        validateContactNumbers(dbProfileRequest, errorMessages);
+        validateSpouseProfile(dbProfileRequest, errorMessages);
 
         if (!errorMessages.isEmpty()) {
             var joiner = new StringJoiner(", ", "[", "]");

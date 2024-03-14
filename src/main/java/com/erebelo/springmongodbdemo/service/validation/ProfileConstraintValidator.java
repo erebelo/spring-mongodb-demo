@@ -26,8 +26,9 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         LOGGER.info("Validating the profile request object");
         List<FieldMessage> errorMessages = new ArrayList<>();
 
-        validateSpouseProfile(request, errorMessages);
         validateDateOfBirth(request, errorMessages);
+        validateContactNumbers(request, errorMessages);
+        validateSpouseProfile(request, errorMessages);
 
         for (FieldMessage e : errorMessages) {
             context.disableDefaultConstraintViolation();
@@ -35,17 +36,6 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         }
 
         return errorMessages.isEmpty();
-    }
-
-    public static void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
-        LOGGER.info("Validating spouseProfile object");
-        var maritalStatus = request.getMaritalStatus();
-
-        if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&
-                (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED) || maritalStatus.equals(MaritalStatusEnum.WIDOWED))) {
-            errorMessages.add(new FieldMessage("spouseProfile",
-                    "spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or WIDOWED"));
-        }
     }
 
     public static void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
@@ -59,6 +49,26 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
         dob = request.getSpouseProfile() != null ? request.getSpouseProfile().getDateOfBirth() : null;
         if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {
             errorMessages.add(new FieldMessage("spouseProfile.dateOfBirth", "spouseProfile.dateOfBirth must be less than current date"));
+        }
+    }
+
+    public static void validateContactNumbers(ProfileRequest request, List<FieldMessage> errorMessages) {
+        LOGGER.info("Validating contactNumbers object");
+        var contactNumbers = request.getContactNumbers();
+
+        if (Objects.nonNull(contactNumbers) && contactNumbers.stream().anyMatch(Objects::isNull)) {
+            errorMessages.add(new FieldMessage("contactNumbers", "contactNumbers list cannot contain null elements"));
+        }
+    }
+
+    public static void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
+        LOGGER.info("Validating spouseProfile object");
+        var maritalStatus = request.getMaritalStatus();
+
+        if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&
+                (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED) || maritalStatus.equals(MaritalStatusEnum.WIDOWED))) {
+            errorMessages.add(new FieldMessage("spouseProfile",
+                    "spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or WIDOWED"));
         }
     }
 }
