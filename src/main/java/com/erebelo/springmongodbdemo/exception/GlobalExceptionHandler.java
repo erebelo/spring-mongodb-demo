@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_000;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_000;
@@ -78,8 +77,10 @@ public class GlobalExceptionHandler {
         if (!fieldErrors.isEmpty()) {
             message = fieldErrors.stream()
                     .map(FieldError::getDefaultMessage)
-                    .collect(Collectors.toList()).toString();
+                    .toList()
+                    .toString();
         }
+
         return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), message, response);
     }
 
@@ -92,35 +93,36 @@ public class GlobalExceptionHandler {
 
     private ExceptionResponse parseExceptionMessage(int httpStatusCode, String code, String message, HttpServletResponse response) {
         response.setStatus(httpStatusCode);
-        return new ExceptionResponse(HttpStatus.valueOf(httpStatusCode), code.replace('_', '-'), message,
-                System.currentTimeMillis());
+        return new ExceptionResponse(HttpStatus.valueOf(httpStatusCode), code.replace('_', '-'), message, System.currentTimeMillis());
     }
 
-    private ExceptionResponse parseStandardExceptionMessage(StandardException exception, HttpServletResponse response) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(500),
-                COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis());
+    ExceptionResponse parseStandardExceptionMessage(StandardException exception, HttpServletResponse response) {
         response.setStatus(500);
+        var exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(500), COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis());
 
-        String propertyKey = exception.getErrorCode().propertyKey();
+        var propertyKey = exception.getErrorCode().propertyKey();
         if (Objects.isNull(propertyKey)) {
-            String errorMsg = "Basic error handling failure: null errorCode";
+            var errorMsg = "Basic error handling failure: null errorCode";
             exceptionResponse.setMessage(errorMsg);
+
             LOGGER.error(errorMsg);
             return exceptionResponse;
         }
 
-        String properties = env.getProperty(propertyKey);
+        var properties = env.getProperty(propertyKey);
         if (Objects.isNull(properties)) {
-            String errorMsg = String.format("Basic error handling failure: no properties found for %s", propertyKey);
+            var errorMsg = String.format("Basic error handling failure: no properties found for %s", propertyKey);
             exceptionResponse.setMessage(errorMsg);
+
             LOGGER.error(errorMsg);
             return exceptionResponse;
         }
 
-        String[] formatArray = properties.split("\\|");
+        var formatArray = properties.split("\\|");
         if (formatArray.length < 2) {
-            String errorMsg = String.format("Basic error handling failure: badly formatted message %s", properties);
+            var errorMsg = String.format("Basic error handling failure: badly formatted message %s", properties);
             exceptionResponse.setMessage(errorMsg);
+
             LOGGER.error(errorMsg);
             return exceptionResponse;
         }
@@ -132,9 +134,9 @@ public class GlobalExceptionHandler {
             exceptionResponse.setCode(propertyKey);
             exceptionResponse.setMessage(String.format(formatArray[1], exception.getArgs()));
         } catch (NumberFormatException e) {
-            String errorMsg = String.format("Basic error handling failure: could not get http status code from %s",
-                    properties);
+            var errorMsg = String.format("Basic error handling failure: could not get http status code from %s", properties);
             exceptionResponse.setMessage(errorMsg);
+
             LOGGER.error(errorMsg);
             return exceptionResponse;
         }
