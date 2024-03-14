@@ -58,6 +58,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.never;
@@ -67,6 +68,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
 
+    @Spy
     @InjectMocks
     private ProfileServiceImpl service;
 
@@ -226,10 +228,11 @@ class ProfileServiceTest {
 
         assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponsePatch());
 
-        verify(repository).findByUserId(USER_ID);
+        verify(repository, times(2)).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
         verify(objectMapper, times(2)).writeValueAsString(any());
         verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
+        verify(service).updateProfile(eq(USER_ID), any(ProfileRequest.class));
         verify(mapper).requestToEntity(any(ProfileRequest.class));
         verify(repository).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
@@ -257,10 +260,11 @@ class ProfileServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(
                 ProfileResponse.builder().firstName(FIRST_NAME).employmentStatus(EmploymentStatusEnum.NOT_EMPLOYED).build());
 
-        verify(repository).findByUserId(USER_ID);
+        verify(repository, times(2)).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
         verify(objectMapper, times(2)).writeValueAsString(any());
         verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
+        verify(service).updateProfile(eq(USER_ID), any(ProfileRequest.class));
         verify(mapper).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper).entityToResponse(any(UserProfile.class));
@@ -280,6 +284,7 @@ class ProfileServiceTest {
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
         verify(objectMapper, never()).writeValueAsString(any());
         verify(objectMapper, never()).readValue(anyString(), any(Class.class));
+        verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
@@ -298,6 +303,7 @@ class ProfileServiceTest {
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
         verify(objectMapper, never()).writeValueAsString(any());
         verify(objectMapper, never()).readValue(anyString(), any(Class.class));
+        verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
@@ -315,6 +321,7 @@ class ProfileServiceTest {
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
         verify(objectMapper, never()).writeValueAsString(any());
         verify(objectMapper, never()).readValue(anyString(), any(Class.class));
+        verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
@@ -337,6 +344,7 @@ class ProfileServiceTest {
         verify(mapper).entityToRequest(any(UserProfile.class));
         verify(objectMapper, times(2)).writeValueAsString(any());
         verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
+        verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
@@ -353,12 +361,13 @@ class ProfileServiceTest {
                 .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_000)
                 .hasFieldOrPropertyWithValue("args", new Object[]{
-                        "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCE OR WIDOWED]"});
+                        "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or WIDOWED]"});
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
         verify(objectMapper, times(2)).writeValueAsString(any());
         verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
+        verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
