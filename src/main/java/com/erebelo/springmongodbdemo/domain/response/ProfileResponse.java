@@ -4,9 +4,6 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.HealthLevelEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
-import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
-import com.erebelo.springmongodbdemo.domain.request.ProfileLocationDTO;
-import com.erebelo.springmongodbdemo.domain.request.SpouseProfileDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,9 +37,9 @@ public class ProfileResponse {
     private MaritalStatusEnum maritalStatus;
     private EmploymentStatusEnum employmentStatus;
     private HealthLevelEnum healthLevel;
-    private List<ProfileContactDTO> contactNumbers;
-    private ProfileLocationDTO currentLocation;
-    private SpouseProfileDTO spouseProfile;
+    private List<ProfileContactResponse> contactNumbers;
+    private ProfileLocationResponse currentLocation;
+    private SpouseProfileResponse spouseProfile;
 
     @ToString.Include(name = "dateOfBirth", rank = 1)
     public String maskDateOfBirth() {

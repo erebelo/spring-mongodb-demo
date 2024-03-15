@@ -14,7 +14,10 @@ import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
 import com.erebelo.springmongodbdemo.domain.request.ProfileLocationDTO;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.request.SpouseProfileDTO;
+import com.erebelo.springmongodbdemo.domain.response.ProfileContactResponse;
+import com.erebelo.springmongodbdemo.domain.response.ProfileLocationResponse;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
+import com.erebelo.springmongodbdemo.domain.response.SpouseProfileResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -190,9 +193,24 @@ public final class ProfileMock {
                 .maritalStatus(response.getMaritalStatus())
                 .employmentStatus(response.getEmploymentStatus())
                 .healthLevel(response.getHealthLevel())
-                .contactNumbers(response.getContactNumbers())
-                .currentLocation(response.getCurrentLocation())
-                .spouseProfile(response.getSpouseProfile())
+                .contactNumbers(Collections.singletonList(ProfileContactResponse.builder()
+                        .contactType(response.getContactNumbers().get(0).getContactType())
+                        .contactValue(response.getContactNumbers().get(0).getContactValue())
+                        .build()))
+                .currentLocation(ProfileLocationResponse.builder()
+                        .address(response.getCurrentLocation().getAddress())
+                        .city(response.getCurrentLocation().getCity())
+                        .state(response.getCurrentLocation().getState())
+                        .country(response.getCurrentLocation().getCountry())
+                        .postalCode(response.getCurrentLocation().getPostalCode())
+                        .build())
+                .spouseProfile(SpouseProfileResponse.builder()
+                        .firstName(response.getSpouseProfile().getFirstName())
+                        .lastName(response.getSpouseProfile().getLastName())
+                        .dateOfBirth(response.getSpouseProfile().getDateOfBirth())
+                        .gender(response.getSpouseProfile().getGender())
+                        .employmentStatus(response.getSpouseProfile().getEmploymentStatus())
+                        .build())
                 .build();
     }
 
