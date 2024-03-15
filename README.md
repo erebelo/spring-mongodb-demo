@@ -11,7 +11,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 - Converter and ConverterFactory have been used to convert the enum type to an object in the document before persisting and the document to an enum type after fetching the data
 - ConstraintValidator has been used to validate some request fields and its business rules by declaring an annotation in the request class
 - Logback/SLF4J has been used to track the application logs
-- CompletableFuture was used to execute multiple, asynchronous requests in order to fetch paging data from downstream API
+- CompletableFuture has been used to execute multiple, asynchronous requests in order to fetch paging data from downstream API
 - Template Method design pattern has been used for different RestTemplate implementations
 
 ----------
