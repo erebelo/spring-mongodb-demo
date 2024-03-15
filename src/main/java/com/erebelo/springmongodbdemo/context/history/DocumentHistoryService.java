@@ -40,26 +40,7 @@ public class DocumentHistoryService {
         }
     }
 
-    private boolean isToSaveHistory(Class<?> clazz) {
-        try {
-            return clazz.isAnnotationPresent(DocumentHistory.class);
-        } catch (NullPointerException e) {
-            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation");
-            throw e;
-        }
-    }
-
-    private String getCollectionName(Class<?> clazz) {
-        try {
-            return clazz.getAnnotation(DocumentHistory.class).collection();
-        } catch (NullPointerException e) {
-            LOGGER.error("Something went wrong when trying to get the history collection name");
-            throw e;
-        }
-    }
-
-    private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName,
-            Document document) {
+    private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName, Document document) {
         var history = new Document()
                 .append("action", actionEnum.getValue())
                 .append("documentId", documentId);
@@ -72,5 +53,18 @@ public class DocumentHistoryService {
         }
 
         mongoTemplate.insert(history, collectionName);
+    }
+
+    private boolean isToSaveHistory(Class<?> clazz) {
+        try {
+            return clazz.isAnnotationPresent(DocumentHistory.class);
+        } catch (NullPointerException e) {
+            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation");
+            throw e;
+        }
+    }
+
+    private String getCollectionName(Class<?> clazz) {
+        return clazz.getAnnotation(DocumentHistory.class).collection();
     }
 }
