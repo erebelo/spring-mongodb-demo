@@ -10,6 +10,7 @@ import com.erebelo.springmongodbdemo.service.ArticlesService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -39,14 +40,17 @@ public class ArticlesServiceImpl implements ArticlesService {
     private String articlesApiUrl;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticlesServiceImpl.class);
+    private static final String MDC_KEY_REQUEST_ID = "requestId";
     private static final int INITIAL_PAGE = 1;
+
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
         LOGGER.info("Getting articles from downstream API: {}", articlesApiUrl);
         Integer totalPages = INITIAL_PAGE;
+        var mdcKey = MDC.get(MDC_KEY_REQUEST_ID);
 
-        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);
+        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE, mdcKey, false);
 
         if (Objects.nonNull(firstArticlesResponse)) {
             totalPages = firstArticlesResponse.getTotalPages();
@@ -60,7 +64,7 @@ public class ArticlesServiceImpl implements ArticlesService {
 
             LOGGER.info("Fetching articles asynchronously through CompletableFuture");
             List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
-                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page)))
+                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page, mdcKey, true)))
                     .toList();
 
             LOGGER.info("Combining all CompletableFuture results");
@@ -101,9 +105,11 @@ public class ArticlesServiceImpl implements ArticlesService {
         return mapper.responseToResponseDTO(allArticlesDataResponses);
     }
 
-    private ArticlesResponse fetchData(int page) {
+    private ArticlesResponse fetchData(int page, String mdcKey, boolean isAsync) {
         try {
+            MDC.put(MDC_KEY_REQUEST_ID, mdcKey); // Setting requestId for asynchronous logs
             LOGGER.info("Retrieving articles for page {}", page);
+
             ResponseEntity<ArticlesResponse> response = httpClientAuth.getRestTemplate().exchange(
                     UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(), HttpMethod.GET,
                     new HttpEntity<>(getBasicHttpHeaders()), new ParameterizedTypeReference<>() {
@@ -114,6 +120,10 @@ public class ArticlesServiceImpl implements ArticlesService {
         } catch (Exception e) {
             LOGGER.error("Error getting articles from downstream API for page: {}. Error message: {}", page, e.getMessage());
             return null;
+        } finally {
+            if (isAsync) {
+                MDC.remove(MDC_KEY_REQUEST_ID);
+            }
         }
     }
 }

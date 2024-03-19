@@ -43,7 +43,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                     ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(401),
                             COMMON_ERROR_401_000.toString().replace('_', '-'),
                             String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis());
-                    response.setStatus(401);
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
                 } catch (IOException e) {
