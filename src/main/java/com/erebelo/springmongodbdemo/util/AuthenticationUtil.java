@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.utils;
+package com.erebelo.springmongodbdemo.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN_USER_ID_HEADER;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AuthenticationUtils {
+public class AuthenticationUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationUtil.class);
 
     public static String getLoggedInUser() {
         return getHeaderByName(LOGGED_IN_USER_ID_HEADER);

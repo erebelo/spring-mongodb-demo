@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
-import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getBasicHttpHeaders;
+import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getBasicHttpHeaders;
 
 @Service
 @RequiredArgsConstructor

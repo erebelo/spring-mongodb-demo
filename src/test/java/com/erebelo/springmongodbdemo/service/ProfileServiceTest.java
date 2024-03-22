@@ -10,7 +10,7 @@ import com.erebelo.springmongodbdemo.exception.StandardException;
 import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
-import com.erebelo.springmongodbdemo.utils.ByteHandlerUtils;
+import com.erebelo.springmongodbdemo.util.ByteHandlerUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,7 +87,7 @@ class ProfileServiceTest {
     @Captor
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
 
-    private MockedStatic<ByteHandlerUtils> byteHandlerMockedStatic;
+    private MockedStatic<ByteHandlerUtil> byteHandlerMockedStatic;
 
     @BeforeEach
     void init() {
@@ -201,8 +201,8 @@ class ProfileServiceTest {
     void testUpdateProfileWhenMatchingProfileIsFound() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtils.class);
-        byteHandlerMockedStatic.when(() -> ByteHandlerUtils.byteArrayComparison(any(), any())).thenReturn(true);
+        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtil.class);
+        byteHandlerMockedStatic.when(() -> ByteHandlerUtil.byteArrayComparison(any(), any())).thenReturn(true);
 
         var result = service.updateProfile(USER_ID, getProfileRequest());
 

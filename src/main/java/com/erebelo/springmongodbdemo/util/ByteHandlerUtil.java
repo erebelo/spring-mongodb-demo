@@ -1,5 +1,6 @@
-package com.erebelo.springmongodbdemo.utils;
+package com.erebelo.springmongodbdemo.util;
 
+import com.erebelo.springmongodbdemo.domain.request.ByteWrapperObject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -11,9 +12,9 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ByteHandlerUtils {
+public class ByteHandlerUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ByteHandlerUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ByteHandlerUtil.class);
 
     public static ByteWrapperObject byteGenerator(Object obj) {
         LOGGER.info("Generating a byte array from object");

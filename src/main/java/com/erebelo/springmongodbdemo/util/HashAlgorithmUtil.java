@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.utils;
+package com.erebelo.springmongodbdemo.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class HashAlgorithmUtils {
+public class HashAlgorithmUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HashAlgorithmUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HashAlgorithmUtil.class);
 
     private static final MessageDigest digest;
 

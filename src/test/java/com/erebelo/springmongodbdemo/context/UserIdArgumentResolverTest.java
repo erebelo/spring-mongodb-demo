@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.context;
 
 import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
-import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
+import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class UserIdArgumentResolverTest {
 
     private final UserIdArgumentResolver userIdArgumentResolver = new UserIdArgumentResolver();
     private final MethodParameter methodParameter = mock(MethodParameter.class);
-    private final MockedStatic<AuthenticationUtils> mockedStatic = mockStatic(AuthenticationUtils.class);
+    private final MockedStatic<AuthenticationUtil> mockedStatic = mockStatic(AuthenticationUtil.class);
 
     private static final String STRING_CLASS = "java.lang.String";
     private static final String BOOLEAN_CLASS = "java.lang.Boolean";
@@ -30,7 +30,7 @@ class UserIdArgumentResolverTest {
 
     @BeforeEach
     void init() {
-        mockedStatic.when(AuthenticationUtils::getLoggedInUser).thenReturn(USER_ID);
+        mockedStatic.when(AuthenticationUtil::getLoggedInUser).thenReturn(USER_ID);
     }
 
     @AfterEach
@@ -81,6 +81,6 @@ class UserIdArgumentResolverTest {
         var result = userIdArgumentResolver.resolveArgument(null, null, null, null);
 
         assertThat(result).isEqualTo(USER_ID);
-        assertThat(AuthenticationUtils.getLoggedInUser()).isEqualTo(USER_ID);
+        assertThat(AuthenticationUtil.getLoggedInUser()).isEqualTo(USER_ID);
     }
 }

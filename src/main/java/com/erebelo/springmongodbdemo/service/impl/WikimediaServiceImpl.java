@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.utils.AuthenticationUtils.getHttpHeaders;
+import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getHttpHeaders;
 
 @Service
 @RequiredArgsConstructor

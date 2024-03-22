@@ -32,9 +32,9 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateContactNumbers;
 import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateDateOfBirth;
 import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateSpouseProfile;
-import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteArrayComparison;
-import static com.erebelo.springmongodbdemo.utils.ByteHandlerUtils.byteGenerator;
-import static com.erebelo.springmongodbdemo.utils.HashAlgorithmUtils.generateSHAHashObject;
+import static com.erebelo.springmongodbdemo.util.ByteHandlerUtil.byteArrayComparison;
+import static com.erebelo.springmongodbdemo.util.ByteHandlerUtil.byteGenerator;
+import static com.erebelo.springmongodbdemo.util.HashAlgorithmUtil.generateSHAHashObject;
 import static java.util.Objects.isNull;
 
 @Service

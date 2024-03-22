@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context.history;
 
-import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
+import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class DocumentHistoryService {
                 .append("documentId", documentId);
 
         if (HistoryActionEnum.DELETE.equals(actionEnum)) {
-            history.append("historyCreatedBy", AuthenticationUtils.getLoggedInUser());
+            history.append("historyCreatedBy", AuthenticationUtil.getLoggedInUser());
             history.append("historyCreatedDateTime", Date.from(Instant.now()));
         } else {
             history.put("document", document);

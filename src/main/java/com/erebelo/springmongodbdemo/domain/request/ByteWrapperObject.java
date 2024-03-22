@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.utils;
+package com.erebelo.springmongodbdemo.domain.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.context;
 import com.erebelo.springmongodbdemo.context.history.DocumentHistory;
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.domain.entity.BaseEntity;
-import com.erebelo.springmongodbdemo.utils.AuthenticationUtils;
+import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
@@ -42,7 +42,7 @@ class DocumentHistoryServiceTest {
     @Captor
     private ArgumentCaptor<Document> documentArgumentCaptor;
 
-    private MockedStatic<AuthenticationUtils> mockedStatic;
+    private MockedStatic<AuthenticationUtil> mockedStatic;
 
     private static final String USER_ID = "12345";
 
@@ -105,8 +105,8 @@ class DocumentHistoryServiceTest {
     void testDeleteHistory() {
         when(mongoTemplate.insert(any(Document.class), anyString())).thenReturn(new Document());
 
-        mockedStatic = Mockito.mockStatic(AuthenticationUtils.class);
-        mockedStatic.when(AuthenticationUtils::getLoggedInUser).thenReturn(USER_ID);
+        mockedStatic = Mockito.mockStatic(AuthenticationUtil.class);
+        mockedStatic.when(AuthenticationUtil::getLoggedInUser).thenReturn(USER_ID);
 
         var document = new Document().append("_id", new ObjectId());
 
