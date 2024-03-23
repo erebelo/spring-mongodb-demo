@@ -10,7 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class HashAlgorithmUtil {
+public final class HashAlgorithmUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HashAlgorithmUtil.class);
 

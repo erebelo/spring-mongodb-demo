@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ByteHandlerUtil {
+public final class ByteHandlerUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteHandlerUtil.class);
 

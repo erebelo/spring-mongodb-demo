@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN_USER_ID_HEADER;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AuthenticationUtil {
+public final class AuthenticationUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationUtil.class);
 
