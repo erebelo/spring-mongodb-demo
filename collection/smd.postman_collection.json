@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/healthcheck",
+							"raw": "http://localhost:8080/spring-mongodb-demo/health-check",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -23,7 +23,7 @@
 							"port": "8080",
 							"path": [
 								"spring-mongodb-demo",
-								"healthcheck"
+								"health-check"
 							]
 						}
 					},
