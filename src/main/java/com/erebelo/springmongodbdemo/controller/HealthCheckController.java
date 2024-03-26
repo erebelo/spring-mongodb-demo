@@ -20,7 +20,7 @@ public class HealthCheckController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckController.class);
 
-    @Operation(summary = "GET health check api")
+    @Operation(summary = "GET Health Check")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getHealthCheck() {
         LOGGER.info("Getting health check");

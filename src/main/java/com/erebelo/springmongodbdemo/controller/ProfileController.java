@@ -39,7 +39,7 @@ public class ProfileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
-    @Operation(summary = "Get profile")
+    @Operation(summary = "GET Profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
         LOGGER.info("Getting profile");
@@ -48,7 +48,7 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Insert profile")
+    @Operation(summary = "POST Profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Inserting profile");
@@ -57,7 +57,7 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update profile")
+    @Operation(summary = "PUT Profile")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId, @Valid @RequestBody ProfileRequest profileRequest) {
         LOGGER.info("Updating profile");
@@ -66,7 +66,7 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Patch profile")
+    @Operation(summary = "PATCH Profile")
     @PatchMapping(consumes = MERGE_PATCH_MEDIA_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> patchProfile(@UserId String userId, @Valid @RequestBody Map<String, Object> profileRequestMap) {
         LOGGER.info("Patching profile");
@@ -75,7 +75,7 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete profile")
+    @Operation(summary = "DELETE Profile")
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
         LOGGER.info("Deleting profile");
