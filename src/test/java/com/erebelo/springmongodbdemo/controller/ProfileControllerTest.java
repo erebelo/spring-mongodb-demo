@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.MERGE_PATCH_MEDIA_TYPE;
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.MERGE_PATCH_MEDIA_TYPE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILE;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_001;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_001;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_002;

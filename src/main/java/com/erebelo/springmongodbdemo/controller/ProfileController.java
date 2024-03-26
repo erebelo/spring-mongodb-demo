@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.MERGE_PATCH_MEDIA_TYPE;
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.PROFILE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.MERGE_PATCH_MEDIA_TYPE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILE;
 
 @RestController
 @RequestMapping(PROFILE)

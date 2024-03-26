@@ -4,7 +4,6 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Schema(name = "SpouseProfileResponse")
 public class SpouseProfileResponse {
 
     private String firstName;

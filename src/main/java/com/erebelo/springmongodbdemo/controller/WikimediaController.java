@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.WIKIMEDIA;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA;
 
 @RestController
 @RequestMapping(WIKIMEDIA)

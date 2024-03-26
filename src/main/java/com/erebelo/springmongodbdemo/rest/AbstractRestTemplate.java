@@ -8,8 +8,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.DEFAULT_CONNECTION_TIMEOUT;
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.DEFAULT_SOCKET_TIMEOUT;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_CONNECTION_TIMEOUT;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_SOCKET_TIMEOUT;
 
 abstract class AbstractRestTemplate {
 

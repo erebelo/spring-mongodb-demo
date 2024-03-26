@@ -4,7 +4,6 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Schema(name = "SpouseProfileDTO")
 public class SpouseProfileDTO {
 
     @NotBlank(message = "spouseProfile.firstName is mandatory")

@@ -1,10 +1,10 @@
-package com.erebelo.springmongodbdemo.constants;
+package com.erebelo.springmongodbdemo.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BusinessConstants {
+public final class BusinessConstant {
 
     public static final String DEFAULT_CONNECTION_TIMEOUT = "3000";
     public static final String DEFAULT_SOCKET_TIMEOUT = "5000";

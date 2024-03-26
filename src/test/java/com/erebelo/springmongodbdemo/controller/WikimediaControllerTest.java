@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.WIKIMEDIA;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_004;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

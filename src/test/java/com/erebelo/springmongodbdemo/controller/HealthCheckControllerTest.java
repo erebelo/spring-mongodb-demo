@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.controller;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.HEALTH_CHECK;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.HEALTH_CHECK;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

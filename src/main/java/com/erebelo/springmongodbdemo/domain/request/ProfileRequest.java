@@ -8,7 +8,6 @@ import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -35,7 +34,6 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ProfileValidator
-@Schema(name = "ProfileRequest")
 public class ProfileRequest {
 
     @NotBlank(message = "firstName is mandatory")

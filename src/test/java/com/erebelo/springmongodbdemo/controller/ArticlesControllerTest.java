@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
-import static com.erebelo.springmongodbdemo.constants.BusinessConstants.ARTICLES;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

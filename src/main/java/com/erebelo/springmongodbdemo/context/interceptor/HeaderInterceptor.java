@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
 
-import static com.erebelo.springmongodbdemo.constants.ProfileConstants.LOGGED_IN_USER_ID_HEADER;
+import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
 import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_401_000;
 
 @Component
