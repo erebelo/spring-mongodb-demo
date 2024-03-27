@@ -24,7 +24,7 @@ class SpringMongoDBDemoApplicationTest {
     }
 
     @Test
-    void mainRunsSuccessfully() {
+    void mainRunSuccessfully() {
         try (MockedStatic<SpringApplication> mockedStatic = mockStatic(SpringApplication.class)) {
             mockedStatic.when(() -> SpringApplication.run(any(Class.class), any(String[].class))).thenReturn(contextMock);
 

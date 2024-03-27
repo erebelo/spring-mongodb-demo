@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class ProfileController {
         LOGGER.info("Getting profile");
         var response = service.getProfile(userId);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "POST Profile")
@@ -54,7 +54,7 @@ public class ProfileController {
         LOGGER.info("Inserting profile");
         var response = service.insertProfile(userId, profileRequest);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri()).body(response);
     }
 
     @Operation(summary = "PUT Profile")
@@ -63,7 +63,7 @@ public class ProfileController {
         LOGGER.info("Updating profile");
         var response = service.updateProfile(userId, profileRequest);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "PATCH Profile")
@@ -72,7 +72,7 @@ public class ProfileController {
         LOGGER.info("Patching profile");
         var response = service.patchProfile(userId, profileRequestMap);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "DELETE Profile")
@@ -81,6 +81,6 @@ public class ProfileController {
         LOGGER.info("Deleting profile");
         service.deleteProfile(userId);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +20,9 @@ public class HealthCheckController {
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckController.class);
 
     @Operation(summary = "GET Health Check")
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getHealthCheck() {
         LOGGER.info("Getting health check");
-        return new ResponseEntity<>("Spring MongoDB Demo application is up and running", HttpStatus.OK);
+        return ResponseEntity.ok("Spring MongoDB Demo application is up and running");
     }
 }
