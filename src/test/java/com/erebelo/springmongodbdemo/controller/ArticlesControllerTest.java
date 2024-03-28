@@ -57,7 +57,7 @@ class ArticlesControllerTest {
                 .andExpect(jsonPath("$.[0].url").value(RESPONSE.get(0).getUrl()))
                 .andExpect(jsonPath("$.[0].author").value(RESPONSE.get(0).getAuthor()))
                 .andExpect(jsonPath("$.[0].numComments").value(RESPONSE.get(0).getNumComments()))
-                .andExpect(jsonPath("$.[0].storyId").value(RESPONSE.get(0).getStoryId()))
+                .andExpect(jsonPath("$.[0].storyId").doesNotExist())
                 .andExpect(jsonPath("$.[0].storyTitle").value(RESPONSE.get(0).getStoryTitle()))
                 .andExpect(jsonPath("$.[0].storyUrl").value(RESPONSE.get(0).getStoryUrl()))
                 .andExpect(jsonPath("$.[0].parentId").value(RESPONSE.get(0).getParentId()))

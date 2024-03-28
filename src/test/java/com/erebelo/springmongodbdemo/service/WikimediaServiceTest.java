@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
+import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
 import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.impl.WikimediaServiceImpl;
@@ -17,8 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -85,11 +88,12 @@ class WikimediaServiceTest {
     @Test
     void testGetWikimediaProjectPageviewsThrowIllegalStateException() {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
-                .willThrow(new IllegalStateException("Internal Server Error"));
+                .willThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(ApplicationException.class)
                 .isThrownBy(() -> service.getWikimediaProjectPageviews())
-                .withMessage("Error getting Wikimedia project pageviews. Error message: Internal Server Error");
+                .withCauseExactlyInstanceOf(HttpClientErrorException.class)
+                .withMessage("Error getting Wikimedia project pageviews");
 
         verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
