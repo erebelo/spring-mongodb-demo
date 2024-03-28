@@ -4,6 +4,7 @@ import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
 import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,7 +16,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_000;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 
 @ControllerAdvice
@@ -40,54 +42,89 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ExceptionResponse handleException(Exception exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
         LOGGER.error("Exception thrown:", exception);
-        return parseExceptionMessage(500, COMMON_ERROR_500_000.toString(), exception.getMessage(), response);
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
-    public ExceptionResponse handleIllegalStateException(IllegalStateException exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException exception) {
         LOGGER.error("IllegalStateException thrown:", exception);
-        return parseExceptionMessage(500, COMMON_ERROR_500_000.toString(), exception.getMessage(), response);
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse handleIllegalArgumentException(IllegalArgumentException exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
         LOGGER.error("IllegalArgumentException thrown:", exception);
-        return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionResponse handleConstraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException exception) {
         LOGGER.error("ConstraintViolationException thrown:", exception);
-        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
+
+        String errorMessage = null;
+        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+        if (!ObjectUtils.isEmpty(violations)) {
+            List<String> messages = violations.stream().map(ConstraintViolation::getMessage).toList();
+            errorMessage = String.join(";", messages);
+        }
+
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ExceptionResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         LOGGER.error("HttpMessageNotReadableException thrown:", exception);
-        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+        LOGGER.error("HttpRequestMethodNotSupportedException thrown:", exception);
+
+        String errorMessage = exception.getMessage();
+        var supportedHttpMethods = exception.getSupportedMethods();
+        if (!ObjectUtils.isEmpty(supportedHttpMethods)) {
+            errorMessage += ". Supported methods: " + String.join(", ", supportedHttpMethods);
+        }
+
+        return parseExceptionMessage(HttpStatus.METHOD_NOT_ALLOWED, errorMessage);
     }
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         LOGGER.error("MethodArgumentNotValidException thrown:", exception);
 
+        String errorMessage = null;
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        String message = "No message found";
         if (!fieldErrors.isEmpty()) {
-            message = fieldErrors.stream()
+            errorMessage = fieldErrors.stream()
                     .map(FieldError::getDefaultMessage)
                     .toList()
                     .toString();
         }
 
-        return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), message, response);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ExceptionResponse> handleTransactionSystemException(TransactionSystemException exception) {
+        LOGGER.error("TransactionSystemException thrown:", exception);
+
+        var errorMessage = "An error occurred during transaction processing";
+        var rootCause = exception.getRootCause();
+        if (rootCause != null && !ObjectUtils.isEmpty(rootCause.getMessage())) {
+            errorMessage += ". Root cause: " + rootCause.getMessage();
+        }
+
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
 
     @ResponseBody
@@ -104,9 +141,11 @@ public class GlobalExceptionHandler {
         return parseStandardExceptionMessage(exception, response);
     }
 
-    private ExceptionResponse parseExceptionMessage(final int httpStatusCode, final String code, final String message, HttpServletResponse response) {
-        response.setStatus(httpStatusCode);
-        return new ExceptionResponse(HttpStatus.valueOf(httpStatusCode), code.replace('_', '-'), message, System.currentTimeMillis(), null);
+    private ResponseEntity<ExceptionResponse> parseExceptionMessage(final HttpStatus httpStatus, final String message) {
+        var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
+        var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
+
+        return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null));
     }
 
     private ResponseEntity<ExceptionResponse> parseApplicationExceptionMessage(final HttpStatus httpStatus, final String message,
