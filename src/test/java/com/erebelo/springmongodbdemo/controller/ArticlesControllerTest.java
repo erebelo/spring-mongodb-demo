@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasSize;

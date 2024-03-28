@@ -14,5 +14,6 @@ public class ExceptionResponse {
     private String code;
     private String message;
     private Long timestamp;
+    private Object cause;
 
 }

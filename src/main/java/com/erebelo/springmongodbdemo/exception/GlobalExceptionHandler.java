@@ -1,14 +1,19 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,9 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 import java.util.Objects;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_000;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_000;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_500_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -29,48 +34,49 @@ import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMO
 public class GlobalExceptionHandler {
 
     private final Environment env;
+    private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ExceptionResponse exception(Exception exception, HttpServletResponse response) {
-        LOGGER.error("Exception thrown", exception);
+    public ExceptionResponse handleException(Exception exception, HttpServletResponse response) {
+        LOGGER.error("Exception thrown:", exception);
         return parseExceptionMessage(500, COMMON_ERROR_500_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
-    public ExceptionResponse illegalStateException(IllegalStateException exception, HttpServletResponse response) {
-        LOGGER.error("IllegalStateException thrown", exception);
+    public ExceptionResponse handleIllegalStateException(IllegalStateException exception, HttpServletResponse response) {
+        LOGGER.error("IllegalStateException thrown:", exception);
         return parseExceptionMessage(500, COMMON_ERROR_500_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse illegalArgumentException(IllegalArgumentException exception, HttpServletResponse response) {
-        LOGGER.error("IllegalArgumentException thrown", exception);
+    public ExceptionResponse handleIllegalArgumentException(IllegalArgumentException exception, HttpServletResponse response) {
+        LOGGER.error("IllegalArgumentException thrown:", exception);
         return parseExceptionMessage(400, COMMON_ERROR_400_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionResponse constraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
-        LOGGER.error("ConstraintViolationException thrown", exception);
+    public ExceptionResponse handleConstraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
+        LOGGER.error("ConstraintViolationException thrown:", exception);
         return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ExceptionResponse httpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
-        LOGGER.error("HttpMessageNotReadableException thrown", exception);
+    public ExceptionResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
+        LOGGER.error("HttpMessageNotReadableException thrown:", exception);
         return parseExceptionMessage(422, COMMON_ERROR_422_000.toString(), exception.getMessage(), response);
     }
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ExceptionResponse methodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletResponse response) {
-        LOGGER.error("MethodArgumentNotValidException thrown", exception);
+    public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletResponse response) {
+        LOGGER.error("MethodArgumentNotValidException thrown:", exception);
 
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         String message = "No message found";
@@ -85,20 +91,45 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ExceptionResponse> handleApplicationException(ApplicationException exception) {
+        LOGGER.error("ApplicationException thrown:", exception);
+        return parseApplicationExceptionMessage(exception.getHttpStatus(), exception.getMessage(), exception.getCause());
+    }
+
+    @ResponseBody
     @ExceptionHandler(StandardException.class)
-    public ExceptionResponse standardException(StandardException exception, HttpServletResponse response) {
-        LOGGER.error("StandardException thrown", exception);
+    public ExceptionResponse handleStandardException(StandardException exception, HttpServletResponse response) {
+        LOGGER.error("StandardException thrown:", exception);
         return parseStandardExceptionMessage(exception, response);
     }
 
-    private ExceptionResponse parseExceptionMessage(int httpStatusCode, String code, String message, HttpServletResponse response) {
+    private ExceptionResponse parseExceptionMessage(final int httpStatusCode, final String code, final String message, HttpServletResponse response) {
         response.setStatus(httpStatusCode);
-        return new ExceptionResponse(HttpStatus.valueOf(httpStatusCode), code.replace('_', '-'), message, System.currentTimeMillis());
+        return new ExceptionResponse(HttpStatus.valueOf(httpStatusCode), code.replace('_', '-'), message, System.currentTimeMillis(), null);
     }
 
-    ExceptionResponse parseStandardExceptionMessage(StandardException exception, HttpServletResponse response) {
+    private ResponseEntity<ExceptionResponse> parseApplicationExceptionMessage(final HttpStatus httpStatus, final String message,
+            final Throwable cause) {
+        var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
+        var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
+
+        Object clientErrorObj = null;
+        if (cause != null) {
+            var clientErrorMessage = ObjectUtils.isEmpty(cause.getMessage()) ? null : cause.getMessage();
+
+            if (clientErrorMessage != null) {
+                clientErrorObj = extractJsonObject(clientErrorMessage);
+            }
+        }
+
+        return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(),
+                clientErrorObj));
+    }
+
+    ExceptionResponse parseStandardExceptionMessage(final StandardException exception, HttpServletResponse response) {
         response.setStatus(500);
-        var exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(500), COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis());
+        var exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(500), COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis(), null);
 
         var propertyKey = exception.getErrorCode().propertyKey();
         if (Objects.isNull(propertyKey)) {
@@ -143,5 +174,18 @@ public class GlobalExceptionHandler {
 
         LOGGER.info("The message error is: {}", exceptionResponse.getMessage());
         return exceptionResponse;
+    }
+
+    private Object extractJsonObject(String clientErrorMessage) {
+        try {
+            int startIndex = clientErrorMessage.indexOf('{');
+            int endIndex = clientErrorMessage.lastIndexOf('}') + 1;
+            String jsonString = clientErrorMessage.substring(startIndex, endIndex);
+
+            return objectMapper.readValue(jsonString, Object.class);
+        } catch (Exception e) {
+            LOGGER.warn("Error parsing JSON string to JSON object", e);
+            return null;
+        }
     }
 }

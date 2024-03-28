@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.exception;
+package com.erebelo.springmongodbdemo.exception.model;
 
 public enum CommonErrorCodesEnum implements ErrorCode {
 

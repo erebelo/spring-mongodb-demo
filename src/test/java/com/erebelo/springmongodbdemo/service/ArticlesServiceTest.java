@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.ARTICLES_URL;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.TOTAL_PAGES;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;

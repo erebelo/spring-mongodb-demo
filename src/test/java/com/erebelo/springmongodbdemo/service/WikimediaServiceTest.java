@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
-import com.erebelo.springmongodbdemo.exception.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.impl.WikimediaServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -24,7 +24,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Objects;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_404_004;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
 import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getHttpHeaders;
 import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getServletRequestAttributes;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.WIKIMEDIA_URL;

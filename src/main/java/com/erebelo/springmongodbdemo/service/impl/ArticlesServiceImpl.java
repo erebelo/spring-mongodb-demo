@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
-import com.erebelo.springmongodbdemo.exception.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getBasicHttpHeaders;
 
 @Service
@@ -71,7 +71,7 @@ public class ArticlesServiceImpl implements ArticlesService {
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
             CompletableFuture<Void> exceptionalResult = allOf.exceptionally(throwable -> {
-                LOGGER.error("Error waiting for CompletableFuture to complete. Error message: {}", throwable.getCause().getMessage());
+                LOGGER.warn("Error waiting for CompletableFuture to complete. Error message: {}", throwable.getCause().getMessage());
                 return null;
             });
 
@@ -118,7 +118,7 @@ public class ArticlesServiceImpl implements ArticlesService {
             LOGGER.info("Articles for page {} retrieved successfully", page);
             return response.hasBody() ? response.getBody() : null;
         } catch (Exception e) {
-            LOGGER.error("Error getting articles from downstream API for page: {}. Error message: {}", page, e.getMessage());
+            LOGGER.warn("Error getting articles from downstream API for page: {}. Error message: {}", page, e.getMessage());
             return null;
         } finally {
             if (isAsync) {

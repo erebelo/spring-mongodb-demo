@@ -23,7 +23,7 @@ public final class ByteHandlerUtil {
             oos.writeObject(obj);
             return new ByteWrapperObject(baos.toByteArray());
         } catch (IOException e) {
-            LOGGER.error("Error generating byte array from object", e);
+            LOGGER.warn("Error generating byte array from object", e);
             return null;
         }
     }

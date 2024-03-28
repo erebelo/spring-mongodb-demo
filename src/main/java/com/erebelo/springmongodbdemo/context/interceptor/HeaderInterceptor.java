@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.io.IOException;
 
 import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_401_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_401_000;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeaderInterceptor.class);
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (handler instanceof HandlerMethod) {
             HeaderLoggedInUser annotation = ((HandlerMethod) handler).getMethodAnnotation(HeaderLoggedInUser.class);
             if (annotation == null) {
@@ -42,7 +43,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                 try {
                     ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(401),
                             COMMON_ERROR_401_000.toString().replace('_', '-'),
-                            String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis());
+                            String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis(), null);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));

@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
+import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +22,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_400_000;
-import static com.erebelo.springmongodbdemo.exception.CommonErrorCodesEnum.COMMON_ERROR_500_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
@@ -112,7 +114,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testException() {
-        var exceptionResponse = handler.exception(new Exception("Exception error"), response);
+        var exceptionResponse = handler.handleException(new Exception("Exception error"), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
@@ -123,7 +125,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testIllegalStateException() {
-        var exceptionResponse = handler.illegalStateException(new IllegalStateException("IllegalStateException error"), response);
+        var exceptionResponse = handler.handleIllegalStateException(new IllegalStateException("IllegalStateException error"), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
@@ -134,7 +136,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testIllegalArgumentException() {
-        var exceptionResponse = handler.illegalArgumentException(new IllegalArgumentException("IllegalArgumentException error"), response);
+        var exceptionResponse = handler.handleIllegalArgumentException(new IllegalArgumentException("IllegalArgumentException error"), response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
@@ -148,7 +150,7 @@ class GlobalExceptionHandlerTest {
         var exceptionMock = mock(ConstraintViolationException.class);
         given(exceptionMock.getMessage()).willReturn("ConstraintViolationException error");
 
-        var exceptionResponse = handler.constraintViolationException(exceptionMock, response);
+        var exceptionResponse = handler.handleConstraintViolationException(exceptionMock, response);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatus());
@@ -159,7 +161,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testHttpMessageNotReadableException() {
-        var exceptionResponse = handler.httpMessageNotReadableException(
+        var exceptionResponse = handler.handleHttpMessageNotReadableException(
                 new HttpMessageNotReadableException("HttpMessageNotReadableException error", mock(HttpInputMessage.class)), response);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
@@ -181,7 +183,7 @@ class GlobalExceptionHandlerTest {
         var exceptionMock = mock(MethodArgumentNotValidException.class);
         given(exceptionMock.getBindingResult()).willReturn(bindingResultMock);
 
-        var exceptionResponse = handler.methodArgumentNotValidException(exceptionMock, response);
+        var exceptionResponse = handler.handleMethodArgumentNotValidException(exceptionMock, response);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatus());
@@ -194,7 +196,7 @@ class GlobalExceptionHandlerTest {
     void testStandardException() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        var exceptionResponse = handler.standardException(new StandardException(COMMON_ERROR_400_000, new Exception("Exception error"),
+        var exceptionResponse = handler.handleStandardException(new StandardException(COMMON_ERROR_400_000, new Exception("Exception error"),
                 "StandardException error"), response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
@@ -208,7 +210,8 @@ class GlobalExceptionHandlerTest {
     void testStandardExceptionWithoutArgs() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        var exceptionResponse = handler.standardException(new StandardException(COMMON_ERROR_400_000, new Exception("Exception error")), response);
+        var exceptionResponse = handler.handleStandardException(new StandardException(COMMON_ERROR_400_000, new Exception("Exception error")),
+                response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
