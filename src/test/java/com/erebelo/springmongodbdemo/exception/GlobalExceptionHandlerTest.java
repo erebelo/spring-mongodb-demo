@@ -3,6 +3,7 @@ package com.erebelo.springmongodbdemo.exception;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
@@ -98,8 +100,11 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testConstraintViolationException() {
+        ConstraintViolation<?> violation = mock(ConstraintViolation.class);
+        given(violation.getMessage()).willReturn("ConstraintViolationException error");
+
         var exceptionMock = mock(ConstraintViolationException.class);
-        given(exceptionMock.getMessage()).willReturn("ConstraintViolationException error");
+        given(exceptionMock.getConstraintViolations()).willReturn(Set.of(violation));
 
         var responseEntity = handler.handleConstraintViolationException(exceptionMock);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -172,7 +177,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testTransactionSystemException() {
-        var responseEntity = handler.handleTransactionSystemException(new TransactionSystemException("TransactionSystemException error"));
+        var responseEntity = handler.handleTransactionSystemException(new TransactionSystemException("TransactionSystemException error",
+                new RuntimeException("TransactionSystemException error")));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
