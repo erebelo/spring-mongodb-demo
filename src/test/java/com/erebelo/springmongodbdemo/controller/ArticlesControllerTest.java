@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ class ArticlesControllerTest {
 
     @Test
     void testGetArticlesFailure() {
-        var exception = new StandardException(COMMON_ERROR_422_003);
+        var exception = new CommonException(COMMON_ERROR_422_003);
         given(service.getArticles()).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc.perform(get(ARTICLES)

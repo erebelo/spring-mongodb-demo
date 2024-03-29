@@ -2,7 +2,7 @@ package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.impl.WikimediaServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -106,7 +106,7 @@ class WikimediaServiceTest {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_004);
 

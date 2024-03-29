@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +64,7 @@ class WikimediaControllerTest {
 
     @Test
     void testGetWikimediaProjectPageviewsFailure() {
-        var exception = new StandardException(COMMON_ERROR_404_004);
+        var exception = new CommonException(COMMON_ERROR_404_004);
         given(service.getWikimediaProjectPageviews()).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc.perform(get(WIKIMEDIA)

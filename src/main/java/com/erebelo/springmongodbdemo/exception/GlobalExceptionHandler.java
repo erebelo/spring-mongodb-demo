@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.exception;
 
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
@@ -135,10 +135,10 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(StandardException.class)
-    public ExceptionResponse handleStandardException(StandardException exception, HttpServletResponse response) {
-        LOGGER.error("StandardException thrown:", exception);
-        return parseStandardExceptionMessage(exception, response);
+    @ExceptionHandler(CommonException.class)
+    public ExceptionResponse handleCommonException(CommonException exception, HttpServletResponse response) {
+        LOGGER.error("CommonException thrown:", exception);
+        return parseCommonExceptionMessage(exception, response);
     }
 
     private ResponseEntity<ExceptionResponse> parseExceptionMessage(final HttpStatus httpStatus, final String message) {
@@ -165,9 +165,10 @@ public class GlobalExceptionHandler {
                 clientErrorObj));
     }
 
-    ExceptionResponse parseStandardExceptionMessage(final StandardException exception, HttpServletResponse response) {
-        response.setStatus(500);
-        var exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(500), COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis(), null);
+    ExceptionResponse parseCommonExceptionMessage(final CommonException exception, HttpServletResponse response) {
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        var exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, COMMON_ERROR_500_000.toString(), "",
+                System.currentTimeMillis(), null);
 
         var propertyKey = exception.getErrorCode().propertyKey();
         if (Objects.isNull(propertyKey)) {

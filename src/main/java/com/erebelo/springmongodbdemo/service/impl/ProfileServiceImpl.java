@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.ProfileService;
@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse getProfile(String userId) {
         LOGGER.info("Getting profile: {}", userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new StandardException(COMMON_ERROR_404_001, userId));
+                new CommonException(COMMON_ERROR_404_001, userId));
 
         LOGGER.info(RESPONSE_BODY_LOGGER, profile);
         return mapper.entityToResponse(profile.getProfile());
@@ -64,7 +64,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse insertProfile(String userId, ProfileRequest profileRequest) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         repository.findByUserId(userId).ifPresent(o -> {
-            throw new StandardException(COMMON_ERROR_409_001);
+            throw new CommonException(COMMON_ERROR_409_001);
         });
 
         var profile = new ProfileEntity();
@@ -84,7 +84,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse updateProfile(String userId, ProfileRequest profileRequest) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new StandardException(COMMON_ERROR_404_002, userId));
+                new CommonException(COMMON_ERROR_404_002, userId));
 
         LOGGER.info("Generating byte arrays for profile objects");
         var profileBytes = byteGenerator(profile.getProfile());
@@ -111,15 +111,15 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse patchProfile(String userId, Map<String, Object> profileRequestMap) {
         LOGGER.info("Validating map request attributes");
         if (isNull(profileRequestMap) || profileRequestMap.isEmpty()) {
-            throw new StandardException(COMMON_ERROR_400_001, Collections.singletonList("request body is mandatory and must contain some attribute"));
+            throw new CommonException(COMMON_ERROR_400_001, Collections.singletonList("request body is mandatory and must contain some attribute"));
         }
 
         LOGGER.info("Fetching profile from database");
         var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new StandardException(COMMON_ERROR_404_002, userId));
+                new CommonException(COMMON_ERROR_404_002, userId));
 
         if (isNull(profile.getProfile())) {
-            throw new StandardException(COMMON_ERROR_422_002);
+            throw new CommonException(COMMON_ERROR_422_002);
         }
 
         int patchCounter;
@@ -134,7 +134,7 @@ public class ProfileServiceImpl implements ProfileService {
             LOGGER.info("Serializing/deserializing profile object after merging objects");
             dbProfileRequest = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequestMap), ProfileRequest.class);
         } catch (Exception e) {
-            throw new StandardException(COMMON_ERROR_422_001, e, e.getMessage());
+            throw new CommonException(COMMON_ERROR_422_001, e, e.getMessage());
         }
 
         if (patchCounter > 0) {
@@ -155,7 +155,7 @@ public class ProfileServiceImpl implements ProfileService {
     public void deleteProfile(String userId) {
         LOGGER.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new StandardException(COMMON_ERROR_404_003, userId));
+                new CommonException(COMMON_ERROR_404_003, userId));
 
         LOGGER.info("Deleting profile: {}", profile);
         repository.delete(profile);
@@ -191,7 +191,7 @@ public class ProfileServiceImpl implements ProfileService {
             for (FieldMessage field : errorMessages) {
                 joiner.add(field.getMessage());
             }
-            throw new StandardException(COMMON_ERROR_422_000, joiner.toString());
+            throw new CommonException(COMMON_ERROR_422_000, joiner.toString());
         }
     }
 }

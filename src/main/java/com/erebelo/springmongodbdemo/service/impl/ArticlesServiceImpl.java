@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
@@ -98,7 +98,7 @@ public class ArticlesServiceImpl implements ArticlesService {
                 .toList();
 
         if (allArticlesDataResponses.isEmpty()) {
-            throw new StandardException(COMMON_ERROR_422_003);
+            throw new CommonException(COMMON_ERROR_422_003);
         }
 
         LOGGER.info("{} articles found", allArticlesDataResponses.size());

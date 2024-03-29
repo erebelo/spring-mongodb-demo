@@ -2,7 +2,7 @@ package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -130,7 +130,7 @@ class ProfileControllerTest {
 
     @Test
     void testGetProfileFailure() {
-        var exception = new StandardException(COMMON_ERROR_404_001, USER_ID);
+        var exception = new CommonException(COMMON_ERROR_404_001, USER_ID);
         given(service.getProfile(anyString())).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc.perform(get(PROFILE)
@@ -182,7 +182,7 @@ class ProfileControllerTest {
 
     @Test
     void testInsertProfileFailure() {
-        var exception = new StandardException(COMMON_ERROR_409_001);
+        var exception = new CommonException(COMMON_ERROR_409_001);
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc.perform(post(PROFILE)
@@ -238,7 +238,7 @@ class ProfileControllerTest {
 
     @Test
     void testUpdateProfileFailure() {
-        var exception = new StandardException(COMMON_ERROR_404_002, USER_ID);
+        var exception = new CommonException(COMMON_ERROR_404_002, USER_ID);
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc.perform(put(PROFILE)
@@ -294,7 +294,7 @@ class ProfileControllerTest {
 
     @Test
     void testPatchProfileFailure() {
-        var exception = new StandardException(COMMON_ERROR_400_001,
+        var exception = new CommonException(COMMON_ERROR_400_001,
                 Collections.singletonList("request body is mandatory and must contain some attribute"));
         given(service.patchProfile(anyString(), any(Map.class))).willThrow(exception);
 
@@ -325,7 +325,7 @@ class ProfileControllerTest {
 
     @Test
     void testDeleteProfileFailure() {
-        var exception = new StandardException(COMMON_ERROR_404_003, USER_ID);
+        var exception = new CommonException(COMMON_ERROR_404_003, USER_ID);
         willThrow(exception).given(service).deleteProfile(anyString());
 
         assertThatThrownBy(() -> mockMvc.perform(delete(PROFILE)

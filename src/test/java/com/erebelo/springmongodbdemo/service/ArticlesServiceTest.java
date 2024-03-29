@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
@@ -95,7 +95,7 @@ class ArticlesServiceTest {
     void testGetArticlesThrowNotFoundException() {
         given(httpClientAuth.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).willReturn(null);
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.getArticles())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_003);
 

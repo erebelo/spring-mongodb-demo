@@ -6,7 +6,7 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
@@ -120,7 +120,7 @@ class ProfileServiceTest {
     void testGetProfileThrowNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.getProfile(USER_ID))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_001)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
@@ -153,7 +153,7 @@ class ProfileServiceTest {
     void testInsertProfileThrowConflictException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.insertProfile(USER_ID, getProfileRequest()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_409_001);
 
@@ -218,7 +218,7 @@ class ProfileServiceTest {
     void testUpdateProfileThrowNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.updateProfile(USER_ID, getProfileRequest()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_002)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
@@ -279,7 +279,7 @@ class ProfileServiceTest {
 
     @Test
     void testPatchProfileThrowBadRequestException() throws JsonProcessingException {
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, new HashMap<>()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_400_001)
                 .hasFieldOrPropertyWithValue("args", new Object[]{
@@ -299,7 +299,7 @@ class ProfileServiceTest {
     void testPatchProfileThrowNotFoundException() throws JsonProcessingException {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, getProfileRequestMapPatch()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_002)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
@@ -318,7 +318,7 @@ class ProfileServiceTest {
     void testPatchProfileWithEmptyObjectThrowUnprocessableEntityException() throws JsonProcessingException {
         given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(new ProfileEntity()));
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, getProfileRequestMapPatch()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_002);
 
@@ -339,7 +339,7 @@ class ProfileServiceTest {
         var profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("firstName", new LinkedHashMap<>());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
                 .withCauseExactlyInstanceOf(MismatchedInputException.class)
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_001)
@@ -362,7 +362,7 @@ class ProfileServiceTest {
         var profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("maritalStatus", MaritalStatusEnum.SINGLE.getValue());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_000)
                 .hasFieldOrPropertyWithValue("args", new Object[]{
@@ -393,7 +393,7 @@ class ProfileServiceTest {
     void testDeleteProfileThrowNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(StandardException.class)
+        assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.deleteProfile(USER_ID))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_003)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});

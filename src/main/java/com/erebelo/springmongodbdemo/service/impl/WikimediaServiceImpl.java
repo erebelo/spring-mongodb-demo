@@ -2,7 +2,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
-import com.erebelo.springmongodbdemo.exception.model.StandardException;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class WikimediaServiceImpl implements WikimediaService {
         }
 
         if (Objects.isNull(wikimediaPageViews) || Objects.isNull(wikimediaPageViews.getItems()) || wikimediaPageViews.getItems().isEmpty()) {
-            throw new StandardException(COMMON_ERROR_404_004);
+            throw new CommonException(COMMON_ERROR_404_004);
         }
 
         LOGGER.info("{} wikimedia items found", wikimediaPageViews.getItems().size());
