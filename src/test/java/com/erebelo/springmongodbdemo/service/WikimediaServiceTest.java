@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
-import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.impl.WikimediaServiceImpl;
@@ -86,11 +86,11 @@ class WikimediaServiceTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsThrowIllegalStateException() {
+    void testGetWikimediaProjectPageviewsThrowClientException() {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 
-        assertThatExceptionOfType(ApplicationException.class)
+        assertThatExceptionOfType(ClientException.class)
                 .isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .withCauseExactlyInstanceOf(HttpClientErrorException.class)
                 .withMessage("Error getting Wikimedia project pageviews");

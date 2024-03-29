@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.exception;
 
-import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -128,10 +128,10 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ExceptionResponse> handleApplicationException(ApplicationException exception) {
-        LOGGER.error("ApplicationException thrown:", exception);
-        return parseApplicationExceptionMessage(exception.getHttpStatus(), exception.getMessage(), exception.getCause());
+    @ExceptionHandler(ClientException.class)
+    public ResponseEntity<ExceptionResponse> handleClientException(ClientException exception) {
+        LOGGER.error("ClientException thrown:", exception);
+        return parseClientExceptionMessage(exception.getHttpStatus(), exception.getMessage(), exception.getCause());
     }
 
     @ResponseBody
@@ -148,8 +148,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null));
     }
 
-    private ResponseEntity<ExceptionResponse> parseApplicationExceptionMessage(final HttpStatus httpStatus, final String message,
-            final Throwable cause) {
+    private ResponseEntity<ExceptionResponse> parseClientExceptionMessage(final HttpStatus httpStatus, final String message, final Throwable cause) {
         var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
 

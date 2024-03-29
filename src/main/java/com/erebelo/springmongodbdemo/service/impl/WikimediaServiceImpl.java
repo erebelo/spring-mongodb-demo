@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
-import com.erebelo.springmongodbdemo.exception.model.ApplicationException;
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.StandardException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
@@ -46,7 +46,7 @@ public class WikimediaServiceImpl implements WikimediaService {
                     });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (HttpClientErrorException e) {
-            throw new ApplicationException(HttpStatus.valueOf(e.getStatusCode().value()), WIKIMEDIA_CLIENT_ERROR_MESSAGE, e);
+            throw new ClientException(HttpStatus.valueOf(e.getStatusCode().value()), WIKIMEDIA_CLIENT_ERROR_MESSAGE, e);
         }
 
         if (Objects.isNull(wikimediaPageViews) || Objects.isNull(wikimediaPageViews.getItems()) || wikimediaPageViews.getItems().isEmpty()) {
