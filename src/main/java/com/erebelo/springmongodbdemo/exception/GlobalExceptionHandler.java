@@ -156,7 +156,7 @@ public class GlobalExceptionHandler {
         if (cause != null) {
             var clientErrorMessage = ObjectUtils.isEmpty(cause.getMessage()) ? null : cause.getMessage();
 
-            if (clientErrorMessage != null) {
+            if (!ObjectUtils.isEmpty(clientErrorMessage)) {
                 clientErrorObj = extractJsonObject(clientErrorMessage);
             }
         }

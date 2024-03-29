@@ -1,7 +1,9 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,6 +32,7 @@ import java.util.Set;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
@@ -191,6 +195,43 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void testClientException() {
+        var objectMapperMock = spy(new ObjectMapper());
+        ReflectionTestUtils.setField(handler, "objectMapper", objectMapperMock);
+
+        var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
+                new Exception("{\"detail\":\"Invalid route\",\"method\":\"get\",\"status\":404,\"title\":\"Not Found\",\"type\":\"about:blank\"," +
+                        "\"uri\":\"/metrics/pageviews/aggreg1ate/all-projects/all-1access/all-agents/daily/2015100100/2015103000\"}")));
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+        var exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
+        assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
+        assertNull(exceptionResponse.getCode());
+        assertEquals("ClientException error", exceptionResponse.getMessage());
+        assertNotNull(exceptionResponse.getTimestamp());
+        assertInstanceOf(Object.class, exceptionResponse.getCause());
+    }
+
+    @Test
+    void testClientExceptionWithNoCause() {
+        var objectMapperMock = spy(new ObjectMapper());
+        ReflectionTestUtils.setField(handler, "objectMapper", objectMapperMock);
+
+        var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
+                new Exception("error")));
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+        var exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
+        assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
+        assertNull(exceptionResponse.getCode());
+        assertEquals("ClientException error", exceptionResponse.getMessage());
+        assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
+    }
+
+    @Test
     void testCommonException() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
@@ -202,6 +243,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("CommonException error", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -216,6 +258,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("null", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -229,6 +272,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("Bad Request to user foo", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -240,6 +284,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: null errorCode", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -251,6 +296,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: no properties found for COMMON-ERROR-500-000", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -264,6 +310,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: badly formatted message 900|", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 
     @Test
@@ -277,5 +324,6 @@ class GlobalExceptionHandlerTest {
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: could not get http status code from |Other stuff", exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
+        assertNull(exceptionResponse.getCause());
     }
 }
