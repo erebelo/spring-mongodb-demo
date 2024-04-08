@@ -1,5 +1,5 @@
 # Spring MongoDB Demo
-REST API project developed in Java using Spring Boot framework and MongoDB
+REST API project developed in Java using Spring Boot framework and MongoDB.
 
 ----------
 
@@ -24,7 +24,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB
 ----------
 
 ## Run App
-Run the SpringMongoDBDemoApplication class as Java Application
+Run the SpringMongoDBDemoApplication class as Java Application.
 
 ----------
 
