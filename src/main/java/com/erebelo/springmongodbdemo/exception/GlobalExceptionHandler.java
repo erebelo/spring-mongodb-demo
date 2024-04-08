@@ -32,7 +32,7 @@ import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum
 
 @ControllerAdvice
 @RequiredArgsConstructor
-@PropertySources(@PropertySource("classpath:common_error_messages.properties"))
+@PropertySources(@PropertySource("classpath:common-error-messages.properties"))
 public class GlobalExceptionHandler {
 
     private final Environment env;
