@@ -46,6 +46,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
+
     private static final String CHECK_OBJ_LOGGER = "Checking whether profile object exists by userId: {}";
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 

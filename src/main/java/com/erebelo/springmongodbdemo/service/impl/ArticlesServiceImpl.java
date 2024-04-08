@@ -40,9 +40,9 @@ public class ArticlesServiceImpl implements ArticlesService {
     private String articlesApiUrl;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticlesServiceImpl.class);
+
     private static final String MDC_KEY_REQUEST_ID = "requestId";
     private static final int INITIAL_PAGE = 1;
-
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
