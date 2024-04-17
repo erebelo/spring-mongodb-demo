@@ -24,7 +24,7 @@ public class MongoDBLocalConfiguration extends MongoDBConfiguration {
     }
 
     private ConnectionString getLocalConnectionString() {
-        return new ConnectionString(String.format(LOCAL_CONNECTION_STRING_TEMPLATE, clusterURL, clusterPort,
+        return new ConnectionString(String.format(LOCAL_CONNECTION_STRING_TEMPLATE, dbHost, dbPort,
                 getDatabaseName()));
     }
 }

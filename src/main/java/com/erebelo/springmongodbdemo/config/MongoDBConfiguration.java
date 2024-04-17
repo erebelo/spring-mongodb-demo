@@ -23,20 +23,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
-    private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s%s/%s?replicaSet=rs0&authSource=admin";
+    private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s%s/%s?replicaSet=rs0";
 
     private final Environment env;
 
-    @Value("${database.clusterURL:localhost}")
-    protected String clusterURL;
+    @Value("${database.host:localhost}")
+    protected String dbHost;
 
-    @Value("${database.clusterPort:27017}")
-    protected String clusterPort;
+    @Value("${database.port:27017}")
+    protected String dbPort;
 
-    @Value("${database.dbName:demo-db}")
+    @Value("${database.name:demo-db}")
     protected String dbName;
 
-    @Value("${database.dbUsername:}")
+    @Value("${database.username:}")
     protected String dbUsername;
 
     @Override
@@ -77,7 +77,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     private ConnectionString getConnectionString() {
         var databaseCredentials = String.format("%s:%s@", dbUsername, getDbPassword());
-        var clusterEndpoint = String.format("%s:%s", clusterURL, clusterPort);
+        var clusterEndpoint = String.format("%s:%s", dbHost, dbPort);
 
         return new ConnectionString(String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint, getDatabaseName()));
     }
