@@ -12,7 +12,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 - **ConstraintValidator** is used to validate request fields and their associated business rules by declaring an annotation in the request class
 - **Logback/SLF4J** are employed to track application logs
 - **Global Exception Handler** is implemented to manage errors
-- The **Template Method** design pattern is utilized for different implementations of RestTemplate
+- **Template Method** design pattern used for different RestTemplate implementations
 
 ----------
 
@@ -24,7 +24,8 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 ----------
 
 ## Run App
-Run the SpringMongoDBDemoApplication class as Java Application.
+- Set the following environment variables if running the project for a spring profile other than 'local': 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USERNAME', and 'DB_PASSWORD'
+- Run the SpringMongoDBDemoApplication class as Java Application
 
 ----------
 
@@ -33,4 +34,10 @@ Run the SpringMongoDBDemoApplication class as Java Application.
 
 ----------
 
+## AWS Demo
+[Spring MongoDB Demo][2]
+
+----------
+
 [1]: https://github.com/erebelo/spring-mongodb-demo/tree/develop/collection
+[2]: http://smd-api.erebelo.com/spring-mongodb-demo/swagger-ui/index.html
