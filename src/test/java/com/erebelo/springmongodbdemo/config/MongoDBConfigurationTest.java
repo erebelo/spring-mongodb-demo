@@ -27,26 +27,26 @@ class MongoDBConfigurationTest {
     @Mock
     private Environment environment;
 
-    private static final String DATABASE_NAME = "demo-db";
-    private static final String DATABASE_USERNAME = "test";
-    private static final String DATABASE_PASSWORD = "password123";
-    private static final String CLUSTER_URL = "localhost";
-    private static final String CLUSTER_PORT = "27017";
-    private static final String CONNECTION_STRING = "mongodb://test:password123@localhost:27017/demo-db?replicaSet=rs0&authSource=admin";
+    private static final String DB_HOST = "localhost";
+    private static final String DB_PORT = "27017";
+    private static final String DB_NAME = "demo-db";
+    private static final String DB_USERNAME = "admin";
+    private static final String DB_PASSWORD = "admin";
+    private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo-db?replicaSet=rs0";
 
     @BeforeEach
     void init() {
-        ReflectionTestUtils.setField(mongoDBConfiguration, "dbName", DATABASE_NAME);
-        ReflectionTestUtils.setField(mongoDBConfiguration, "dbUsername", DATABASE_USERNAME);
-        ReflectionTestUtils.setField(mongoDBConfiguration, "clusterURL", CLUSTER_URL);
-        ReflectionTestUtils.setField(mongoDBConfiguration, "clusterPort", CLUSTER_PORT);
+        ReflectionTestUtils.setField(mongoDBConfiguration, "dbHost", DB_HOST);
+        ReflectionTestUtils.setField(mongoDBConfiguration, "dbPort", DB_PORT);
+        ReflectionTestUtils.setField(mongoDBConfiguration, "dbName", DB_NAME);
+        ReflectionTestUtils.setField(mongoDBConfiguration, "dbUsername", DB_USERNAME);
     }
 
     @Test
     void testGetDatabaseName() {
         var databaseName = mongoDBConfiguration.getDatabaseName();
 
-        assertEquals(DATABASE_NAME, databaseName);
+        assertEquals(DB_NAME, databaseName);
     }
 
     @Test
@@ -69,7 +69,7 @@ class MongoDBConfigurationTest {
             return newBuilder;
         });
 
-        given(environment.getProperty("database.password")).willReturn(DATABASE_PASSWORD);
+        given(environment.getProperty("database.password")).willReturn(DB_PASSWORD);
 
         mongoDBConfiguration.configureClientSettings(builderMock);
 

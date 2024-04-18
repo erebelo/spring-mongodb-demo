@@ -20,18 +20,16 @@ class MongoDBLocalConfigurationTest {
     @InjectMocks
     private MongoDBLocalConfiguration mongoDBLocalConfiguration;
 
-    private static final String DATABASE_NAME = "demo-db";
-    private static final String DATABASE_USERNAME = "test";
-    private static final String CLUSTER_URL = "localhost";
-    private static final String CLUSTER_PORT = "27017";
-    private static final String LOCAL_CONNECTION_STRING = "mongodb://localhost:27017/demo-db?replicaSet=rs0&authSource=admin";
+    private static final String DB_HOST = "localhost";
+    private static final String DB_PORT = "27017";
+    private static final String DB_NAME = "demo-db";
+    private static final String LOCAL_CONNECTION_STRING = "mongodb://localhost:27017/demo-db?replicaSet=rs0";
 
     @BeforeEach
     void init() {
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbName", DATABASE_NAME);
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbUsername", DATABASE_USERNAME);
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "clusterURL", CLUSTER_URL);
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "clusterPort", CLUSTER_PORT);
+        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbHost", DB_HOST);
+        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbPort", DB_PORT);
+        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbName", DB_NAME);
     }
 
     @Test
