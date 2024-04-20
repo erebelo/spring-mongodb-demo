@@ -7,227 +7,26 @@
 	},
 	"item": [
 		{
-			"name": "Health Check API",
+			"name": "Localhost",
 			"item": [
 				{
-					"name": "GET Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/health-check",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"health-check"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Profile API",
-			"item": [
-				{
-					"name": "GET Profile",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-UserId",
-								"value": "12345",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/profile",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Profile",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-UserId",
-								"value": "12345",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"João\",\r\n    \"lastName\": \"Martins\",\r\n    \"dateOfBirth\": \"2000-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Employed\",\r\n    \"healthLevel\": \"Average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\",\r\n        \"gender\": \"Female\",\r\n        \"employmentStatus\": \"Retired\"\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/profile",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Profile",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-UserId",
-								"value": "12345",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"James\",\r\n    \"lastName\": \"Spring\",\r\n    \"dateOfBirth\": \"2001-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Not Employed\",\r\n    \"healthLevel\": \"Below average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\"\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/profile",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PATCH Profile",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "X-UserId",
-								"value": "12345",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/merge-patch+json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Lemon\",\r\n    \"dateOfBirth\": \"1995-04-22\",\r\n    \"healthLevel\": \"Above average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"lemon@mail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Test Street\",\r\n        \"postalCode\": null\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/profile",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE Profile",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-UserId",
-								"value": "12345",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/profile",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Wikimedia API",
-			"item": [
-				{
-					"name": "Client",
+					"name": "Health Check API",
 					"item": [
 						{
-							"name": "GET Wikimedia Downstream",
+							"name": "GET Health Check",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/all-projects/all-access/all-agents/daily/2015100100/2015103000",
-									"protocol": "https",
+									"raw": "http://localhost:8080/spring-mongodb-demo/health-check",
+									"protocol": "http",
 									"host": [
-										"wikimedia",
-										"org"
+										"localhost"
 									],
+									"port": "8080",
 									"path": [
-										"api",
-										"rest_v1",
-										"metrics",
-										"pageviews",
-										"aggregate",
-										"all-projects",
-										"all-access",
-										"all-agents",
-										"daily",
-										"2015100100",
-										"2015103000"
+										"spring-mongodb-demo",
+										"health-check"
 									]
 								}
 							},
@@ -236,55 +35,312 @@
 					]
 				},
 				{
-					"name": "GET Wikimedia",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/wikimedia",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"wikimedia"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Articles API",
-			"item": [
-				{
-					"name": "Client",
+					"name": "Profile API",
 					"item": [
 						{
-							"name": "GET Articles Downstream",
+							"name": "GET Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Profile",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"João\",\r\n    \"lastName\": \"Martins\",\r\n    \"dateOfBirth\": \"2000-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Employed\",\r\n    \"healthLevel\": \"Average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\",\r\n        \"gender\": \"Female\",\r\n        \"employmentStatus\": \"Retired\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"James\",\r\n    \"lastName\": \"Spring\",\r\n    \"dateOfBirth\": \"2001-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Not Employed\",\r\n    \"healthLevel\": \"Below average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH Profile",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/merge-patch+json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Lemon\",\r\n    \"dateOfBirth\": \"1995-04-22\",\r\n    \"healthLevel\": null,\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"lemon@mail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Test Street\",\r\n        \"postalCode\": null\r\n    },\r\n    \"spouseProfile\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Profile",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Wikimedia API",
+					"item": [
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "GET Wikimedia Downstream",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/all-projects/all-access/all-agents/daily/2015100100/2015103000",
+											"protocol": "https",
+											"host": [
+												"wikimedia",
+												"org"
+											],
+											"path": [
+												"api",
+												"rest_v1",
+												"metrics",
+												"pageviews",
+												"aggregate",
+												"all-projects",
+												"all-access",
+												"all-agents",
+												"daily",
+												"2015100100",
+												"2015103000"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET Wikimedia",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://jsonmock.hackerrank.com/api/articles?page=1",
-									"protocol": "https",
+									"raw": "http://localhost:8080/spring-mongodb-demo/wikimedia",
+									"protocol": "http",
 									"host": [
-										"jsonmock",
-										"hackerrank",
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"wikimedia"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Articles API",
+					"item": [
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "GET Articles Downstream",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://jsonmock.hackerrank.com/api/articles?page=1",
+											"protocol": "https",
+											"host": [
+												"jsonmock",
+												"hackerrank",
+												"com"
+											],
+											"path": [
+												"api",
+												"articles"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET Articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/articles",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"articles"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "AWS",
+			"item": [
+				{
+					"name": "Health Check API",
+					"item": [
+						{
+							"name": "GET Health Check",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/health-check",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
 										"com"
 									],
 									"path": [
-										"api",
-										"articles"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1"
-										}
+										"spring-mongodb-demo",
+										"health-check"
 									]
 								}
 							},
@@ -293,24 +349,294 @@
 					]
 				},
 				{
-					"name": "GET Articles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/spring-mongodb-demo/articles",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"spring-mongodb-demo",
-								"articles"
-							]
+					"name": "Profile API",
+					"item": [
+						{
+							"name": "GET Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Profile",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"João\",\r\n    \"lastName\": \"Martins\",\r\n    \"dateOfBirth\": \"2000-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Employed\",\r\n    \"healthLevel\": \"Average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\",\r\n        \"gender\": \"Female\",\r\n        \"employmentStatus\": \"Retired\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"James\",\r\n    \"lastName\": \"Spring\",\r\n    \"dateOfBirth\": \"2001-08-20\",\r\n    \"numberOfDependents\": 0,\r\n    \"estimatedAnnualIncome\": 120000.00,\r\n    \"estimatedNetWorth\": 300000.00,\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"employmentStatus\": \"Not Employed\",\r\n    \"healthLevel\": \"Below average\",\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Phone\",\r\n            \"contactValue\": \"11 99999-9999\"\r\n        },\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"test@gmail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Rua XXX\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"country\": \"Brazil\",\r\n        \"postalCode\": \"77458-854\"\r\n    },\r\n    \"spouseProfile\": {\r\n        \"firstName\": \"Larissa\",\r\n        \"lastName\": \"Oliveira\",\r\n        \"dateOfBirth\": \"2000-08-10\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH Profile",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/merge-patch+json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Lemon\",\r\n    \"dateOfBirth\": \"1995-04-22\",\r\n    \"healthLevel\": null,\r\n    \"contactNumbers\": [\r\n        {\r\n            \"contactType\": \"Email\",\r\n            \"contactValue\": \"lemon@mail.com\"\r\n        }\r\n    ],\r\n    \"currentLocation\": {\r\n        \"address\": \"Test Street\",\r\n        \"postalCode\": null\r\n    },\r\n    \"spouseProfile\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Profile",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-UserId",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"profile"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
+				},
+				{
+					"name": "Wikimedia API",
+					"item": [
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "GET Wikimedia Downstream",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/all-projects/all-access/all-agents/daily/2015100100/2015103000",
+											"protocol": "https",
+											"host": [
+												"wikimedia",
+												"org"
+											],
+											"path": [
+												"api",
+												"rest_v1",
+												"metrics",
+												"pageviews",
+												"aggregate",
+												"all-projects",
+												"all-access",
+												"all-agents",
+												"daily",
+												"2015100100",
+												"2015103000"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET Wikimedia",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/wikimedia",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"wikimedia"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Articles API",
+					"item": [
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "GET Articles Downstream",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://jsonmock.hackerrank.com/api/articles?page=1",
+											"protocol": "https",
+											"host": [
+												"jsonmock",
+												"hackerrank",
+												"com"
+											],
+											"path": [
+												"api",
+												"articles"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET Articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/articles",
+									"protocol": "http",
+									"host": [
+										"smd-api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"articles"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
