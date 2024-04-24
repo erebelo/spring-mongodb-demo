@@ -41,7 +41,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 
 ## AWS Demo
 
-[Spring MongoDB Demo](http://smd-api.erebelo.com/spring-mongodb-demo/swagger-ui/index.html)
+[Spring MongoDB Demo](http://api.erebelo.com/spring-mongodb-demo/swagger-ui/index.html)
 
 ---
 
