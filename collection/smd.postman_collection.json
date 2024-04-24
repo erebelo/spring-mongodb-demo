@@ -331,10 +331,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/health-check",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/health-check",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -363,10 +363,10 @@
 									}
 								],
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -399,10 +399,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -435,10 +435,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -476,10 +476,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -503,10 +503,10 @@
 									}
 								],
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/profile",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -563,10 +563,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/wikimedia",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/wikimedia",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
@@ -621,10 +621,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://smd-api.erebelo.com/spring-mongodb-demo/articles",
+									"raw": "http://api.erebelo.com/spring-mongodb-demo/articles",
 									"protocol": "http",
 									"host": [
-										"smd-api",
+										"api",
 										"erebelo",
 										"com"
 									],
