@@ -47,4 +47,4 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 
 ## AWS Deployment
 
-Follow the [AWS Docker](https://github.com/erebelo/aws-docker/tree/main) guide to deploy a **MongoDB** and **Java App** instance.
+Follow the [AWS Docker](https://github.com/erebelo/aws-docker/tree/main) guide to deploy a **Java App** and **MongoDB** instance.
