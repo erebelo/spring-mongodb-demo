@@ -31,6 +31,26 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "[nginx] GET Health Check",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://api.localhost/spring-mongodb-demo/health-check",
+									"protocol": "http",
+									"host": [
+										"api",
+										"localhost"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"health-check"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
