@@ -351,8 +351,8 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/health-check",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/health-check",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -383,8 +383,8 @@
 									}
 								],
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -419,8 +419,8 @@
 									}
 								},
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -455,8 +455,8 @@
 									}
 								},
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -496,8 +496,8 @@
 									}
 								},
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -523,8 +523,8 @@
 									}
 								],
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/profile",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/profile",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -583,8 +583,8 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/wikimedia",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/wikimedia",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",
@@ -641,8 +641,8 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://api.erebelo.com/spring-mongodb-demo/articles",
-									"protocol": "http",
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/articles",
+									"protocol": "https",
 									"host": [
 										"api",
 										"erebelo",

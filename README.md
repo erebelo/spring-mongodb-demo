@@ -13,6 +13,7 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 - **Logback/SLF4J** are employed to track application logs
 - **Global Exception Handler** is implemented to manage errors
 - **Template Method** design pattern used for different RestTemplate implementations
+- **Unit Tests** are implemented covering the entire application
 
 ## Requirements
 
@@ -31,8 +32,8 @@ REST API project developed in Java using Spring Boot framework and MongoDB.
 
 ## AWS Demo
 
-[Spring MongoDB Demo](http://api.erebelo.com/spring-mongodb-demo/swagger-ui/index.html)
+[Spring MongoDB Demo](https://api.erebelo.com/spring-mongodb-demo/swagger-ui/index.html)
 
 ## AWS Deployment
 
-Follow the [AWS Docker](https://github.com/erebelo/aws-docker/tree/main) guide to deploy a **Java App** and **MongoDB** instance.
+Follow the [AWS Docker](https://github.com/erebelo/aws-docker/tree/main) guide for deploying **Java App** and **MongoDB** instances with reverse proxy setup using HTTPS with a valid SSL/TLS certificate.
