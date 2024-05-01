@@ -1,6 +1,6 @@
 # Spring MongoDB Demo
 
-REST API project developed in Java using Spring Boot framework and MongoDB.
+REST API project developed in Java using Spring Boot 3 framework and MongoDB.
 
 ## Features
 
