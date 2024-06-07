@@ -10,7 +10,7 @@
 			"name": "Localhost",
 			"item": [
 				{
-					"name": "Health Check API",
+					"name": "Health Check",
 					"item": [
 						{
 							"name": "GET Health Check",
@@ -55,7 +55,7 @@
 					]
 				},
 				{
-					"name": "Profile API",
+					"name": "Profile",
 					"item": [
 						{
 							"name": "GET Profile",
@@ -222,7 +222,7 @@
 					]
 				},
 				{
-					"name": "Wikimedia API",
+					"name": "Wikimedia",
 					"item": [
 						{
 							"name": "Client",
@@ -281,7 +281,7 @@
 					]
 				},
 				{
-					"name": "Articles API",
+					"name": "Articles",
 					"item": [
 						{
 							"name": "Client",
@@ -343,7 +343,7 @@
 			"name": "AWS",
 			"item": [
 				{
-					"name": "Health Check API",
+					"name": "Health Check",
 					"item": [
 						{
 							"name": "GET Health Check",
@@ -369,7 +369,7 @@
 					]
 				},
 				{
-					"name": "Profile API",
+					"name": "Profile",
 					"item": [
 						{
 							"name": "GET Profile",
@@ -541,7 +541,7 @@
 					]
 				},
 				{
-					"name": "Wikimedia API",
+					"name": "Wikimedia",
 					"item": [
 						{
 							"name": "Client",
@@ -601,7 +601,7 @@
 					]
 				},
 				{
-					"name": "Articles API",
+					"name": "Articles",
 					"item": [
 						{
 							"name": "Client",
