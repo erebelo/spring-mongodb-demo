@@ -39,12 +39,15 @@ public class ProfileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
+    private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
+
     @Operation(summary = "GET Profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
         LOGGER.info("Getting profile");
         var response = service.getProfile(userId);
 
+        LOGGER.info(RESPONSE_BODY_LOGGER, response);
         return ResponseEntity.ok(response);
     }
 
@@ -54,6 +57,7 @@ public class ProfileController {
         LOGGER.info("Inserting profile");
         var response = service.insertProfile(userId, profileRequest);
 
+        LOGGER.info(RESPONSE_BODY_LOGGER, response);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri()).body(response);
     }
 
@@ -63,6 +67,7 @@ public class ProfileController {
         LOGGER.info("Updating profile");
         var response = service.updateProfile(userId, profileRequest);
 
+        LOGGER.info(RESPONSE_BODY_LOGGER, response);
         return ResponseEntity.ok(response);
     }
 
@@ -72,6 +77,7 @@ public class ProfileController {
         LOGGER.info("Patching profile");
         var response = service.patchProfile(userId, profileRequestMap);
 
+        LOGGER.info(RESPONSE_BODY_LOGGER, response);
         return ResponseEntity.ok(response);
     }
 

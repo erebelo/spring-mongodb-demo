@@ -72,7 +72,9 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.applyConnectionString(getConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE);
+        builder.applyConnectionString(getConnectionString())
+                .retryReads(Boolean.FALSE)
+                .retryWrites(Boolean.FALSE);
     }
 
     private ConnectionString getConnectionString() {
