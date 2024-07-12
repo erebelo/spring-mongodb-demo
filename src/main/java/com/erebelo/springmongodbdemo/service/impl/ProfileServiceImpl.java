@@ -8,7 +8,6 @@ import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.erebelo.springmongodbdemo.service.validation.FieldMessage;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,7 @@ import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraint
 import static com.erebelo.springmongodbdemo.util.ByteHandlerUtil.byteArrayComparison;
 import static com.erebelo.springmongodbdemo.util.ByteHandlerUtil.byteGenerator;
 import static com.erebelo.springmongodbdemo.util.HashAlgorithmUtil.generateSHAHashObject;
+import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 import static java.util.Objects.isNull;
 
 @Service
@@ -43,7 +43,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileMapper mapper;
     private final ProfileRepository repository;
-    private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
 
@@ -109,7 +108,8 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse patchProfile(String userId, Map<String, Object> profileRequestMap) {
         LOGGER.info("Validating map request attributes");
         if (isNull(profileRequestMap) || profileRequestMap.isEmpty()) {
-            throw new CommonException(COMMON_ERROR_400_001, Collections.singletonList("request body is mandatory and must contain some attribute"));
+            throw new CommonException(COMMON_ERROR_400_001, Collections.singletonList("request body is mandatory and must contain some " +
+                    "attribute"));
         }
 
         LOGGER.info("Fetching profile from database");

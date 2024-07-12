@@ -1,20 +1,21 @@
-package com.erebelo.springmongodbdemo.config;
+package com.erebelo.springmongodbdemo.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.text.SimpleDateFormat;
 
-@Configuration
-public class ApplicationConfiguration {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ObjectMapperUtil {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        var objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper;
+
+    static {
+        objectMapper = new ObjectMapper();
 
         // Register JavaTimeModule for LocalDate serialization/deserialization
         objectMapper.registerModule(new JavaTimeModule());
@@ -25,7 +26,5 @@ public class ApplicationConfiguration {
 
         // Set a custom date format using SimpleDateFormat
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-
-        return objectMapper;
     }
 }

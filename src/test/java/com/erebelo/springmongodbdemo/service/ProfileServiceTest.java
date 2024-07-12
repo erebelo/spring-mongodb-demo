@@ -11,14 +11,8 @@ import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
 import com.erebelo.springmongodbdemo.util.ByteHandlerUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -31,7 +25,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -81,21 +74,10 @@ class ProfileServiceTest {
     @Spy
     private final ProfileMapper mapper = Mappers.getMapper(ProfileMapper.class);
 
-    @Spy
-    private ObjectMapper objectMapper;
-
     @Captor
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
 
     private MockedStatic<ByteHandlerUtil> byteHandlerMockedStatic;
-
-    @BeforeEach
-    void init() {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-    }
 
     @AfterEach
     void clear() {
@@ -230,7 +212,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileSuccessfully() throws JsonProcessingException {
+    void testPatchProfileSuccessfully() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
         given(repository.save(any(ProfileEntity.class))).willReturn(getProfileEntityPatch());
 
@@ -240,8 +222,6 @@ class ProfileServiceTest {
 
         verify(repository, times(2)).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, times(2)).writeValueAsString(any());
-        verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
         verify(service).updateProfile(eq(USER_ID), any(ProfileRequest.class));
         verify(mapper).requestToEntity(any(ProfileRequest.class));
         verify(repository).save(entityArgumentCaptor.capture());
@@ -254,7 +234,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWhenMatchingProfileIsFound() throws JsonProcessingException {
+    void testPatchProfileWhenMatchingProfileIsFound() {
         given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(
                 ProfileEntity.builder().profile(UserProfile.builder().firstName(FIRST_NAME).build()).build()));
 
@@ -269,8 +249,6 @@ class ProfileServiceTest {
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, times(2)).writeValueAsString(any());
-        verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(eq(USER_ID), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(entityArgumentCaptor.capture());
@@ -278,7 +256,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileThrowBadRequestException() throws JsonProcessingException {
+    void testPatchProfileThrowBadRequestException() {
         assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, new HashMap<>()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_400_001)
@@ -287,8 +265,6 @@ class ProfileServiceTest {
 
         verify(repository, never()).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, never()).writeValueAsString(any());
-        verify(objectMapper, never()).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
@@ -296,7 +272,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileThrowNotFoundException() throws JsonProcessingException {
+    void testPatchProfileThrowNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(CommonException.class)
@@ -306,8 +282,6 @@ class ProfileServiceTest {
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, never()).writeValueAsString(any());
-        verify(objectMapper, never()).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
@@ -315,8 +289,8 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithEmptyObjectThrowUnprocessableEntityException() throws JsonProcessingException {
-        given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(new ProfileEntity()));
+    void testPatchProfileWithEmptyObjectThrowUnprocessableEntityException() {
+        given(repository.findByUserId(anyString())).willReturn(Optional.of(new ProfileEntity()));
 
         assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, getProfileRequestMapPatch()))
@@ -324,8 +298,6 @@ class ProfileServiceTest {
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, never()).writeValueAsString(any());
-        verify(objectMapper, never()).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
@@ -333,7 +305,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithNonMapAttributesThrowUnprocessableEntityException() throws JsonProcessingException {
+    void testPatchProfileWithNonMapAttributesThrowUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var profileRequestMap = getProfileRequestMapPatch();
@@ -347,8 +319,6 @@ class ProfileServiceTest {
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, times(2)).writeValueAsString(any());
-        verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
@@ -356,7 +326,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithInvalidRequestAttributesThrowUnprocessableEntityException() throws JsonProcessingException {
+    void testPatchProfileWithInvalidRequestAttributesThrowUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var profileRequestMap = getProfileRequestMapPatch();
@@ -370,8 +340,6 @@ class ProfileServiceTest {
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
-        verify(objectMapper, times(2)).writeValueAsString(any());
-        verify(objectMapper, times(2)).readValue(anyString(), any(Class.class));
         verify(service, never()).updateProfile(anyString(), any(ProfileRequest.class));
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
         verify(repository, never()).save(any(ProfileEntity.class));
