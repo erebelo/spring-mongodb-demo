@@ -19,7 +19,7 @@ class ObjectMapperUtilTest {
         var objectMapper = ObjectMapperUtil.objectMapper;
 
         assertThat(objectMapper.getRegisteredModuleIds()).contains(JAVA_TIME_MODULE);
-        assertThat(objectMapper.getSerializationConfig().getDefaultPropertyInclusion().getValueInclusion()).isEqualTo(JsonInclude.Include.NON_NULL);
+        assertThat(objectMapper.getSerializationConfig().getDefaultPropertyInclusion().getValueInclusion()).isEqualTo(JsonInclude.Include.ALWAYS);
         assertThat(objectMapper.getSerializationConfig().isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)).isFalse();
 
         assertThat(objectMapper.getDateFormat()).isInstanceOf(SimpleDateFormat.class);

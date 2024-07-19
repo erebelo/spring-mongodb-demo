@@ -22,8 +22,8 @@ public final class ObjectMapperUtil {
         // Register JavaTimeModule for LocalDate serialization/deserialization
         objectMapper.registerModule(new JavaTimeModule());
 
-        // Set the ObjectMapper to include only non-null properties during serialization
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        // Set the ObjectMapper to include all properties during serialization, even if they are null or have default values
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 
         // Configure the date format for LocalDate
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
