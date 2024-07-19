@@ -2,8 +2,6 @@ package com.erebelo.springmongodbdemo.context;
 
 import com.erebelo.springmongodbdemo.context.interceptor.HeaderInterceptor;
 import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
-import com.erebelo.springmongodbdemo.exception.ExceptionResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,6 @@ import java.io.PrintWriter;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -29,9 +26,6 @@ class HeaderInterceptorTest {
 
     @InjectMocks
     private HeaderInterceptor headerInterceptor;
-
-    @Mock
-    private ObjectMapper objectMapper;
 
     @Mock
     private HttpServletRequest request;
@@ -66,7 +60,6 @@ class HeaderInterceptorTest {
     void testPreHandleMissingHeader() throws Exception {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(createLoggedInUserAnnotation());
         given(request.getHeader(anyString())).willReturn(null);
-        given(objectMapper.writeValueAsString(any(ExceptionResponse.class))).willReturn("jsonRepresentation");
         given(response.getWriter()).willReturn(Mockito.mock(PrintWriter.class));
 
         boolean result = headerInterceptor.preHandle(request, response, handlerMethod);

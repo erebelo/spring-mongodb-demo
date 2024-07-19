@@ -3,7 +3,6 @@ package com.erebelo.springmongodbdemo.exception;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -189,18 +187,17 @@ class GlobalExceptionHandlerTest {
         assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertNull(exceptionResponse.getCode());
-        assertEquals("An error occurred during transaction processing. Root cause: TransactionSystemException error", exceptionResponse.getMessage());
+        assertEquals("An error occurred during transaction processing. Root cause: TransactionSystemException error",
+                exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
         assertNull(exceptionResponse.getCause());
     }
 
     @Test
     void testClientException() {
-        var objectMapperMock = spy(new ObjectMapper());
-        ReflectionTestUtils.setField(handler, "objectMapper", objectMapperMock);
-
         var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
-                new Exception("{\"detail\":\"Invalid route\",\"method\":\"get\",\"status\":404,\"title\":\"Not Found\",\"type\":\"about:blank\"," +
+                new Exception("{\"detail\":\"Invalid route\",\"method\":\"get\",\"status\":404,\"title\":\"Not Found\"," +
+                        "\"type\":\"about:blank\"," +
                         "\"uri\":\"/metrics/pageviews/aggreg1ate/all-projects/all-1access/all-agents/daily/2015100100/2015103000\"}")));
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
@@ -215,9 +212,6 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testClientExceptionWithNoCause() {
-        var objectMapperMock = spy(new ObjectMapper());
-        ReflectionTestUtils.setField(handler, "objectMapper", objectMapperMock);
-
         var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
                 new Exception("error")));
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());

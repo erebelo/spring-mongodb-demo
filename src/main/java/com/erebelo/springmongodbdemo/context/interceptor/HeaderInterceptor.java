@@ -1,7 +1,6 @@
 package com.erebelo.springmongodbdemo.context.interceptor;
 
 import com.erebelo.springmongodbdemo.exception.ExceptionResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,11 @@ import java.io.IOException;
 
 import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_401_000;
+import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
 @Component
 @RequiredArgsConstructor
 public class HeaderInterceptor implements HandlerInterceptor {
-
-    private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeaderInterceptor.class);
 
@@ -43,7 +41,8 @@ public class HeaderInterceptor implements HandlerInterceptor {
                 try {
                     ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(401),
                             COMMON_ERROR_401_000.toString().replace('_', '-'),
-                            String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis(), null);
+                            String.format("Missing %s attribute in HttpHeaders", LOGGED_IN_USER_ID_HEADER), System.currentTimeMillis(),
+                            null);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));

@@ -2,7 +2,6 @@ package com.erebelo.springmongodbdemo.exception;
 
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -29,6 +28,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
+import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -36,7 +36,6 @@ import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum
 public class GlobalExceptionHandler {
 
     private final Environment env;
-    private final ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -147,10 +146,12 @@ public class GlobalExceptionHandler {
         var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
 
-        return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null));
+        return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, null, errorMessage,
+                System.currentTimeMillis(), null));
     }
 
-    private ResponseEntity<ExceptionResponse> parseClientExceptionMessage(final HttpStatus httpStatus, final String message, final Throwable cause) {
+    private ResponseEntity<ExceptionResponse> parseClientExceptionMessage(final HttpStatus httpStatus, final String message,
+            final Throwable cause) {
         var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
 
