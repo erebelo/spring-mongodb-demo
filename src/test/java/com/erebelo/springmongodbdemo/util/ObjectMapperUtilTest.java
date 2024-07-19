@@ -11,17 +11,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ObjectMapperUtilTest {
 
+    private static final String JAVA_TIME_MODULE = "jackson-datatype-jsr310";
+    private static final String ISO_LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+
     @Test
     void testObjectMapperConfiguration() {
         var objectMapper = ObjectMapperUtil.objectMapper;
 
-        assertThat(objectMapper.getRegisteredModuleIds()).contains("jackson-datatype-jsr310");
-        assertThat(objectMapper.getSerializationConfig().isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)).isFalse();
+        assertThat(objectMapper.getRegisteredModuleIds()).contains(JAVA_TIME_MODULE);
         assertThat(objectMapper.getSerializationConfig().getDefaultPropertyInclusion().getValueInclusion()).isEqualTo(JsonInclude.Include.NON_NULL);
+        assertThat(objectMapper.getSerializationConfig().isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)).isFalse();
 
         assertThat(objectMapper.getDateFormat()).isInstanceOf(SimpleDateFormat.class);
         SimpleDateFormat dateFormat = (SimpleDateFormat) objectMapper.getDateFormat();
-        assertThat(dateFormat.toPattern()).isEqualTo("yyyy-MM-dd");
+        assertThat(dateFormat.toPattern()).isEqualTo(ISO_LOCAL_DATE_FORMAT);
     }
 
     @Test

@@ -14,17 +14,21 @@ public final class ObjectMapperUtil {
 
     public static final ObjectMapper objectMapper;
 
+    private static final String ISO_LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+
     static {
         objectMapper = new ObjectMapper();
 
         // Register JavaTimeModule for LocalDate serialization/deserialization
         objectMapper.registerModule(new JavaTimeModule());
 
-        // Configure the date format for LocalDate
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // Set the ObjectMapper to include only non-null properties during serialization
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
+        // Configure the date format for LocalDate
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         // Set a custom date format using SimpleDateFormat
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        objectMapper.setDateFormat(new SimpleDateFormat(ISO_LOCAL_DATE_FORMAT));
     }
 }
