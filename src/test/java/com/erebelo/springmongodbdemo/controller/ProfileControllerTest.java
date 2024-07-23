@@ -1,7 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
-import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +40,8 @@ import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequestMapPatch;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponse;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponsePatch;
+import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponsePatchResultMatcher;
+import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponseResultMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,7 +56,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,8 +79,6 @@ class ProfileControllerTest {
     private JacksonTester<Map> mapJacksonTester;
 
     private static final String USER_ID_PARAM = "userId";
-    private static final ProfileResponse RESPONSE = getProfileResponse();
-    private static final ProfileResponse PATCH_RESPONSE = getProfileResponsePatch();
 
     @BeforeEach
     void init() {
@@ -95,34 +93,13 @@ class ProfileControllerTest {
 
     @Test
     void testGetProfileSuccessfully() throws Exception {
-        given(service.getProfile(anyString())).willReturn(RESPONSE);
+        given(service.getProfile(anyString())).willReturn(getProfileResponse());
 
         mockMvc.perform(get(PROFILE)
                         .param(USER_ID_PARAM, USER_ID)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value(RESPONSE.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(RESPONSE.getLastName()))
-                .andExpect(jsonPath("$.dateOfBirth").value(RESPONSE.getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.numberOfDependents").value(RESPONSE.getNumberOfDependents()))
-                .andExpect(jsonPath("$.estimatedAnnualIncome").value(RESPONSE.getEstimatedAnnualIncome()))
-                .andExpect(jsonPath("$.estimatedNetWorth").value(RESPONSE.getEstimatedNetWorth()))
-                .andExpect(jsonPath("$.gender").value(RESPONSE.getGender().getValue()))
-                .andExpect(jsonPath("$.maritalStatus").value(RESPONSE.getMaritalStatus().getValue()))
-                .andExpect(jsonPath("$.employmentStatus").value(RESPONSE.getEmploymentStatus().getValue()))
-                .andExpect(jsonPath("$.healthLevel").value(RESPONSE.getHealthLevel().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactType").value(RESPONSE.getContactNumbers().get(0).getContactType().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactValue").value(RESPONSE.getContactNumbers().get(0).getContactValue()))
-                .andExpect(jsonPath("$.currentLocation.address").value(RESPONSE.getCurrentLocation().getAddress()))
-                .andExpect(jsonPath("$.currentLocation.city").value(RESPONSE.getCurrentLocation().getCity()))
-                .andExpect(jsonPath("$.currentLocation.state").value(RESPONSE.getCurrentLocation().getState()))
-                .andExpect(jsonPath("$.currentLocation.country").value(RESPONSE.getCurrentLocation().getCountry()))
-                .andExpect(jsonPath("$.currentLocation.postalCode").value(RESPONSE.getCurrentLocation().getPostalCode()))
-                .andExpect(jsonPath("$.spouseProfile.firstName").value(RESPONSE.getSpouseProfile().getFirstName()))
-                .andExpect(jsonPath("$.spouseProfile.lastName").value(RESPONSE.getSpouseProfile().getLastName()))
-                .andExpect(jsonPath("$.spouseProfile.dateOfBirth").value(RESPONSE.getSpouseProfile().getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.spouseProfile.gender").value(RESPONSE.getSpouseProfile().getGender().getValue()))
-                .andExpect(jsonPath("$.spouseProfile.employmentStatus").value(RESPONSE.getSpouseProfile().getEmploymentStatus().getValue()))
+                .andExpectAll(getProfileResponseResultMatcher())
                 .andReturn();
 
         verify(service).getProfile(USER_ID);
@@ -143,7 +120,7 @@ class ProfileControllerTest {
 
     @Test
     void testInsertProfileSuccessfully() throws Exception {
-        given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(RESPONSE);
+        given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(post(PROFILE)
                         .param(USER_ID_PARAM, USER_ID)
@@ -151,28 +128,7 @@ class ProfileControllerTest {
                         .content(requestJacksonTester.write(getProfileRequest()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName").value(RESPONSE.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(RESPONSE.getLastName()))
-                .andExpect(jsonPath("$.dateOfBirth").value(RESPONSE.getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.numberOfDependents").value(RESPONSE.getNumberOfDependents()))
-                .andExpect(jsonPath("$.estimatedAnnualIncome").value(RESPONSE.getEstimatedAnnualIncome()))
-                .andExpect(jsonPath("$.estimatedNetWorth").value(RESPONSE.getEstimatedNetWorth()))
-                .andExpect(jsonPath("$.gender").value(RESPONSE.getGender().getValue()))
-                .andExpect(jsonPath("$.maritalStatus").value(RESPONSE.getMaritalStatus().getValue()))
-                .andExpect(jsonPath("$.employmentStatus").value(RESPONSE.getEmploymentStatus().getValue()))
-                .andExpect(jsonPath("$.healthLevel").value(RESPONSE.getHealthLevel().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactType").value(RESPONSE.getContactNumbers().get(0).getContactType().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactValue").value(RESPONSE.getContactNumbers().get(0).getContactValue()))
-                .andExpect(jsonPath("$.currentLocation.address").value(RESPONSE.getCurrentLocation().getAddress()))
-                .andExpect(jsonPath("$.currentLocation.city").value(RESPONSE.getCurrentLocation().getCity()))
-                .andExpect(jsonPath("$.currentLocation.state").value(RESPONSE.getCurrentLocation().getState()))
-                .andExpect(jsonPath("$.currentLocation.country").value(RESPONSE.getCurrentLocation().getCountry()))
-                .andExpect(jsonPath("$.currentLocation.postalCode").value(RESPONSE.getCurrentLocation().getPostalCode()))
-                .andExpect(jsonPath("$.spouseProfile.firstName").value(RESPONSE.getSpouseProfile().getFirstName()))
-                .andExpect(jsonPath("$.spouseProfile.lastName").value(RESPONSE.getSpouseProfile().getLastName()))
-                .andExpect(jsonPath("$.spouseProfile.dateOfBirth").value(RESPONSE.getSpouseProfile().getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.spouseProfile.gender").value(RESPONSE.getSpouseProfile().getGender().getValue()))
-                .andExpect(jsonPath("$.spouseProfile.employmentStatus").value(RESPONSE.getSpouseProfile().getEmploymentStatus().getValue()))
+                .andExpectAll(getProfileResponseResultMatcher())
                 .andReturn();
 
         verify(service).insertProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
@@ -199,7 +155,7 @@ class ProfileControllerTest {
 
     @Test
     void testUpdateProfileSuccessfully() throws Exception {
-        given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(RESPONSE);
+        given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(put(PROFILE)
                         .param(USER_ID_PARAM, USER_ID)
@@ -207,28 +163,7 @@ class ProfileControllerTest {
                         .content(requestJacksonTester.write(getProfileRequest()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value(RESPONSE.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(RESPONSE.getLastName()))
-                .andExpect(jsonPath("$.dateOfBirth").value(RESPONSE.getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.numberOfDependents").value(RESPONSE.getNumberOfDependents()))
-                .andExpect(jsonPath("$.estimatedAnnualIncome").value(RESPONSE.getEstimatedAnnualIncome()))
-                .andExpect(jsonPath("$.estimatedNetWorth").value(RESPONSE.getEstimatedNetWorth()))
-                .andExpect(jsonPath("$.gender").value(RESPONSE.getGender().getValue()))
-                .andExpect(jsonPath("$.maritalStatus").value(RESPONSE.getMaritalStatus().getValue()))
-                .andExpect(jsonPath("$.employmentStatus").value(RESPONSE.getEmploymentStatus().getValue()))
-                .andExpect(jsonPath("$.healthLevel").value(RESPONSE.getHealthLevel().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactType").value(RESPONSE.getContactNumbers().get(0).getContactType().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactValue").value(RESPONSE.getContactNumbers().get(0).getContactValue()))
-                .andExpect(jsonPath("$.currentLocation.address").value(RESPONSE.getCurrentLocation().getAddress()))
-                .andExpect(jsonPath("$.currentLocation.city").value(RESPONSE.getCurrentLocation().getCity()))
-                .andExpect(jsonPath("$.currentLocation.state").value(RESPONSE.getCurrentLocation().getState()))
-                .andExpect(jsonPath("$.currentLocation.country").value(RESPONSE.getCurrentLocation().getCountry()))
-                .andExpect(jsonPath("$.currentLocation.postalCode").value(RESPONSE.getCurrentLocation().getPostalCode()))
-                .andExpect(jsonPath("$.spouseProfile.firstName").value(RESPONSE.getSpouseProfile().getFirstName()))
-                .andExpect(jsonPath("$.spouseProfile.lastName").value(RESPONSE.getSpouseProfile().getLastName()))
-                .andExpect(jsonPath("$.spouseProfile.dateOfBirth").value(RESPONSE.getSpouseProfile().getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.spouseProfile.gender").value(RESPONSE.getSpouseProfile().getGender().getValue()))
-                .andExpect(jsonPath("$.spouseProfile.employmentStatus").value(RESPONSE.getSpouseProfile().getEmploymentStatus().getValue()))
+                .andExpectAll(getProfileResponseResultMatcher())
                 .andReturn();
 
         verify(service).updateProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
@@ -255,7 +190,7 @@ class ProfileControllerTest {
 
     @Test
     void testPatchProfileSuccessfully() throws Exception {
-        given(service.patchProfile(anyString(), any(Map.class))).willReturn(PATCH_RESPONSE);
+        given(service.patchProfile(anyString(), any(Map.class))).willReturn(getProfileResponsePatch());
 
         mockMvc.perform(patch(PROFILE)
                         .param(USER_ID_PARAM, USER_ID)
@@ -263,28 +198,7 @@ class ProfileControllerTest {
                         .content(mapJacksonTester.write(getProfileRequestMapPatch()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value(PATCH_RESPONSE.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(PATCH_RESPONSE.getLastName()))
-                .andExpect(jsonPath("$.dateOfBirth").value(PATCH_RESPONSE.getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.numberOfDependents").value(PATCH_RESPONSE.getNumberOfDependents()))
-                .andExpect(jsonPath("$.estimatedAnnualIncome").value(PATCH_RESPONSE.getEstimatedAnnualIncome()))
-                .andExpect(jsonPath("$.estimatedNetWorth").value(PATCH_RESPONSE.getEstimatedNetWorth()))
-                .andExpect(jsonPath("$.gender").value(PATCH_RESPONSE.getGender().getValue()))
-                .andExpect(jsonPath("$.maritalStatus").value(PATCH_RESPONSE.getMaritalStatus().getValue()))
-                .andExpect(jsonPath("$.employmentStatus").value(PATCH_RESPONSE.getEmploymentStatus().getValue()))
-                .andExpect(jsonPath("$.healthLevel").value(PATCH_RESPONSE.getHealthLevel().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactType").value(PATCH_RESPONSE.getContactNumbers().get(0).getContactType().getValue()))
-                .andExpect(jsonPath("$.contactNumbers[0].contactValue").value(PATCH_RESPONSE.getContactNumbers().get(0).getContactValue()))
-                .andExpect(jsonPath("$.currentLocation.address").value(PATCH_RESPONSE.getCurrentLocation().getAddress()))
-                .andExpect(jsonPath("$.currentLocation.city").value(PATCH_RESPONSE.getCurrentLocation().getCity()))
-                .andExpect(jsonPath("$.currentLocation.state").value(PATCH_RESPONSE.getCurrentLocation().getState()))
-                .andExpect(jsonPath("$.currentLocation.country").value(PATCH_RESPONSE.getCurrentLocation().getCountry()))
-                .andExpect(jsonPath("$.currentLocation.postalCode").doesNotExist())
-                .andExpect(jsonPath("$.spouseProfile.firstName").value(PATCH_RESPONSE.getSpouseProfile().getFirstName()))
-                .andExpect(jsonPath("$.spouseProfile.lastName").value(PATCH_RESPONSE.getSpouseProfile().getLastName()))
-                .andExpect(jsonPath("$.spouseProfile.dateOfBirth").value(PATCH_RESPONSE.getSpouseProfile().getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.spouseProfile.gender").value(PATCH_RESPONSE.getSpouseProfile().getGender().getValue()))
-                .andExpect(jsonPath("$.spouseProfile.employmentStatus").value(PATCH_RESPONSE.getSpouseProfile().getEmploymentStatus().getValue()))
+                .andExpectAll(getProfileResponsePatchResultMatcher())
                 .andReturn();
 
         verify(service).patchProfile(eq(USER_ID), (Map<String, Object>) argumentCaptor.capture());

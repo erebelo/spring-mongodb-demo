@@ -20,6 +20,7 @@ import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.domain.response.SpouseProfileResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProfileMock {
@@ -224,5 +227,61 @@ public final class ProfileMock {
         response.getCurrentLocation().setPostalCode(null);
 
         return response;
+    }
+
+    public static ResultMatcher[] getProfileResponseResultMatcher() {
+        var response = getProfileResponse();
+        return new ResultMatcher[]{
+                jsonPath("$.firstName").value(response.getFirstName()),
+                jsonPath("$.lastName").value(response.getLastName()),
+                jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
+                jsonPath("$.numberOfDependents").value(response.getNumberOfDependents()),
+                jsonPath("$.estimatedAnnualIncome").value(response.getEstimatedAnnualIncome()),
+                jsonPath("$.estimatedNetWorth").value(response.getEstimatedNetWorth()),
+                jsonPath("$.gender").value(response.getGender().getValue()),
+                jsonPath("$.maritalStatus").value(response.getMaritalStatus().getValue()),
+                jsonPath("$.employmentStatus").value(response.getEmploymentStatus().getValue()),
+                jsonPath("$.healthLevel").value(response.getHealthLevel().getValue()),
+                jsonPath("$.contactNumbers[0].contactType").value(response.getContactNumbers().get(0).getContactType().getValue()),
+                jsonPath("$.contactNumbers[0].contactValue").value(response.getContactNumbers().get(0).getContactValue()),
+                jsonPath("$.currentLocation.address").value(response.getCurrentLocation().getAddress()),
+                jsonPath("$.currentLocation.city").value(response.getCurrentLocation().getCity()),
+                jsonPath("$.currentLocation.state").value(response.getCurrentLocation().getState()),
+                jsonPath("$.currentLocation.country").value(response.getCurrentLocation().getCountry()),
+                jsonPath("$.currentLocation.postalCode").value(response.getCurrentLocation().getPostalCode()),
+                jsonPath("$.spouseProfile.firstName").value(response.getSpouseProfile().getFirstName()),
+                jsonPath("$.spouseProfile.lastName").value(response.getSpouseProfile().getLastName()),
+                jsonPath("$.spouseProfile.dateOfBirth").value(response.getSpouseProfile().getDateOfBirth().toString()),
+                jsonPath("$.spouseProfile.gender").value(response.getSpouseProfile().getGender().getValue()),
+                jsonPath("$.spouseProfile.employmentStatus").value(response.getSpouseProfile().getEmploymentStatus().getValue())
+        };
+    }
+
+    public static ResultMatcher[] getProfileResponsePatchResultMatcher() {
+        var response = getProfileResponsePatch();
+        return new ResultMatcher[]{
+                jsonPath("$.firstName").value(response.getFirstName()),
+                jsonPath("$.lastName").value(response.getLastName()),
+                jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
+                jsonPath("$.numberOfDependents").value(response.getNumberOfDependents()),
+                jsonPath("$.estimatedAnnualIncome").value(response.getEstimatedAnnualIncome()),
+                jsonPath("$.estimatedNetWorth").value(response.getEstimatedNetWorth()),
+                jsonPath("$.gender").value(response.getGender().getValue()),
+                jsonPath("$.maritalStatus").value(response.getMaritalStatus().getValue()),
+                jsonPath("$.employmentStatus").value(response.getEmploymentStatus().getValue()),
+                jsonPath("$.healthLevel").value(response.getHealthLevel().getValue()),
+                jsonPath("$.contactNumbers[0].contactType").value(response.getContactNumbers().get(0).getContactType().getValue()),
+                jsonPath("$.contactNumbers[0].contactValue").value(response.getContactNumbers().get(0).getContactValue()),
+                jsonPath("$.currentLocation.address").value(response.getCurrentLocation().getAddress()),
+                jsonPath("$.currentLocation.city").value(response.getCurrentLocation().getCity()),
+                jsonPath("$.currentLocation.state").value(response.getCurrentLocation().getState()),
+                jsonPath("$.currentLocation.country").value(response.getCurrentLocation().getCountry()),
+                jsonPath("$.currentLocation.postalCode").doesNotExist(),
+                jsonPath("$.spouseProfile.firstName").value(response.getSpouseProfile().getFirstName()),
+                jsonPath("$.spouseProfile.lastName").value(response.getSpouseProfile().getLastName()),
+                jsonPath("$.spouseProfile.dateOfBirth").value(response.getSpouseProfile().getDateOfBirth().toString()),
+                jsonPath("$.spouseProfile.gender").value(response.getSpouseProfile().getGender().getValue()),
+                jsonPath("$.spouseProfile.employmentStatus").value(response.getSpouseProfile().getEmploymentStatus().getValue())
+        };
     }
 }
