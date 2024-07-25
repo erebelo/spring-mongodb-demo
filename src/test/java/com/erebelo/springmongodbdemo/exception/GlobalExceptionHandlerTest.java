@@ -6,6 +6,7 @@ import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,8 +107,13 @@ class GlobalExceptionHandlerTest {
         ConstraintViolation<?> violation = mock(ConstraintViolation.class);
         given(violation.getMessage()).willReturn("ConstraintViolationException error");
 
-        var exceptionMock = mock(ConstraintViolationException.class);
+        Path path = mock(Path.class);
+        given(path.toString()).willReturn("property");
+        given(violation.getPropertyPath()).willReturn(path);
+
+        ConstraintViolationException exceptionMock = mock(ConstraintViolationException.class);
         given(exceptionMock.getConstraintViolations()).willReturn(Set.of(violation));
+        given(exceptionMock.getMessage()).willReturn("property: ConstraintViolationException error");
 
         var responseEntity = handler.handleConstraintViolationException(exceptionMock);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -116,7 +122,7 @@ class GlobalExceptionHandlerTest {
         assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertNull(exceptionResponse.getCode());
-        assertEquals("ConstraintViolationException error", exceptionResponse.getMessage());
+        assertEquals("property: ConstraintViolationException error", exceptionResponse.getMessage());
         assertNull(exceptionResponse.getCause());
     }
 
