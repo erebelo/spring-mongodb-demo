@@ -17,6 +17,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -75,6 +76,13 @@ public class GlobalExceptionHandler {
         }
 
         return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception) {
+        LOGGER.error("HttpMediaTypeNotSupportedException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.UNSUPPORTED_MEDIA_TYPE, exception.getMessage());
     }
 
     @ResponseBody

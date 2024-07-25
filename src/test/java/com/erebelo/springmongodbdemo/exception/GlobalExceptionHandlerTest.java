@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -116,6 +117,21 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertNull(exceptionResponse.getCode());
         assertEquals("ConstraintViolationException error", exceptionResponse.getMessage());
+        assertNull(exceptionResponse.getCause());
+    }
+
+    @Test
+    void tesHttpMediaTypeNotSupportedException() {
+        var responseEntity = handler.handleHttpMediaTypeNotSupportedException(new HttpMediaTypeNotSupportedException(
+                "HttpMediaTypeNotSupportedException error"));
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, responseEntity.getStatusCode());
+
+        var exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, exceptionResponse.getStatus());
+        assertNull(exceptionResponse.getCode());
+        assertEquals("HttpMediaTypeNotSupportedException error", exceptionResponse.getMessage());
+        assertNotNull(exceptionResponse.getTimestamp());
         assertNull(exceptionResponse.getCause());
     }
 
