@@ -3,7 +3,6 @@ package com.erebelo.springmongodbdemo.exception;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
@@ -65,17 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException exception) {
         LOGGER.error("ConstraintViolationException thrown:", exception);
-
-        String errorMessage = null;
-        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
-        if (!ObjectUtils.isEmpty(violations)) {
-            List<String> messages = violations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .toList();
-            errorMessage = String.join(";", messages);
-        }
-
-        return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
