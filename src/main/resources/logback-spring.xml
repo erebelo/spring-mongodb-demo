@@ -4,7 +4,7 @@
     <!-- Console Appender -->
     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{requestId}] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%X] --- [%15.15t] %-40.40c{1} : %m%n%ex</pattern>
         </encoder>
     </appender>
 
@@ -22,7 +22,7 @@
             <fileNamePattern>logs/spring-mongodb-demo-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{requestId}] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%X] --- [%15.15t] %-40.40c{1} : %m%n%ex</pattern>
         </encoder>
     </appender>
 
