@@ -38,7 +38,7 @@ public class MdcLoggingFilter extends OncePerRequestFilter {
                 httpHeaders.put(REQUEST_ID_HEADER, UUID.randomUUID().toString());
             }
 
-            httpHeaders.forEach((k, v) -> MDC.put(k.replaceAll("-", ""), v));
+            httpHeaders.forEach(MDC::put);
 
             filterChain.doFilter(request, response);
         } finally {
