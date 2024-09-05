@@ -28,26 +28,25 @@ class MdcLoggingFilterTest {
     @Mock
     private FilterChain filterChain;
 
-    private final MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class);
-
-    private static final String REQUEST_ID_HEADER = "requestId";
+    private static final String REQUEST_ID_HEADER = "RequestId";
 
     @Test
     void testDoFilterInternalWithRequestIdHeader() throws ServletException, IOException {
         var servletRequestMock = new MockHttpServletRequest();
         var servletResponseMock = new MockHttpServletResponse();
         var requestId = UUID.randomUUID().toString();
+
         servletRequestMock.addHeader(REQUEST_ID_HEADER, requestId);
 
-        mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId)).thenAnswer(invocation -> null);
+        try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
+            mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId)).thenAnswer(invocation -> null);
 
-        mdcLoggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
+            mdcLoggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
 
-        mdcMockedStatic.verify(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId));
-        verify(filterChain).doFilter(servletRequestMock, servletResponseMock);
-        mdcMockedStatic.verify(MDC::clear);
-
-        mdcMockedStatic.close();
+            mdcMockedStatic.verify(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId));
+            verify(filterChain).doFilter(servletRequestMock, servletResponseMock);
+            mdcMockedStatic.verify(MDC::clear);
+        }
     }
 
     @Test
@@ -56,18 +55,17 @@ class MdcLoggingFilterTest {
         var servletResponseMock = new MockHttpServletResponse();
         var requestId = UUID.randomUUID();
 
-        mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId.toString())).thenAnswer(invocation -> null);
+        try (MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class);
+             MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
 
-        try (MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class)) {
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(requestId);
+            mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId.toString())).thenAnswer(invocation -> null);
 
             mdcLoggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
 
             mdcMockedStatic.verify(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId.toString()));
             verify(filterChain).doFilter(servletRequestMock, servletResponseMock);
             mdcMockedStatic.verify(MDC::clear);
-
-            mdcMockedStatic.close();
         }
     }
 }
