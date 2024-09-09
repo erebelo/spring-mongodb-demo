@@ -48,7 +48,7 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
             <version>${spring.log4j2.version}</version>
         </dependency>
-        <!--ECS Layout rransforms the log in json format-->
+        <!--ECS Layout transforms the log into json format-->
         <dependency>
             <groupId>co.elastic.logging</groupId>
             <artifactId>log4j2-ecs-layout</artifactId>
