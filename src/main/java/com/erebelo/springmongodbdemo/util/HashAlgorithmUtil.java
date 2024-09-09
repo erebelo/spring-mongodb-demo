@@ -2,17 +2,15 @@ package com.erebelo.springmongodbdemo.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HashAlgorithmUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HashAlgorithmUtil.class);
 
     private static final MessageDigest digest;
 
@@ -27,7 +25,7 @@ public final class HashAlgorithmUtil {
     public static synchronized String generateSHAHashObject(String objString) {
         var newObjString = objString + ", currentTimeMillis=" + System.currentTimeMillis();
 
-        LOGGER.info("Generating a hash value by the provided object");
+        log.info("Generating a hash value by the provided object");
         byte[] hash = digest.digest(newObjString.getBytes(StandardCharsets.UTF_8));
 
         return bytesToHex(hash);

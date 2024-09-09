@@ -4,17 +4,15 @@ import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Log4j2
 public class ProfileConstraintValidator implements ConstraintValidator<ProfileValidator, ProfileRequest> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileConstraintValidator.class);
 
     @Override
     public void initialize(ProfileValidator constraintAnnotation) {
@@ -23,7 +21,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     @Override
     public boolean isValid(ProfileRequest request, ConstraintValidatorContext context) {
-        LOGGER.info("Validating the profile request object");
+        log.info("Validating the profile request object");
         List<FieldMessage> errorMessages = new ArrayList<>();
 
         validateDateOfBirth(request, errorMessages);
@@ -39,7 +37,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     public static void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
-        LOGGER.info("Validating dateOfBirth field");
+        log.info("Validating dateOfBirth field");
         var dob = request.getDateOfBirth();
 
         if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {
@@ -53,7 +51,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     public static void validateContactNumbers(ProfileRequest request, List<FieldMessage> errorMessages) {
-        LOGGER.info("Validating contactNumbers object");
+        log.info("Validating contactNumbers object");
         var contactNumbers = request.getContactNumbers();
 
         if (Objects.nonNull(contactNumbers) && contactNumbers.stream().anyMatch(Objects::isNull)) {
@@ -62,7 +60,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
     }
 
     public static void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
-        LOGGER.info("Validating spouseProfile object");
+        log.info("Validating spouseProfile object");
         var maritalStatus = request.getMaritalStatus();
 
         if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile()) &&

@@ -1,15 +1,15 @@
 package com.erebelo.springmongodbdemo.context;
 
-import com.erebelo.springmongodbdemo.context.logging.MdcLoggingFilter;
+import com.erebelo.springmongodbdemo.context.logging.LoggingFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.MDC;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -20,15 +20,16 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class MdcLoggingFilterTest {
+class LoggingFilterTest {
 
     @InjectMocks
-    private MdcLoggingFilter mdcLoggingFilter;
+    private LoggingFilter loggingFilter;
 
     @Mock
     private FilterChain filterChain;
 
     private static final String REQUEST_ID_HEADER = "RequestId";
+    private static final String REQUEST_ID_HEADER_PREFIX = "GEN-";
 
     @Test
     void testDoFilterInternalWithRequestIdHeader() throws ServletException, IOException {
@@ -38,14 +39,14 @@ class MdcLoggingFilterTest {
 
         servletRequestMock.addHeader(REQUEST_ID_HEADER, requestId);
 
-        try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
-            mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId)).thenAnswer(invocation -> null);
+        try (MockedStatic<ThreadContext> threadContextMockedStatic = mockStatic(ThreadContext.class)) {
+            threadContextMockedStatic.when(() -> ThreadContext.put(REQUEST_ID_HEADER, requestId)).thenAnswer(invocation -> null);
 
-            mdcLoggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
+            loggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
 
-            mdcMockedStatic.verify(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId));
+            threadContextMockedStatic.verify(() -> ThreadContext.put(REQUEST_ID_HEADER, requestId));
             verify(filterChain).doFilter(servletRequestMock, servletResponseMock);
-            mdcMockedStatic.verify(MDC::clear);
+            threadContextMockedStatic.verify(ThreadContext::clearMap);
         }
     }
 
@@ -56,16 +57,16 @@ class MdcLoggingFilterTest {
         var requestId = UUID.randomUUID();
 
         try (MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class);
-             MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
+             MockedStatic<ThreadContext> threadContextMockedStatic = mockStatic(ThreadContext.class)) {
 
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(requestId);
-            mdcMockedStatic.when(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId.toString())).thenAnswer(invocation -> null);
+            threadContextMockedStatic.when(() -> ThreadContext.put(REQUEST_ID_HEADER, REQUEST_ID_HEADER_PREFIX + requestId)).thenAnswer(invocation -> null);
 
-            mdcLoggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
+            loggingFilter.doFilter(servletRequestMock, servletResponseMock, filterChain);
 
-            mdcMockedStatic.verify(() -> MDC.put(REQUEST_ID_HEADER.replaceAll("-", ""), requestId.toString()));
+            threadContextMockedStatic.verify(() -> ThreadContext.put(REQUEST_ID_HEADER, REQUEST_ID_HEADER_PREFIX + requestId));
             verify(filterChain).doFilter(servletRequestMock, servletResponseMock);
-            mdcMockedStatic.verify(MDC::clear);
+            threadContextMockedStatic.verify(ThreadContext::clearMap);
         }
     }
 }

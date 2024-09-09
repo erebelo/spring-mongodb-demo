@@ -6,8 +6,7 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -22,6 +21,7 @@ import java.util.Objects;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
 import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getHttpHeaders;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class WikimediaServiceImpl implements WikimediaService {
@@ -31,13 +31,11 @@ public class WikimediaServiceImpl implements WikimediaService {
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WikimediaServiceImpl.class);
-
     private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews";
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
-        LOGGER.info("Getting daily aggregated Wikimedia pageviews for all projects");
+        log.info("Getting daily aggregated Wikimedia pageviews for all projects");
         WikimediaResponse wikimediaPageViews;
 
         try {
@@ -53,7 +51,7 @@ public class WikimediaServiceImpl implements WikimediaService {
             throw new CommonException(COMMON_ERROR_404_004);
         }
 
-        LOGGER.info("{} wikimedia items found", wikimediaPageViews.getItems().size());
+        log.info("{} wikimedia items found", wikimediaPageViews.getItems().size());
         return wikimediaPageViews;
     }
 }

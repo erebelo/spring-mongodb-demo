@@ -3,27 +3,25 @@ package com.erebelo.springmongodbdemo.util;
 import com.erebelo.springmongodbdemo.domain.request.ByteWrapperObject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ByteHandlerUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ByteHandlerUtil.class);
-
     public static ByteWrapperObject byteGenerator(Object obj) {
-        LOGGER.info("Generating a byte array from object");
+        log.info("Generating a byte array from object");
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(obj);
             return new ByteWrapperObject(baos.toByteArray());
         } catch (IOException e) {
-            LOGGER.warn("Error generating byte array from object", e);
+            log.warn("Error generating byte array from object", e);
             return null;
         }
     }

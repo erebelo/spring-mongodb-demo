@@ -4,8 +4,7 @@ import com.erebelo.springmongodbdemo.exception.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -19,11 +18,10 @@ import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_U
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_401_000;
 import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class HeaderInterceptor implements HandlerInterceptor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HeaderInterceptor.class);
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
@@ -33,7 +31,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                 annotation = ((HandlerMethod) handler).getMethod().getDeclaringClass().getAnnotation(HeaderLoggedInUser.class);
             }
             if (annotation != null) {
-                LOGGER.info("Checking whether request contains the loggedInUser http headers");
+                log.info("Checking whether request contains the loggedInUser http headers");
                 String loggedInUser = request.getHeader(LOGGED_IN_USER_ID_HEADER);
                 if (loggedInUser != null && !loggedInUser.trim().isEmpty()) {
                     return true;

@@ -1,5 +1,6 @@
 package com.erebelo.springmongodbdemo.rest;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -8,8 +9,6 @@ import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -20,20 +19,20 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 
+@Log4j2
 @Component
 public class HttpClientAuth extends AbstractRestTemplate {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientAuth.class);
-
     @Autowired
-    public HttpClientAuth(@Value("${connection.timeout:3000}") String connTimeout, @Value("${connection.read.timeout:5000}") String connReadTimeout)
+    public HttpClientAuth(@Value("${connection.timeout:3000}") String connTimeout,
+            @Value("${connection.read.timeout:5000}") String connReadTimeout)
             throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         super(new ConnectionProps(connTimeout, new ConnectionProps.Read(connReadTimeout)));
     }
 
     protected void restTemplateSetup() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         try {
-            LOGGER.info("Instantiating HttpClientAuth RestTemplate");
+            log.info("Instantiating HttpClientAuth RestTemplate");
             HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(buildHttpClient());
             requestFactory.setConnectTimeout(Integer.parseInt(this.connProps.getTimeout()));
@@ -41,7 +40,7 @@ public class HttpClientAuth extends AbstractRestTemplate {
 
             this.restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e) {
-            LOGGER.error("Error creating HttpClientAuth RestTemplate");
+            log.error("Error creating HttpClientAuth RestTemplate");
             throw e;
         }
     }

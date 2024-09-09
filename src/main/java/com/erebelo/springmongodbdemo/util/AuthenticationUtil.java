@@ -3,8 +3,7 @@ package com.erebelo.springmongodbdemo.util;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,10 +17,9 @@ import java.util.stream.Collectors;
 
 import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
 
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AuthenticationUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationUtil.class);
 
     public static String getLoggedInUser() {
         return getHeaderByName(LOGGED_IN_USER_ID_HEADER);
@@ -59,7 +57,7 @@ public final class AuthenticationUtil {
         var requestAttributes = RequestContextHolder.getRequestAttributes();
 
         if (requestAttributes == null) {
-            LOGGER.error("Error getting request attributes by RequestContextHolder");
+            log.error("Error getting request attributes by RequestContextHolder");
             throw new IllegalStateException("No current request attributes found in RequestContextHolder");
         }
 

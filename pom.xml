@@ -21,6 +21,8 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.log4j2.version>3.3.1</spring.log4j2.version>
+        <ecs.layout.version>1.6.0</ecs.layout.version>
         <spring.mongodb.version>2.6.7</spring.mongodb.version>
         <httpclient5.version>5.3</httpclient5.version>
         <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
@@ -33,7 +35,26 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!--Logging-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <version>${spring.log4j2.version}</version>
+        </dependency>
+        <!--ECS Layout rransforms the log in json format-->
+        <dependency>
+            <groupId>co.elastic.logging</groupId>
+            <artifactId>log4j2-ecs-layout</artifactId>
+            <version>${ecs.layout.version}</version>
+        </dependency>
+        <!--MongoDB-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>

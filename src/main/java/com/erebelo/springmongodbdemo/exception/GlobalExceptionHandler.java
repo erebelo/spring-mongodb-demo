@@ -5,8 +5,7 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
@@ -29,6 +28,7 @@ import java.util.Objects;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
+@Log4j2
 @ControllerAdvice
 @RequiredArgsConstructor
 @PropertySources(@PropertySource("classpath:common-error-messages.properties"))
@@ -36,54 +36,52 @@ public class GlobalExceptionHandler {
 
     private final Environment env;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-        LOGGER.error("Exception thrown:", exception);
+        log.error("Exception thrown:", exception);
         return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException exception) {
-        LOGGER.error("IllegalStateException thrown:", exception);
+        log.error("IllegalStateException thrown:", exception);
         return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
-        LOGGER.error("IllegalArgumentException thrown:", exception);
+        log.error("IllegalArgumentException thrown:", exception);
         return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException exception) {
-        LOGGER.error("ConstraintViolationException thrown:", exception);
+        log.error("ConstraintViolationException thrown:", exception);
         return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception) {
-        LOGGER.error("HttpMediaTypeNotSupportedException thrown:", exception);
+        log.error("HttpMediaTypeNotSupportedException thrown:", exception);
         return parseExceptionMessage(HttpStatus.UNSUPPORTED_MEDIA_TYPE, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
-        LOGGER.error("HttpMessageNotReadableException thrown:", exception);
+        log.error("HttpMessageNotReadableException thrown:", exception);
         return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
-        LOGGER.error("HttpRequestMethodNotSupportedException thrown:", exception);
+        log.error("HttpRequestMethodNotSupportedException thrown:", exception);
 
         String errorMessage = exception.getMessage();
         var supportedHttpMethods = exception.getSupportedMethods();
@@ -97,7 +95,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        LOGGER.error("MethodArgumentNotValidException thrown:", exception);
+        log.error("MethodArgumentNotValidException thrown:", exception);
 
         String errorMessage = null;
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
@@ -113,7 +111,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionSystemException(TransactionSystemException exception) {
-        LOGGER.error("TransactionSystemException thrown:", exception);
+        log.error("TransactionSystemException thrown:", exception);
 
         var errorMessage = "An error occurred during transaction processing";
         var rootCause = exception.getRootCause();
@@ -127,14 +125,14 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ExceptionResponse> handleClientException(ClientException exception) {
-        LOGGER.error("ClientException thrown:", exception);
+        log.error("ClientException thrown:", exception);
         return parseClientExceptionMessage(exception.getHttpStatus(), exception.getMessage(), exception.getCause());
     }
 
     @ResponseBody
     @ExceptionHandler(CommonException.class)
     public ExceptionResponse handleCommonException(CommonException exception, HttpServletResponse response) {
-        LOGGER.error("CommonException thrown:", exception);
+        log.error("CommonException thrown:", exception);
         return parseCommonExceptionMessage(exception, response);
     }
 
@@ -174,7 +172,7 @@ public class GlobalExceptionHandler {
             var errorMsg = "Basic error handling failure: null errorCode";
             exceptionResponse.setMessage(errorMsg);
 
-            LOGGER.error(errorMsg);
+            log.error(errorMsg);
             return exceptionResponse;
         }
 
@@ -183,7 +181,7 @@ public class GlobalExceptionHandler {
             var errorMsg = String.format("Basic error handling failure: no properties found for %s", propertyKey);
             exceptionResponse.setMessage(errorMsg);
 
-            LOGGER.error(errorMsg);
+            log.error(errorMsg);
             return exceptionResponse;
         }
 
@@ -192,7 +190,7 @@ public class GlobalExceptionHandler {
             var errorMsg = String.format("Basic error handling failure: badly formatted message %s", properties);
             exceptionResponse.setMessage(errorMsg);
 
-            LOGGER.error(errorMsg);
+            log.error(errorMsg);
             return exceptionResponse;
         }
 
@@ -206,11 +204,11 @@ public class GlobalExceptionHandler {
             var errorMsg = String.format("Basic error handling failure: could not get http status code from %s", properties);
             exceptionResponse.setMessage(errorMsg);
 
-            LOGGER.error(errorMsg);
+            log.error(errorMsg);
             return exceptionResponse;
         }
 
-        LOGGER.info("The message error is: {}", exceptionResponse.getMessage());
+        log.info("The message error is: {}", exceptionResponse.getMessage());
         return exceptionResponse;
     }
 
@@ -222,7 +220,7 @@ public class GlobalExceptionHandler {
 
             return objectMapper.readValue(jsonString, Object.class);
         } catch (Exception e) {
-            LOGGER.warn("Error parsing JSON string to JSON object", e);
+            log.warn("Error parsing JSON string to JSON object", e);
             return null;
         }
     }

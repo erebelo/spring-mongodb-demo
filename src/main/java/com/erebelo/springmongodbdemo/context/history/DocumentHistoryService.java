@@ -2,22 +2,21 @@ package com.erebelo.springmongodbdemo.context.history;
 
 import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class DocumentHistoryService {
 
     private final MongoTemplate mongoTemplate;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentHistoryService.class);
     public static final String OBJECT_ID = "_id";
     public static final String VERSION = "version";
 
@@ -36,7 +35,8 @@ public class DocumentHistoryService {
 
     public void saveDeleteHistory(Document document, Class<?> clazz) {
         if (isToSaveHistory(clazz)) {
-            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(), getCollectionName(clazz), null);
+            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(), getCollectionName(clazz),
+                    null);
         }
     }
 
@@ -59,7 +59,7 @@ public class DocumentHistoryService {
         try {
             return clazz.isAnnotationPresent(DocumentHistory.class);
         } catch (NullPointerException e) {
-            LOGGER.error("Error verifying whether Document contains @DocumentHistory annotation");
+            log.error("Error verifying whether Document contains @DocumentHistory annotation");
             throw e;
         }
     }

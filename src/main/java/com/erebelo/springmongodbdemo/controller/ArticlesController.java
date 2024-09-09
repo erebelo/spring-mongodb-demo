@@ -5,8 +5,7 @@ import com.erebelo.springmongodbdemo.service.ArticlesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
 
+@Log4j2
 @RestController
 @RequestMapping(ARTICLES)
 @RequiredArgsConstructor
@@ -25,12 +25,10 @@ public class ArticlesController {
 
     private final ArticlesService service;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArticlesController.class);
-
     @Operation(summary = "GET Articles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ArticlesDataResponseDTO>> getArticles() {
-        LOGGER.info("Getting articles");
+        log.info("Getting articles");
         var response = service.getArticles();
 
         return ResponseEntity.ok(response);
