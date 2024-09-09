@@ -28,7 +28,7 @@ class LoggingFilterTest {
     @Mock
     private FilterChain filterChain;
 
-    private static final String REQUEST_ID_HEADER = "RequestId";
+    private static final String REQUEST_ID_HEADER = "RequestID";
     private static final String REQUEST_ID_HEADER_PREFIX = "GEN-";
 
     @Test

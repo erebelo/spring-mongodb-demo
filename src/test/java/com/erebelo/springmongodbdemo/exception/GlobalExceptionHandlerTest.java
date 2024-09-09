@@ -281,7 +281,7 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionSuccessfully() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|Bad Request to user %s");
 
-        var exceptionResponse = handler.parseCommonExceptionMessage(new CommonException(COMMON_ERROR_400_000, "foo"), response);
+        var exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_400_000, "foo"), response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
@@ -292,8 +292,8 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testParseCommonExceptionMessageNullErrorCode() {
-        var exceptionResponse = handler.parseCommonExceptionMessage(new CommonException(ERROR_CODE_NO_KEY), response);
+    void testParseCommonExceptionNullErrorCode() {
+        var exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_KEY), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
@@ -304,8 +304,8 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testParseCommonExceptionMessageMissingProperties() {
-        var exceptionResponse = handler.parseCommonExceptionMessage(new CommonException(COMMON_ERROR_500_000), response);
+    void testParseCommonExceptionMissingProperties() {
+        var exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_500_000), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
@@ -319,7 +319,7 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionBadMessageProperties() {
         given(env.getProperty(ERROR_CODE_NO_DESC.propertyKey())).willReturn("900|");
 
-        var exceptionResponse = handler.parseCommonExceptionMessage(new CommonException(ERROR_CODE_NO_DESC), response);
+        var exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_DESC), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
@@ -333,7 +333,7 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionBadStatusCodeProperties() {
         given(env.getProperty(ERROR_CODE_NO_CODE.propertyKey())).willReturn("|Other stuff");
 
-        var exceptionResponse = handler.parseCommonExceptionMessage(new CommonException(ERROR_CODE_NO_CODE), response);
+        var exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_CODE), response);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
