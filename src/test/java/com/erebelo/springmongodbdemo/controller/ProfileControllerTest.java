@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
+import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,6 +38,7 @@ import static com.erebelo.springmongodbdemo.mock.ProfileMock.NEW_CONTACT_VALUE;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.NEW_DATE_OF_BIRTH;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.NEW_HEALTH_LEVEL;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.USER_ID;
+import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileNotFoundFailureResultMatcher;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequestMapPatch;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponse;
@@ -69,6 +72,9 @@ class ProfileControllerTest {
     @Mock
     private ProfileService service;
 
+    @Mock
+    private Environment env;
+
     @Captor
     private ArgumentCaptor<?> argumentCaptor;
 
@@ -87,6 +93,7 @@ class ProfileControllerTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         JacksonTester.initFields(this, objectMapper);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new GlobalExceptionHandler(env))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
     }
@@ -106,16 +113,18 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testGetProfileFailure() {
-        var exception = new CommonException(COMMON_ERROR_404_001, USER_ID);
-        given(service.getProfile(anyString())).willThrow(exception);
+    void testGetProfileNotFoundFailure() throws Exception {
+        given(service.getProfile(anyString())).willThrow(new CommonException(COMMON_ERROR_404_001, USER_ID));
+        given(env.getProperty(anyString())).willReturn("404|Object not found by userId: %s");
 
-        assertThatThrownBy(() -> mockMvc.perform(get(PROFILE)
-                .param("userId", USER_ID)
-                .accept(MediaType.APPLICATION_JSON_VALUE)))
-                .hasCause(exception);
+        mockMvc.perform(get(PROFILE)
+                        .param(USER_ID_PARAM, USER_ID)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andExpectAll(getProfileNotFoundFailureResultMatcher());
 
         verify(service).getProfile(USER_ID);
+        verify(env).getProperty("COMMON-ERROR-404-001");
     }
 
     @Test
@@ -128,8 +137,7 @@ class ProfileControllerTest {
                         .content(requestJacksonTester.write(getProfileRequest()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
-                .andExpectAll(getProfileResponseResultMatcher())
-                .andReturn();
+                .andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).insertProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
 
@@ -137,7 +145,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testInsertProfileFailure() {
+    void testInsertProfileFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_409_001);
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
@@ -163,8 +171,7 @@ class ProfileControllerTest {
                         .content(requestJacksonTester.write(getProfileRequest()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpectAll(getProfileResponseResultMatcher())
-                .andReturn();
+                .andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).updateProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
 
@@ -172,7 +179,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testUpdateProfileFailure() {
+    void testUpdateProfileFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_404_002, USER_ID);
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
@@ -198,8 +205,7 @@ class ProfileControllerTest {
                         .content(mapJacksonTester.write(getProfileRequestMapPatch()).getJson())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpectAll(getProfileResponsePatchResultMatcher())
-                .andReturn();
+                .andExpectAll(getProfileResponsePatchResultMatcher());
 
         verify(service).patchProfile(eq(USER_ID), (Map<String, Object>) argumentCaptor.capture());
 
@@ -207,7 +213,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testPatchProfileFailure() {
+    void testPatchProfileFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_400_001,
                 Collections.singletonList("request body is mandatory and must contain some attribute"));
         given(service.patchProfile(anyString(), any(Map.class))).willThrow(exception);
@@ -231,14 +237,13 @@ class ProfileControllerTest {
         mockMvc.perform(delete(PROFILE)
                         .param(USER_ID_PARAM, USER_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isNoContent());
 
         verify(service).deleteProfile(USER_ID);
     }
 
     @Test
-    void testDeleteProfileFailure() {
+    void testDeleteProfileFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_404_003, USER_ID);
         willThrow(exception).given(service).deleteProfile(anyString());
 

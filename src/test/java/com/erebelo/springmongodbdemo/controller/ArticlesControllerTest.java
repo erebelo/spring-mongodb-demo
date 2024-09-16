@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
+import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -37,11 +39,16 @@ class ArticlesControllerTest {
     @Mock
     private ArticlesService service;
 
+    @Mock
+    private Environment env;
+
     private static final List<ArticlesDataResponseDTO> RESPONSE = getArticlesDataResponseDTO();
 
     @BeforeEach
     void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new GlobalExceptionHandler(env))
+                .build();
     }
 
     @Test
@@ -50,7 +57,7 @@ class ArticlesControllerTest {
 
         mockMvc.perform(get(ARTICLES)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) // TODO use ResultMatcher
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(RESPONSE.size())))
                 .andExpect(jsonPath("$.[0].title").value(RESPONSE.get(0).getTitle()))
@@ -68,7 +75,7 @@ class ArticlesControllerTest {
     }
 
     @Test
-    void testGetArticlesFailure() {
+    void testGetArticlesFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_422_003);
         given(service.getArticles()).willThrow(exception);
 

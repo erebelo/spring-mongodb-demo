@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
+import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,11 +37,16 @@ class WikimediaControllerTest {
     @Mock
     private WikimediaService service;
 
+    @Mock
+    private Environment env;
+
     private static final WikimediaResponse RESPONSE = getWikimediaResponse();
 
     @BeforeEach
     void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new GlobalExceptionHandler(env))
+                .build();
     }
 
     @Test
@@ -48,7 +55,7 @@ class WikimediaControllerTest {
 
         mockMvc.perform(get(WIKIMEDIA)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) // TODO use ResultMatcher
                 .andExpect(jsonPath("$.items").isArray())
                 .andExpect(jsonPath("$.items", hasSize(RESPONSE.getItems().size())))
                 .andExpect(jsonPath("$.items[0].project").value(RESPONSE.getItems().get(0).getProject()))
@@ -63,7 +70,7 @@ class WikimediaControllerTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsFailure() {
+    void testGetWikimediaProjectPageviewsFailure() { // TODO fix it
         var exception = new CommonException(COMMON_ERROR_404_004);
         given(service.getWikimediaProjectPageviews()).willThrow(exception);
 
