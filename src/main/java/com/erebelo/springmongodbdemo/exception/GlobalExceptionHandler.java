@@ -237,7 +237,6 @@ public class GlobalExceptionHandler {
         return stackTrace.toString().replaceAll(LINE_DELIMITERS, "").trim();
     }
 
-
     private void exceptionResponseLogError(ExceptionResponse exceptionResponse) {
         log.error(GLOBAL_EXCEPTION_MESSAGE, ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse);
     }
