@@ -11,6 +11,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.GLOBAL_EXCEPTION_MESSAGE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.LINE_DELIMITERS;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
 import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
@@ -136,8 +138,9 @@ public class GlobalExceptionHandler {
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
         var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null);
 
-        log.error(GLOBAL_EXCEPTION_MESSAGE + System.lineSeparator() + "{}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse,
-                ExceptionUtils.getStackTrace(e));
+        var stackTrace = isLocalEnvironment() ? ExceptionUtils.getStackTrace(e) : getFullCauseChain(ExceptionUtils.getThrowableList(e));
+        log.error(GLOBAL_EXCEPTION_MESSAGE + "\n{}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse, stackTrace);
+
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
@@ -214,6 +217,25 @@ public class GlobalExceptionHandler {
             log.warn("Error parsing JSON string to JSON object", e);
             return null;
         }
+    }
+
+    private boolean isLocalEnvironment() {
+        return env.acceptsProfiles(Profiles.of("local"));
+    }
+
+    private String getFullCauseChain(List<Throwable> causeChain) {
+        StringBuilder stackTrace = new StringBuilder();
+
+        for (Throwable cause : causeChain) {
+            String[] stackTraceElements = ExceptionUtils.getStackFrames(cause);
+            stackTrace.append("Caused by: ");
+
+            for (int i = 0; i < Math.min(4, stackTraceElements.length); i++) {
+                stackTrace.append(stackTraceElements[i]).append("\n");
+            }
+            stackTrace.append("\t");
+        }
+        return stackTrace.toString().replaceAll(LINE_DELIMITERS, "");
     }
 
     private void exceptionResponseLogError(ExceptionResponse exceptionResponse) {
