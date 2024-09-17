@@ -138,9 +138,7 @@ public class GlobalExceptionHandler {
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
         var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null);
 
-        var stackTrace = isLocalEnvironment() ? ExceptionUtils.getStackTrace(e) : getFullCauseChain(ExceptionUtils.getThrowableList(e));
-        log.error(GLOBAL_EXCEPTION_MESSAGE + "\n{}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse, stackTrace);
-
+        log.error(GLOBAL_EXCEPTION_MESSAGE + " {}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse, getStackTrace(e));
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
@@ -219,24 +217,26 @@ public class GlobalExceptionHandler {
         }
     }
 
-    private boolean isLocalEnvironment() {
-        return env.acceptsProfiles(Profiles.of("local"));
-    }
+    private String getStackTrace(Exception e) {
+        if (env.acceptsProfiles(Profiles.of("local"))) {
+            return ExceptionUtils.getStackTrace(e);
+        }
 
-    private String getFullCauseChain(List<Throwable> causeChain) {
         StringBuilder stackTrace = new StringBuilder();
+        List<Throwable> causeChain = ExceptionUtils.getThrowableList(e);
 
         for (Throwable cause : causeChain) {
             String[] stackTraceElements = ExceptionUtils.getStackFrames(cause);
             stackTrace.append("Caused by: ");
 
             for (int i = 0; i < Math.min(4, stackTraceElements.length); i++) {
-                stackTrace.append(stackTraceElements[i]).append("\n");
+                stackTrace.append(stackTraceElements[i]).append(" ");
             }
-            stackTrace.append("\t");
         }
+
         return stackTrace.toString().replaceAll(LINE_DELIMITERS, "");
     }
+
 
     private void exceptionResponseLogError(ExceptionResponse exceptionResponse) {
         log.error(GLOBAL_EXCEPTION_MESSAGE, ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse);
