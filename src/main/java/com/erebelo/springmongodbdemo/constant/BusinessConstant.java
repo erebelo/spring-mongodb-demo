@@ -11,7 +11,7 @@ public final class BusinessConstant {
     public static final String REQUEST_ID_HEADER = "RequestID";
     public static final String REQUEST_ID_HEADER_PREFIX = "GEN-";
     public static final String GLOBAL_EXCEPTION_MESSAGE = "An error occurred for RequestID='{}': {}";
-    public static final String LINE_DELIMITERS = "[\\n\\t]+";
+    public static final String LINE_DELIMITERS = "[\\r\\n\\t]+";
     public static final String MERGE_PATCH_MEDIA_TYPE = "application/merge-patch+json";
     public static final String HEALTH_CHECK = "/health-check";
     public static final String PROFILE = "/profile";

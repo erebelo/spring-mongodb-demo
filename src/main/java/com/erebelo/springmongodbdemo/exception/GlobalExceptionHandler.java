@@ -234,7 +234,7 @@ public class GlobalExceptionHandler {
             }
         }
 
-        return stackTrace.toString().replaceAll(LINE_DELIMITERS, "");
+        return stackTrace.toString().replaceAll(LINE_DELIMITERS, "").trim();
     }
 
 
