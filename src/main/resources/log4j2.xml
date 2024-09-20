@@ -3,7 +3,7 @@
     <springProfile name="!local">
         <Appenders>
             <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
-                <EcsLayout serviceName="spring-mongodb-demo" serviceVersion="0.0.1"/>
+                <EcsLayout serviceName="@project.artifactId@" serviceVersion="@project.version@"/>
             </Console>
         </Appenders>
         <Loggers>

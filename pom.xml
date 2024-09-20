@@ -106,6 +106,13 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <!--Enable ECS Layout to get service name and version-->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
