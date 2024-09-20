@@ -68,7 +68,7 @@ class HeaderInterceptorTest {
     }
 
     @Test
-    void testPreHandleMissingHeaderThrowException() throws IOException {
+    void testPreHandleMissingHeaderThrowsException() throws IOException {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(createLoggedInUserAnnotation());
         given(request.getHeader(anyString())).willReturn(null);
         given(response.getWriter()).willThrow(new IOException("Error serializing object"));

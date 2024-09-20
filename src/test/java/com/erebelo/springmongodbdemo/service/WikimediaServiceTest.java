@@ -86,7 +86,7 @@ class WikimediaServiceTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsThrowClientException() {
+    void testGetWikimediaProjectPageviewsThrowsClientException() {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 
@@ -102,7 +102,7 @@ class WikimediaServiceTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsThrowNotFoundException() {
+    void testGetWikimediaProjectPageviewsThrowsNotFoundException() {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 

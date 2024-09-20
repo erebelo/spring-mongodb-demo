@@ -123,7 +123,7 @@ class DocumentHistoryServiceTest {
     }
 
     @Test
-    void testIsToSaveHistoryThrowNullPointerException() {
+    void testIsToSaveHistoryThrowsNullPointerException() {
         var document = new Document().append("_id", new ObjectId());
 
         assertThrows(NullPointerException.class, () -> service.saveDeleteHistory(document, null));

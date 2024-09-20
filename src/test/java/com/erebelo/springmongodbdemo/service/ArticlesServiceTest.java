@@ -80,11 +80,13 @@ class ArticlesServiceTest {
         assertThat(result).hasSize(TOTAL_PAGES);
         assertThat(result).usingRecursiveComparison().isEqualTo(articlesResponseDTO);
 
-        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
 
-        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
 
@@ -92,14 +94,15 @@ class ArticlesServiceTest {
     }
 
     @Test
-    void testGetArticlesThrowNotFoundException() {
+    void testGetArticlesThrowsNotFoundException() {
         given(httpClientAuth.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).willReturn(null);
 
         assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.getArticles())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_003);
 
-        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
         verify(mapper, never()).responseToResponseDTO(anyList());
 
@@ -118,11 +121,13 @@ class ArticlesServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result).usingRecursiveComparison().isEqualTo(getArticlesDataResponseDTO());
 
-        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
 
-        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
+        verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
 

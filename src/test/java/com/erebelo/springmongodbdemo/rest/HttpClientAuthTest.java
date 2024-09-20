@@ -49,7 +49,7 @@ class HttpClientAuthTest {
     }
 
     @Test
-    void testRestTemplateSetupThrowException() {
+    void testRestTemplateSetupThrowsException() {
         given(connectionProps.getTimeout()).willReturn("3000");
         given(connectionProps.getRead()).willReturn(new ConnectionProps.Read("5000"));
 

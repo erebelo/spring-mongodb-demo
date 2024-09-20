@@ -99,7 +99,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testGetProfileThrowNotFoundException() {
+    void testGetProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(CommonException.class)
@@ -132,7 +132,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testInsertProfileThrowConflictException() {
+    void testInsertProfileThrowsConflictException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         assertThatExceptionOfType(CommonException.class)
@@ -197,7 +197,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testUpdateProfileThrowNotFoundException() {
+    void testUpdateProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(CommonException.class)
@@ -256,7 +256,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileThrowBadRequestException() {
+    void testPatchProfileThrowsBadRequestException() {
         assertThatExceptionOfType(CommonException.class)
                 .isThrownBy(() -> service.patchProfile(USER_ID, new HashMap<>()))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_400_001)
@@ -272,7 +272,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileThrowNotFoundException() {
+    void testPatchProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(CommonException.class)
@@ -289,7 +289,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithEmptyObjectThrowUnprocessableEntityException() {
+    void testPatchProfileWithEmptyObjectThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.of(new ProfileEntity()));
 
         assertThatExceptionOfType(CommonException.class)
@@ -305,7 +305,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithNonMapAttributesThrowUnprocessableEntityException() {
+    void testPatchProfileWithNonMapAttributesThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var profileRequestMap = getProfileRequestMapPatch();
@@ -326,7 +326,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileWithInvalidRequestAttributesThrowUnprocessableEntityException() {
+    void testPatchProfileWithInvalidRequestAttributesThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var profileRequestMap = getProfileRequestMapPatch();
@@ -358,7 +358,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testDeleteProfileThrowNotFoundException() {
+    void testDeleteProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
         assertThatExceptionOfType(CommonException.class)
