@@ -3,7 +3,7 @@
     <springProfile name="!local">
         <Appenders>
             <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
-                <EcsLayout serviceName="@project.artifactId@" serviceVersion="@project.version@"/>
+                <EcsLayout serviceName="${spring:logging.ecs.layout.service.name:-}" serviceVersion="${spring:logging.ecs.layout.service.version:-}"/>
             </Console>
         </Appenders>
         <Loggers>
