@@ -10,7 +10,7 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 - **AuditorAware** is utilized to insert values for auditable attributes such as username, document version, and date of operations in the persisted document
 - **Converter** and **ConverterFactory** are used to convert enum types to objects in the document before persisting and vice versa after fetching the data
 - **ConstraintValidator** is used to validate request fields and their associated business rules by declaring an annotation in the request class
-- **Logback/SLF4J** are employed to track application logs
+- **Log4j2** are employed to track application logs
 - **Global Exception Handler** is implemented to manage errors
 - **Template Method** design pattern used for different RestTemplate implementations
 - **Unit Tests** are implemented covering the entire application
@@ -18,7 +18,7 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 ## Requirements
 
 - Java 17
-- Spring Boot 3.2.3
+- Spring Boot 3.3.4
 - Apache Maven 3.8.6
 
 ## Run App
