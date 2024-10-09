@@ -1,5 +1,10 @@
 package com.erebelo.springmongodbdemo.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MongoDBConfigurationTest {
@@ -51,8 +51,8 @@ class MongoDBConfigurationTest {
 
     @Test
     void testConfigureConverters() {
-        MongoCustomConversions.MongoConverterConfigurationAdapter adapterMock =
-                Mockito.mock(MongoCustomConversions.MongoConverterConfigurationAdapter.class);
+        MongoCustomConversions.MongoConverterConfigurationAdapter adapterMock = Mockito
+                .mock(MongoCustomConversions.MongoConverterConfigurationAdapter.class);
 
         mongoDBConfiguration.configureConverters(adapterMock);
 

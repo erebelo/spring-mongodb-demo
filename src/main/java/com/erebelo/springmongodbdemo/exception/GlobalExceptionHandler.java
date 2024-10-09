@@ -1,9 +1,17 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.GLOBAL_EXCEPTION_MESSAGE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.LINE_DELIMITERS;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
+import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
+
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -24,15 +32,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Objects;
-
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.GLOBAL_EXCEPTION_MESSAGE;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.LINE_DELIMITERS;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
-import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
 @Log4j2
 @ControllerAdvice
@@ -68,7 +67,8 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ExceptionResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    public ResponseEntity<ExceptionResponse> handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException e) {
         return parseGeneralException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e);
     }
 
@@ -80,7 +80,8 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e) {
         String errorMessage = e.getMessage();
         var supportedHttpMethods = e.getSupportedMethods();
         if (!ObjectUtils.isEmpty(supportedHttpMethods)) {
@@ -96,10 +97,7 @@ public class GlobalExceptionHandler {
         String errorMessage = null;
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         if (!fieldErrors.isEmpty()) {
-            errorMessage = fieldErrors.stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList()
-                    .toString();
+            errorMessage = fieldErrors.stream().map(FieldError::getDefaultMessage).toList().toString();
         }
 
         return parseGeneralException(HttpStatus.BAD_REQUEST, e, errorMessage);
@@ -136,9 +134,11 @@ public class GlobalExceptionHandler {
             final String message) {
         var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
         var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
-        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), null);
+        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(),
+                null);
 
-        log.error(GLOBAL_EXCEPTION_MESSAGE + " {}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse, getStackTrace(e));
+        log.error(GLOBAL_EXCEPTION_MESSAGE + " {}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse,
+                getStackTrace(e));
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
@@ -156,7 +156,8 @@ public class GlobalExceptionHandler {
             }
         }
 
-        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(), clientErrorObj);
+        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(),
+                clientErrorObj);
 
         exceptionResponseLogError(exceptionResponse);
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
@@ -164,8 +165,8 @@ public class GlobalExceptionHandler {
 
     ExceptionResponse parseCommonException(final CommonException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        var exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, COMMON_ERROR_500_000.toString(), "",
-                System.currentTimeMillis(), null);
+        var exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, COMMON_ERROR_500_000.toString(),
+                "", System.currentTimeMillis(), null);
 
         var propertyKey = e.getErrorCode().propertyKey();
         if (Objects.isNull(propertyKey)) {
@@ -176,14 +177,16 @@ public class GlobalExceptionHandler {
 
         var properties = env.getProperty(propertyKey);
         if (Objects.isNull(properties)) {
-            exceptionResponse.setMessage(String.format("Basic error handling failure: no properties found for %s", propertyKey));
+            exceptionResponse
+                    .setMessage(String.format("Basic error handling failure: no properties found for %s", propertyKey));
             exceptionResponseLogError(exceptionResponse);
             return exceptionResponse;
         }
 
         var formatArray = properties.split("\\|");
         if (formatArray.length < 2) {
-            exceptionResponse.setMessage(String.format("Basic error handling failure: badly formatted message %s", properties));
+            exceptionResponse
+                    .setMessage(String.format("Basic error handling failure: badly formatted message %s", properties));
             exceptionResponseLogError(exceptionResponse);
             return exceptionResponse;
         }
@@ -195,7 +198,8 @@ public class GlobalExceptionHandler {
             exceptionResponse.setCode(propertyKey);
             exceptionResponse.setMessage(String.format(formatArray[1], e.getArgs()));
         } catch (NumberFormatException numberFormatException) {
-            exceptionResponse.setMessage(String.format("Basic error handling failure: could not get http status code from %s", properties));
+            exceptionResponse.setMessage(
+                    String.format("Basic error handling failure: could not get http status code from %s", properties));
             exceptionResponseLogError(exceptionResponse);
             return exceptionResponse;
         }

@@ -1,21 +1,18 @@
 package com.erebelo.springmongodbdemo.context.history;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @ToString
 @AllArgsConstructor
 public enum HistoryActionEnum {
 
-    INSERT("INSERT"),
-    UPDATE("UPDATE"),
-    DELETE("DELETE");
+    INSERT("INSERT"), UPDATE("UPDATE"), DELETE("DELETE");
 
     private final String value;
     private static final Map<String, HistoryActionEnum> ENUM_MAP;

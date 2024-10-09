@@ -1,10 +1,26 @@
 package com.erebelo.springmongodbdemo.service;
 
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
+import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getHttpHeaders;
+import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getServletRequestAttributes;
+import static com.erebelo.springmongodbdemo.mock.WikimediaMock.WIKIMEDIA_URL;
+import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.impl.WikimediaServiceImpl;
+import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,23 +40,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
-
-import java.util.Objects;
-
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getHttpHeaders;
-import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getServletRequestAttributes;
-import static com.erebelo.springmongodbdemo.mock.WikimediaMock.WIKIMEDIA_URL;
-import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class WikimediaServiceTest {
@@ -79,10 +78,11 @@ class WikimediaServiceTest {
 
         assertThat(result).usingRecursiveComparison().isEqualTo(getWikimediaResponse());
 
-        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
 
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getHttpHeaders());
     }
 
     @Test
@@ -90,15 +90,15 @@ class WikimediaServiceTest {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 
-        assertThatExceptionOfType(ClientException.class)
-                .isThrownBy(() -> service.getWikimediaProjectPageviews())
+        assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .withCauseExactlyInstanceOf(HttpClientErrorException.class)
                 .withMessage("Error getting Wikimedia project pageviews");
 
-        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
 
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getHttpHeaders());
     }
 
     @Test
@@ -106,13 +106,13 @@ class WikimediaServiceTest {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.getWikimediaProjectPageviews())
+        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_004);
 
-        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+        verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
 
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getHttpHeaders());
     }
 }

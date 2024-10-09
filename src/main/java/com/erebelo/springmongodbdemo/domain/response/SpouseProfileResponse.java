@@ -4,15 +4,14 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDate;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Getter
 @Setter

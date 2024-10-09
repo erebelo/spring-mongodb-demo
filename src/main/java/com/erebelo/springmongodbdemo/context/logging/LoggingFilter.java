@@ -1,25 +1,24 @@
 package com.erebelo.springmongodbdemo.context.logging;
 
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER_PREFIX;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.ThreadContext;
-import org.springframework.lang.NonNull;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER_PREFIX;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.split;
-import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import org.apache.logging.log4j.ThreadContext;
+import org.springframework.lang.NonNull;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 public class LoggingFilter extends OncePerRequestFilter {
 

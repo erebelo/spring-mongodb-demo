@@ -1,25 +1,24 @@
 package com.erebelo.springmongodbdemo.service;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
-import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
-import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
-import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
-import jakarta.validation.ConstraintValidatorContext;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+
+import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
+import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
+import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileConstraintValidatorTest {

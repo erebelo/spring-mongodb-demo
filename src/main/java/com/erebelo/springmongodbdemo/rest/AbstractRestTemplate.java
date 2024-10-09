@@ -1,28 +1,29 @@
 package com.erebelo.springmongodbdemo.rest;
 
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.client.RestTemplate;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_CONNECTION_TIMEOUT;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_SOCKET_TIMEOUT;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_CONNECTION_TIMEOUT;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.DEFAULT_SOCKET_TIMEOUT;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
 
 abstract class AbstractRestTemplate {
 
     protected RestTemplate restTemplate;
     protected ConnectionProps connProps;
 
-    protected AbstractRestTemplate(ConnectionProps connProps) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    protected AbstractRestTemplate(ConnectionProps connProps)
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.restTemplate = new RestTemplate();
         this.connProps = validateConnectionProps(connProps);
         restTemplateSetup();
     }
 
-    protected abstract void restTemplateSetup() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException;
+    protected abstract void restTemplateSetup()
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException;
 
     private ConnectionProps validateConnectionProps(ConnectionProps connProps) {
         if (Objects.isNull(connProps)) {
@@ -33,7 +34,8 @@ abstract class AbstractRestTemplate {
             connProps.setTimeout(DEFAULT_CONNECTION_TIMEOUT);
         }
 
-        if (Objects.isNull(connProps.getRead()) || Objects.isNull(connProps.getRead().getTimeout()) || ObjectUtils.isEmpty(connProps.getRead().getTimeout())) {
+        if (Objects.isNull(connProps.getRead()) || Objects.isNull(connProps.getRead().getTimeout())
+                || ObjectUtils.isEmpty(connProps.getRead().getTimeout())) {
             connProps.setRead(new ConnectionProps.Read(DEFAULT_SOCKET_TIMEOUT));
         }
 

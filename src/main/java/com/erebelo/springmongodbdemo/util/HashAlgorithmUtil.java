@@ -1,12 +1,11 @@
 package com.erebelo.springmongodbdemo.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

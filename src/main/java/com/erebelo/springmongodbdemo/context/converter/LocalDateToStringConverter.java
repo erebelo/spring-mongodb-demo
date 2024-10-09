@@ -1,10 +1,9 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.WritingConverter;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.WritingConverter;
 
 @WritingConverter
 public enum LocalDateToStringConverter implements Converter<LocalDate, String> {
@@ -16,4 +15,3 @@ public enum LocalDateToStringConverter implements Converter<LocalDate, String> {
         return source.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
-

@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,8 +11,6 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class MongoBeanConfigurationTest {
@@ -33,7 +33,8 @@ class MongoBeanConfigurationTest {
 
     @Test
     void testValidatingMongoEventListenerBean() {
-        ValidatingMongoEventListener validatingMongoEventListener = mongoBeanConfiguration.validatingMongoEventListener(localValidatorFactoryBean);
+        ValidatingMongoEventListener validatingMongoEventListener = mongoBeanConfiguration
+                .validatingMongoEventListener(localValidatorFactoryBean);
 
         assertNotNull(validatingMongoEventListener);
     }

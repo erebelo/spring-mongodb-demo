@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.mock;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import com.erebelo.springmongodbdemo.domain.entity.ProfileContact;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileLocation;
@@ -18,10 +20,6 @@ import com.erebelo.springmongodbdemo.domain.response.ProfileContactResponse;
 import com.erebelo.springmongodbdemo.domain.response.ProfileLocationResponse;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
 import com.erebelo.springmongodbdemo.domain.response.SpouseProfileResponse;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.test.web.servlet.ResultMatcher;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -31,8 +29,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProfileMock {
@@ -51,9 +50,12 @@ public final class ProfileMock {
     private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1980, 10, 22);
     public static final LocalDate NEW_DATE_OF_BIRTH = LocalDate.of(1995, 4, 22);
     private static final Integer NUMBER_OF_DEPENDENTS = 1;
-    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05).setScale(2, RoundingMode.HALF_UP);
-    public static final BigDecimal NEW_ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(475000.80).setScale(2, RoundingMode.HALF_UP);
-    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01).setScale(2, RoundingMode.HALF_UP);
+    private static final BigDecimal ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(230410.05).setScale(2,
+            RoundingMode.HALF_UP);
+    public static final BigDecimal NEW_ESTIMATED_ANNUAL_INCOME = BigDecimal.valueOf(475000.80).setScale(2,
+            RoundingMode.HALF_UP);
+    private static final BigDecimal ESTIMATED_NET_WORTH = BigDecimal.valueOf(1800900.01).setScale(2,
+            RoundingMode.HALF_UP);
     private static final GenderEnum GENDER = GenderEnum.MALE;
     private static final MaritalStatusEnum MARITAL_STATUS = MaritalStatusEnum.MARRIED;
     private static final EmploymentStatusEnum EMPLOYMENT_STATUS = EmploymentStatusEnum.EMPLOYED;
@@ -79,44 +81,20 @@ public final class ProfileMock {
     }
 
     public static ProfileEntity getProfileEntity() {
-        return ProfileEntity.builder()
-                .id(ID)
-                .hashObject(HASH_OBJECT)
-                .userId(USER_ID)
-                .createdBy(CREATED_BY)
-                .modifiedBy(MODIFIED_BY)
-                .createdDateTime(CREATED_DATE_TIME)
-                .modifiedDateTime(MODIFIED_DATE_TIME)
+        return ProfileEntity.builder().id(ID).hashObject(HASH_OBJECT).userId(USER_ID).createdBy(CREATED_BY)
+                .modifiedBy(MODIFIED_BY).createdDateTime(CREATED_DATE_TIME).modifiedDateTime(MODIFIED_DATE_TIME)
                 .version(VERSION)
-                .profile(UserProfile.builder()
-                        .firstName(FIRST_NAME)
-                        .lastName(LAST_NAME)
-                        .dateOfBirth(DATE_OF_BIRTH)
-                        .numberOfDependents(NUMBER_OF_DEPENDENTS)
-                        .estimatedAnnualIncome(ESTIMATED_ANNUAL_INCOME)
-                        .estimatedNetWorth(ESTIMATED_NET_WORTH)
-                        .gender(GENDER)
-                        .maritalStatus(MARITAL_STATUS)
-                        .employmentStatus(EMPLOYMENT_STATUS)
-                        .healthLevel(HEALTH_LEVEL)
-                        .contactNumbers(Collections.singletonList(ProfileContact.builder()
-                                .contactType(CONTACT_TYPE)
-                                .contactValue(CONTACT_VALUE)
-                                .build()))
-                        .currentLocation(ProfileLocation.builder()
-                                .address(ADDRESS)
-                                .city(CITY)
-                                .state(STATE)
-                                .country(COUNTRY)
-                                .postalCode(POSTAL_CODE)
-                                .build())
-                        .spouseProfile(SpouseProfile.builder()
-                                .firstName(SPOUSE_FIRST_NAME)
-                                .lastName(SPOUSE_LAST_NAME)
-                                .dateOfBirth(SPOUSE_DATE_OF_BIRTH)
-                                .gender(SPOUSE_GENDER)
-                                .employmentStatus(SPOUSE_EMPLOYMENT_STATUS)
-                                .build())
+                .profile(UserProfile.builder().firstName(FIRST_NAME).lastName(LAST_NAME).dateOfBirth(DATE_OF_BIRTH)
+                        .numberOfDependents(NUMBER_OF_DEPENDENTS).estimatedAnnualIncome(ESTIMATED_ANNUAL_INCOME)
+                        .estimatedNetWorth(ESTIMATED_NET_WORTH).gender(GENDER).maritalStatus(MARITAL_STATUS)
+                        .employmentStatus(EMPLOYMENT_STATUS).healthLevel(HEALTH_LEVEL)
+                        .contactNumbers(Collections.singletonList(
+                                ProfileContact.builder().contactType(CONTACT_TYPE).contactValue(CONTACT_VALUE).build()))
+                        .currentLocation(ProfileLocation.builder().address(ADDRESS).city(CITY).state(STATE)
+                                .country(COUNTRY).postalCode(POSTAL_CODE).build())
+                        .spouseProfile(SpouseProfile.builder().firstName(SPOUSE_FIRST_NAME).lastName(SPOUSE_LAST_NAME)
+                                .dateOfBirth(SPOUSE_DATE_OF_BIRTH).gender(SPOUSE_GENDER)
+                                .employmentStatus(SPOUSE_EMPLOYMENT_STATUS).build())
                         .build())
                 .build();
     }
@@ -135,85 +113,69 @@ public final class ProfileMock {
 
     public static ProfileRequest getProfileRequest() {
         var request = getProfileEntity().getProfile();
-        return ProfileRequest.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .dateOfBirth(request.getDateOfBirth())
-                .numberOfDependents(request.getNumberOfDependents())
+        return ProfileRequest.builder().firstName(request.getFirstName()).lastName(request.getLastName())
+                .dateOfBirth(request.getDateOfBirth()).numberOfDependents(request.getNumberOfDependents())
                 .estimatedAnnualIncome(request.getEstimatedAnnualIncome())
-                .estimatedNetWorth(request.getEstimatedNetWorth())
-                .gender(request.getGender())
-                .maritalStatus(request.getMaritalStatus())
-                .employmentStatus(request.getEmploymentStatus())
+                .estimatedNetWorth(request.getEstimatedNetWorth()).gender(request.getGender())
+                .maritalStatus(request.getMaritalStatus()).employmentStatus(request.getEmploymentStatus())
                 .healthLevel(request.getHealthLevel())
-                .contactNumbers(Collections.singletonList(ProfileContactDTO.builder()
-                        .contactType(request.getContactNumbers().get(0).getContactType())
-                        .contactValue(request.getContactNumbers().get(0).getContactValue())
-                        .build()))
-                .currentLocation(ProfileLocationDTO.builder()
-                        .address(request.getCurrentLocation().getAddress())
-                        .city(request.getCurrentLocation().getCity())
-                        .state(request.getCurrentLocation().getState())
+                .contactNumbers(Collections.singletonList(
+                        ProfileContactDTO.builder().contactType(request.getContactNumbers().get(0).getContactType())
+                                .contactValue(request.getContactNumbers().get(0).getContactValue()).build()))
+                .currentLocation(ProfileLocationDTO.builder().address(request.getCurrentLocation().getAddress())
+                        .city(request.getCurrentLocation().getCity()).state(request.getCurrentLocation().getState())
                         .country(request.getCurrentLocation().getCountry())
-                        .postalCode(request.getCurrentLocation().getPostalCode())
-                        .build())
-                .spouseProfile(SpouseProfileDTO.builder()
-                        .firstName(request.getSpouseProfile().getFirstName())
+                        .postalCode(request.getCurrentLocation().getPostalCode()).build())
+                .spouseProfile(SpouseProfileDTO.builder().firstName(request.getSpouseProfile().getFirstName())
                         .lastName(request.getSpouseProfile().getLastName())
                         .dateOfBirth(request.getSpouseProfile().getDateOfBirth())
                         .gender(request.getSpouseProfile().getGender())
-                        .employmentStatus(request.getSpouseProfile().getEmploymentStatus())
-                        .build())
+                        .employmentStatus(request.getSpouseProfile().getEmploymentStatus()).build())
                 .build();
     }
 
     public static Map<String, Object> getProfileRequestMapPatch() {
-        return new LinkedHashMap<>() {{
-            put("firstName", NEW_FIRST_NAME);
-            put("dateOfBirth", NEW_DATE_OF_BIRTH);
-            put("healthLevel", NEW_HEALTH_LEVEL);
-            put("contactNumbers", List.of(new LinkedHashMap<>() {{
-                put("contactType", CONTACT_TYPE);
-                put("contactValue", NEW_CONTACT_VALUE);
-            }}));
-            put("currentLocation", new LinkedHashMap<>() {{
-                put("address", NEW_ADDRESS);
-                put("postalCode", null);
-            }});
-        }};
+        return new LinkedHashMap<>() {
+            {
+                put("firstName", NEW_FIRST_NAME);
+                put("dateOfBirth", NEW_DATE_OF_BIRTH);
+                put("healthLevel", NEW_HEALTH_LEVEL);
+                put("contactNumbers", List.of(new LinkedHashMap<>() {
+                    {
+                        put("contactType", CONTACT_TYPE);
+                        put("contactValue", NEW_CONTACT_VALUE);
+                    }
+                }));
+                put("currentLocation", new LinkedHashMap<>() {
+                    {
+                        put("address", NEW_ADDRESS);
+                        put("postalCode", null);
+                    }
+                });
+            }
+        };
     }
 
     public static ProfileResponse getProfileResponse() {
         var response = getProfileRequest();
-        return ProfileResponse.builder()
-                .firstName(response.getFirstName())
-                .lastName(response.getLastName())
-                .dateOfBirth(response.getDateOfBirth())
-                .numberOfDependents(response.getNumberOfDependents())
+        return ProfileResponse.builder().firstName(response.getFirstName()).lastName(response.getLastName())
+                .dateOfBirth(response.getDateOfBirth()).numberOfDependents(response.getNumberOfDependents())
                 .estimatedAnnualIncome(response.getEstimatedAnnualIncome())
-                .estimatedNetWorth(response.getEstimatedNetWorth())
-                .gender(response.getGender())
-                .maritalStatus(response.getMaritalStatus())
-                .employmentStatus(response.getEmploymentStatus())
+                .estimatedNetWorth(response.getEstimatedNetWorth()).gender(response.getGender())
+                .maritalStatus(response.getMaritalStatus()).employmentStatus(response.getEmploymentStatus())
                 .healthLevel(response.getHealthLevel())
                 .contactNumbers(Collections.singletonList(ProfileContactResponse.builder()
                         .contactType(response.getContactNumbers().get(0).getContactType())
-                        .contactValue(response.getContactNumbers().get(0).getContactValue())
-                        .build()))
-                .currentLocation(ProfileLocationResponse.builder()
-                        .address(response.getCurrentLocation().getAddress())
-                        .city(response.getCurrentLocation().getCity())
-                        .state(response.getCurrentLocation().getState())
+                        .contactValue(response.getContactNumbers().get(0).getContactValue()).build()))
+                .currentLocation(ProfileLocationResponse.builder().address(response.getCurrentLocation().getAddress())
+                        .city(response.getCurrentLocation().getCity()).state(response.getCurrentLocation().getState())
                         .country(response.getCurrentLocation().getCountry())
-                        .postalCode(response.getCurrentLocation().getPostalCode())
-                        .build())
-                .spouseProfile(SpouseProfileResponse.builder()
-                        .firstName(response.getSpouseProfile().getFirstName())
+                        .postalCode(response.getCurrentLocation().getPostalCode()).build())
+                .spouseProfile(SpouseProfileResponse.builder().firstName(response.getSpouseProfile().getFirstName())
                         .lastName(response.getSpouseProfile().getLastName())
                         .dateOfBirth(response.getSpouseProfile().getDateOfBirth())
                         .gender(response.getSpouseProfile().getGender())
-                        .employmentStatus(response.getSpouseProfile().getEmploymentStatus())
-                        .build())
+                        .employmentStatus(response.getSpouseProfile().getEmploymentStatus()).build())
                 .build();
     }
 
@@ -231,8 +193,7 @@ public final class ProfileMock {
 
     public static ResultMatcher[] getProfileResponseResultMatcher() {
         var response = getProfileResponse();
-        return new ResultMatcher[]{
-                jsonPath("$.firstName").value(response.getFirstName()),
+        return new ResultMatcher[]{jsonPath("$.firstName").value(response.getFirstName()),
                 jsonPath("$.lastName").value(response.getLastName()),
                 jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
                 jsonPath("$.numberOfDependents").value(response.getNumberOfDependents()),
@@ -242,8 +203,10 @@ public final class ProfileMock {
                 jsonPath("$.maritalStatus").value(response.getMaritalStatus().getValue()),
                 jsonPath("$.employmentStatus").value(response.getEmploymentStatus().getValue()),
                 jsonPath("$.healthLevel").value(response.getHealthLevel().getValue()),
-                jsonPath("$.contactNumbers[0].contactType").value(response.getContactNumbers().get(0).getContactType().getValue()),
-                jsonPath("$.contactNumbers[0].contactValue").value(response.getContactNumbers().get(0).getContactValue()),
+                jsonPath("$.contactNumbers[0].contactType")
+                        .value(response.getContactNumbers().get(0).getContactType().getValue()),
+                jsonPath("$.contactNumbers[0].contactValue")
+                        .value(response.getContactNumbers().get(0).getContactValue()),
                 jsonPath("$.currentLocation.address").value(response.getCurrentLocation().getAddress()),
                 jsonPath("$.currentLocation.city").value(response.getCurrentLocation().getCity()),
                 jsonPath("$.currentLocation.state").value(response.getCurrentLocation().getState()),
@@ -253,14 +216,13 @@ public final class ProfileMock {
                 jsonPath("$.spouseProfile.lastName").value(response.getSpouseProfile().getLastName()),
                 jsonPath("$.spouseProfile.dateOfBirth").value(response.getSpouseProfile().getDateOfBirth().toString()),
                 jsonPath("$.spouseProfile.gender").value(response.getSpouseProfile().getGender().getValue()),
-                jsonPath("$.spouseProfile.employmentStatus").value(response.getSpouseProfile().getEmploymentStatus().getValue())
-        };
+                jsonPath("$.spouseProfile.employmentStatus")
+                        .value(response.getSpouseProfile().getEmploymentStatus().getValue())};
     }
 
     public static ResultMatcher[] getProfileResponsePatchResultMatcher() {
         var response = getProfileResponsePatch();
-        return new ResultMatcher[]{
-                jsonPath("$.firstName").value(response.getFirstName()),
+        return new ResultMatcher[]{jsonPath("$.firstName").value(response.getFirstName()),
                 jsonPath("$.lastName").value(response.getLastName()),
                 jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
                 jsonPath("$.numberOfDependents").value(response.getNumberOfDependents()),
@@ -270,8 +232,10 @@ public final class ProfileMock {
                 jsonPath("$.maritalStatus").value(response.getMaritalStatus().getValue()),
                 jsonPath("$.employmentStatus").value(response.getEmploymentStatus().getValue()),
                 jsonPath("$.healthLevel").value(response.getHealthLevel().getValue()),
-                jsonPath("$.contactNumbers[0].contactType").value(response.getContactNumbers().get(0).getContactType().getValue()),
-                jsonPath("$.contactNumbers[0].contactValue").value(response.getContactNumbers().get(0).getContactValue()),
+                jsonPath("$.contactNumbers[0].contactType")
+                        .value(response.getContactNumbers().get(0).getContactType().getValue()),
+                jsonPath("$.contactNumbers[0].contactValue")
+                        .value(response.getContactNumbers().get(0).getContactValue()),
                 jsonPath("$.currentLocation.address").value(response.getCurrentLocation().getAddress()),
                 jsonPath("$.currentLocation.city").value(response.getCurrentLocation().getCity()),
                 jsonPath("$.currentLocation.state").value(response.getCurrentLocation().getState()),
@@ -281,16 +245,13 @@ public final class ProfileMock {
                 jsonPath("$.spouseProfile.lastName").value(response.getSpouseProfile().getLastName()),
                 jsonPath("$.spouseProfile.dateOfBirth").value(response.getSpouseProfile().getDateOfBirth().toString()),
                 jsonPath("$.spouseProfile.gender").value(response.getSpouseProfile().getGender().getValue()),
-                jsonPath("$.spouseProfile.employmentStatus").value(response.getSpouseProfile().getEmploymentStatus().getValue())
-        };
+                jsonPath("$.spouseProfile.employmentStatus")
+                        .value(response.getSpouseProfile().getEmploymentStatus().getValue())};
     }
 
     public static ResultMatcher[] getProfileNotFoundFailureResultMatcher() {
-        return new ResultMatcher[]{
-                jsonPath("$.status").value("NOT_FOUND"),
+        return new ResultMatcher[]{jsonPath("$.status").value("NOT_FOUND"),
                 jsonPath("$.code").value("COMMON-ERROR-404-001"),
-                jsonPath("$.message").value("Object not found by userId: 12345"),
-                jsonPath("$.timestamp").isNotEmpty()
-        };
+                jsonPath("$.message").value("Object not found by userId: 12345"), jsonPath("$.timestamp").isNotEmpty()};
     }
 }

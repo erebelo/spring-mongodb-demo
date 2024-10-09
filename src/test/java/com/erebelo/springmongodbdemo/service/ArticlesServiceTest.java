@@ -1,29 +1,5 @@
 package com.erebelo.springmongodbdemo.service;
 
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
-import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
-import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.ARTICLES_URL;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.TOTAL_PAGES;
@@ -42,6 +18,29 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+
+import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
+import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
+import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
+import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
+import java.util.ArrayList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class ArticlesServiceTest {
@@ -66,10 +65,10 @@ class ArticlesServiceTest {
 
     @Test
     void testGetArticlesSuccessfully() {
-        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=1"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponse()));
-        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=2"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponseNextPage()));
+        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=1"), any(), any(),
+                any(ParameterizedTypeReference.class))).willReturn(ResponseEntity.ok(getArticlesResponse()));
+        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=2"), any(), any(),
+                any(ParameterizedTypeReference.class))).willReturn(ResponseEntity.ok(getArticlesResponseNextPage()));
 
         var result = service.getArticles();
 
@@ -81,40 +80,40 @@ class ArticlesServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(articlesResponseDTO);
 
         verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
-                httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getBasicHttpHeaders());
 
         verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
-                httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getBasicHttpHeaders());
 
         verify(mapper).responseToResponseDTO(anyList());
     }
 
     @Test
     void testGetArticlesThrowsNotFoundException() {
-        given(httpClientAuth.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).willReturn(null);
+        given(httpClientAuth.getRestTemplate().exchange(anyString(), any(), any(),
+                any(ParameterizedTypeReference.class))).willReturn(null);
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.getArticles())
+        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getArticles())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_003);
 
         verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
-                httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         verify(mapper, never()).responseToResponseDTO(anyList());
 
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getBasicHttpHeaders());
     }
 
     @Test
     void testGetArticlesIgnoreExceptionWhenHittingArticlesSecondTime() {
-        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=1"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponse()));
-        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=2"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willThrow(new RuntimeException("Async error"));
+        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=1"), any(), any(),
+                any(ParameterizedTypeReference.class))).willReturn(ResponseEntity.ok(getArticlesResponse()));
+        given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=2"), any(), any(),
+                any(ParameterizedTypeReference.class))).willThrow(new RuntimeException("Async error"));
 
         var result = service.getArticles();
 
@@ -122,14 +121,14 @@ class ArticlesServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(getArticlesDataResponseDTO());
 
         verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
-                httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getBasicHttpHeaders());
 
         verify(httpClientAuth.getRestTemplate()).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
-                httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
-        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison().isEqualTo(getBasicHttpHeaders());
+                httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getBasicHttpHeaders());
 
         verify(mapper).responseToResponseDTO(anyList());
     }

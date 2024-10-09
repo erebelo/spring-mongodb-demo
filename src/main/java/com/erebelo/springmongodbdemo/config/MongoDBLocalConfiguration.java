@@ -18,13 +18,10 @@ public class MongoDBLocalConfiguration extends MongoDBConfiguration {
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.applyConnectionString(getLocalConnectionString())
-                .retryReads(Boolean.FALSE)
-                .retryWrites(Boolean.FALSE);
+        builder.applyConnectionString(getLocalConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE);
     }
 
     private ConnectionString getLocalConnectionString() {
-        return new ConnectionString(String.format(LOCAL_CONNECTION_STRING_TEMPLATE, dbHost, dbPort,
-                getDatabaseName()));
+        return new ConnectionString(String.format(LOCAL_CONNECTION_STRING_TEMPLATE, dbHost, dbPort, getDatabaseName()));
     }
 }

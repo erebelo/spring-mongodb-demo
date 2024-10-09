@@ -2,14 +2,13 @@ package com.erebelo.springmongodbdemo.domain.enumeration;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumCodeValueType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @ToString

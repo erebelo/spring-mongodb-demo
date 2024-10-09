@@ -1,19 +1,18 @@
 package com.erebelo.springmongodbdemo.mapper;
 
+import static java.util.Objects.isNull;
+import static org.mapstruct.ReportingPolicy.WARN;
+
 import com.erebelo.springmongodbdemo.domain.entity.SpouseProfile;
 import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.request.SpouseProfileDTO;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import static java.util.Objects.isNull;
-import static org.mapstruct.ReportingPolicy.WARN;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = WARN)
 public interface ProfileMapper {

@@ -1,14 +1,13 @@
 package com.erebelo.springmongodbdemo.util;
 
 import com.erebelo.springmongodbdemo.domain.request.ByteWrapperObject;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

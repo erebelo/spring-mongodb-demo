@@ -1,5 +1,9 @@
 package com.erebelo.springmongodbdemo.config;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MongoDBLocalConfigurationTest {

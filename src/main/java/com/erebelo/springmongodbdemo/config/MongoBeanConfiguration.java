@@ -14,7 +14,8 @@ public class MongoBeanConfiguration {
 
     @Bean
     public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
-        // Enables through @Transactional annotation rollback the REST operations if any exception occurs
+        // Enables through @Transactional annotation rollback the REST operations if any
+        // exception occurs
         return new MongoTransactionManager(dbFactory);
     }
 

@@ -2,7 +2,6 @@ package com.erebelo.springmongodbdemo.service;
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-
 import java.util.Map;
 
 public interface ProfileService {

@@ -53,7 +53,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
         // Converts before persisting the document in the database and after fetching it
 
-        //LocalDate
+        // LocalDate
         adapter.registerConverter(LocalDateToStringConverter.INSTANCE);
         adapter.registerConverter(StringToLocalDateConverter.INSTANCE);
 
@@ -72,15 +72,14 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.applyConnectionString(getConnectionString())
-                .retryReads(Boolean.FALSE)
-                .retryWrites(Boolean.FALSE);
+        builder.applyConnectionString(getConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE);
     }
 
     private ConnectionString getConnectionString() {
         var databaseCredentials = String.format("%s:%s@", dbUsername, getDbPassword());
         var clusterEndpoint = String.format("%s:%s", dbHost, dbPort);
 
-        return new ConnectionString(String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint, getDatabaseName()));
+        return new ConnectionString(
+                String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint, getDatabaseName()));
     }
 }

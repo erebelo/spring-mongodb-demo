@@ -19,4 +19,3 @@ public enum EnumCodeValueTypeToDocumentConverter implements Converter<EnumCodeVa
         return document;
     }
 }
-

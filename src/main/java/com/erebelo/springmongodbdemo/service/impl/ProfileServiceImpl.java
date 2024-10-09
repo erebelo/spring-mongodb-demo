@@ -1,24 +1,5 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
-import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
-import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
-import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
-import com.erebelo.springmongodbdemo.repository.ProfileRepository;
-import com.erebelo.springmongodbdemo.service.ProfileService;
-import com.erebelo.springmongodbdemo.service.validation.FieldMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
-
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_002;
@@ -36,6 +17,24 @@ import static com.erebelo.springmongodbdemo.util.HashAlgorithmUtil.generateSHAHa
 import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 import static java.util.Objects.isNull;
 
+import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
+import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
+import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
+import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
+import com.erebelo.springmongodbdemo.repository.ProfileRepository;
+import com.erebelo.springmongodbdemo.service.ProfileService;
+import com.erebelo.springmongodbdemo.service.validation.FieldMessage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -50,8 +49,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional(readOnly = true)
     public ProfileResponse getProfile(String userId) {
         log.info("Getting profile: {}", userId);
-        var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new CommonException(COMMON_ERROR_404_001, userId));
+        var profile = repository.findByUserId(userId)
+                .orElseThrow(() -> new CommonException(COMMON_ERROR_404_001, userId));
 
         return mapper.entityToResponse(profile.getProfile());
     }
@@ -79,8 +78,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public ProfileResponse updateProfile(String userId, ProfileRequest profileRequest) {
         log.info(CHECK_OBJ_LOGGER, userId);
-        var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new CommonException(COMMON_ERROR_404_002, userId));
+        var profile = repository.findByUserId(userId)
+                .orElseThrow(() -> new CommonException(COMMON_ERROR_404_002, userId));
 
         log.info("Generating byte arrays for profile objects");
         var profileBytes = byteGenerator(profile.getProfile());
@@ -106,13 +105,13 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse patchProfile(String userId, Map<String, Object> profileRequestMap) {
         log.info("Validating map request attributes");
         if (isNull(profileRequestMap) || profileRequestMap.isEmpty()) {
-            throw new CommonException(COMMON_ERROR_400_001, Collections.singletonList("request body is mandatory and must contain some " +
-                    "attribute"));
+            throw new CommonException(COMMON_ERROR_400_001,
+                    Collections.singletonList("request body is mandatory and must contain some " + "attribute"));
         }
 
         log.info("Fetching profile from database");
-        var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new CommonException(COMMON_ERROR_404_002, userId));
+        var profile = repository.findByUserId(userId)
+                .orElseThrow(() -> new CommonException(COMMON_ERROR_404_002, userId));
 
         if (isNull(profile.getProfile())) {
             throw new CommonException(COMMON_ERROR_422_002);
@@ -122,13 +121,15 @@ public class ProfileServiceImpl implements ProfileService {
         var dbProfileRequest = mapper.entityToRequest(profile.getProfile());
         try {
             log.info("Serializing/deserializing database profile object");
-            var dbProfileRequestMap = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequest), Map.class);
+            var dbProfileRequestMap = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequest),
+                    Map.class);
 
             log.info("Recursively merging profile request with database profile object");
             patchCounter = recursiveMapMerge(profileRequestMap, dbProfileRequestMap);
 
             log.info("Serializing/deserializing profile object after merging objects");
-            dbProfileRequest = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequestMap), ProfileRequest.class);
+            dbProfileRequest = objectMapper.readValue(objectMapper.writeValueAsString(dbProfileRequestMap),
+                    ProfileRequest.class);
         } catch (Exception e) {
             throw new CommonException(COMMON_ERROR_422_001, e, e.getMessage());
         }
@@ -149,8 +150,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public void deleteProfile(String userId) {
         log.info(CHECK_OBJ_LOGGER, userId);
-        var profile = repository.findByUserId(userId).orElseThrow(() ->
-                new CommonException(COMMON_ERROR_404_003, userId));
+        var profile = repository.findByUserId(userId)
+                .orElseThrow(() -> new CommonException(COMMON_ERROR_404_003, userId));
 
         repository.delete(profile);
     }

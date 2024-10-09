@@ -1,5 +1,9 @@
 package com.erebelo.springmongodbdemo.rest;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -13,11 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
-
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.TimeUnit;
 
 @Log4j2
 @Component
@@ -45,16 +44,14 @@ public class HttpClientAuth extends AbstractRestTemplate {
         }
     }
 
-    private CloseableHttpClient buildHttpClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        return HttpClients.custom()
-                .setDefaultRequestConfig(requestConfig())
+    private CloseableHttpClient buildHttpClient()
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        return HttpClients.custom().setDefaultRequestConfig(requestConfig())
                 .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
                         .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-                                .setSslContext(SSLContextBuilder.create()
-                                        .loadTrustMaterial(TrustAllStrategy.INSTANCE)
-                                        .build())
-                                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                                .build())
+                                .setSslContext(
+                                        SSLContextBuilder.create().loadTrustMaterial(TrustAllStrategy.INSTANCE).build())
+                                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE).build())
                         .build())
                 .build();
     }

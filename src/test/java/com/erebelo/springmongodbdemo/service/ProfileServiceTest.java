@@ -1,37 +1,5 @@
 package com.erebelo.springmongodbdemo.service;
 
-import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
-import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
-import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
-import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
-import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
-import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
-import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
-import com.erebelo.springmongodbdemo.repository.ProfileRepository;
-import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
-import com.erebelo.springmongodbdemo.util.ByteHandlerUtil;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_002;
@@ -60,6 +28,37 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
+import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
+import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
+import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
+import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
+import com.erebelo.springmongodbdemo.exception.model.CommonException;
+import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
+import com.erebelo.springmongodbdemo.repository.ProfileRepository;
+import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
+import com.erebelo.springmongodbdemo.util.ByteHandlerUtil;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
@@ -102,8 +101,7 @@ class ProfileServiceTest {
     void testGetProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.getProfile(USER_ID))
+        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getProfile(USER_ID))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_001)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
 
@@ -125,9 +123,8 @@ class ProfileServiceTest {
         verify(repository).insert(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
 
-        assertThat(entityArgumentCaptor.getValue())
-                .usingRecursiveComparison()
-                .ignoringFields("id", "hashObject", "createdBy", "modifiedBy", "createdDateTime", "modifiedDateTime", "version")
+        assertThat(entityArgumentCaptor.getValue()).usingRecursiveComparison().ignoringFields("id", "hashObject",
+                "createdBy", "modifiedBy", "createdDateTime", "modifiedDateTime", "version")
                 .isEqualTo(getProfileEntity());
     }
 
@@ -161,9 +158,7 @@ class ProfileServiceTest {
 
         var result = service.updateProfile(USER_ID, profileRequest);
 
-        assertThat(result)
-                .usingRecursiveComparison()
-                .ignoringFields("estimatedAnnualIncome", "employmentStatus")
+        assertThat(result).usingRecursiveComparison().ignoringFields("estimatedAnnualIncome", "employmentStatus")
                 .isEqualTo(getProfileResponse());
         assertThat(result.getEstimatedAnnualIncome()).isEqualTo(NEW_ESTIMATED_ANNUAL_INCOME);
         assertThat(result.getEmploymentStatus()).isEqualTo(EmploymentStatusEnum.RETIRED);
@@ -173,9 +168,7 @@ class ProfileServiceTest {
         verify(repository).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
 
-        assertThat(entityArgumentCaptor.getValue())
-                .usingRecursiveComparison()
-                .ignoringFields("hashObject")
+        assertThat(entityArgumentCaptor.getValue()).usingRecursiveComparison().ignoringFields("hashObject")
                 .isEqualTo(profileEntity);
     }
 
@@ -227,9 +220,7 @@ class ProfileServiceTest {
         verify(repository).save(entityArgumentCaptor.capture());
         verify(mapper).entityToResponse(any(UserProfile.class));
 
-        assertThat(entityArgumentCaptor.getValue())
-                .usingRecursiveComparison()
-                .ignoringFields("hashObject")
+        assertThat(entityArgumentCaptor.getValue()).usingRecursiveComparison().ignoringFields("hashObject")
                 .isEqualTo(getProfileEntityPatch());
     }
 
@@ -238,14 +229,16 @@ class ProfileServiceTest {
         given(repository.findByUserId(anyString())).willReturn(Optional.ofNullable(
                 ProfileEntity.builder().profile(UserProfile.builder().firstName(FIRST_NAME).build()).build()));
 
-        Map<String, Object> profileRequestMap = new LinkedHashMap<>() {{
-            put("firstName", FIRST_NAME);
-        }};
+        Map<String, Object> profileRequestMap = new LinkedHashMap<>() {
+            {
+                put("firstName", FIRST_NAME);
+            }
+        };
 
         var result = service.patchProfile(USER_ID, profileRequestMap);
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(
-                ProfileResponse.builder().firstName(FIRST_NAME).employmentStatus(EmploymentStatusEnum.NOT_EMPLOYED).build());
+        assertThat(result).usingRecursiveComparison().isEqualTo(ProfileResponse.builder().firstName(FIRST_NAME)
+                .employmentStatus(EmploymentStatusEnum.NOT_EMPLOYED).build());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
@@ -361,8 +354,7 @@ class ProfileServiceTest {
     void testDeleteProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.deleteProfile(USER_ID))
+        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.deleteProfile(USER_ID))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_003)
                 .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
 

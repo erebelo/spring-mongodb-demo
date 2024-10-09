@@ -1,5 +1,8 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getBasicHttpHeaders;
+
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
@@ -7,6 +10,12 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.MDC;
@@ -17,16 +26,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
-import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getBasicHttpHeaders;
 
 @Log4j2
 @Service
@@ -62,14 +61,14 @@ public class ArticlesServiceImpl implements ArticlesService {
 
             log.info("Fetching articles asynchronously through CompletableFuture");
             List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
-                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page, mdcKey, true)))
-                    .toList();
+                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page, mdcKey, true))).toList();
 
             log.info("Combining all CompletableFuture results");
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
             CompletableFuture<Void> exceptionalResult = allOf.exceptionally(throwable -> {
-                log.warn("Error waiting for CompletableFuture to complete. Error message: {}", throwable.getCause().getMessage());
+                log.warn("Error waiting for CompletableFuture to complete. Error message: {}",
+                        throwable.getCause().getMessage());
                 return null;
             });
 
@@ -77,12 +76,11 @@ public class ArticlesServiceImpl implements ArticlesService {
             exceptionalResult.join();
 
             long totalTime = System.currentTimeMillis() - startTime;
-            log.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages, totalTime);
+            log.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages,
+                    totalTime);
 
             log.info("Collecting results from completed CompletableFutures");
-            allArticlesResponses = futures.stream()
-                    .map(CompletableFuture::join)
-                    .filter(Objects::nonNull)
+            allArticlesResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
                     .collect(Collectors.toList());
         }
 
@@ -91,8 +89,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         }
 
         List<ArticlesDataResponse> allArticlesDataResponses = allArticlesResponses.stream()
-                .filter(response -> response.getData() != null)
-                .flatMap(response -> response.getData().stream())
+                .filter(response -> response.getData() != null).flatMap(response -> response.getData().stream())
                 .toList();
 
         if (allArticlesDataResponses.isEmpty()) {
@@ -109,14 +106,15 @@ public class ArticlesServiceImpl implements ArticlesService {
             log.info("Retrieving articles for page {}", page);
 
             ResponseEntity<ArticlesResponse> response = httpClientAuth.getRestTemplate().exchange(
-                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(), HttpMethod.GET,
-                    new HttpEntity<>(getBasicHttpHeaders()), new ParameterizedTypeReference<>() {
+                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
+                    HttpMethod.GET, new HttpEntity<>(getBasicHttpHeaders()), new ParameterizedTypeReference<>() {
                     });
 
             log.info("Articles for page {} retrieved successfully", page);
             return response.hasBody() ? response.getBody() : null;
         } catch (Exception e) {
-            log.warn("Error getting articles from downstream API for page: {}. Error message: {}", page, e.getMessage());
+            log.warn("Error getting articles from downstream API for page: {}. Error message: {}", page,
+                    e.getMessage());
             return null;
         } finally {
             if (isAsync) {

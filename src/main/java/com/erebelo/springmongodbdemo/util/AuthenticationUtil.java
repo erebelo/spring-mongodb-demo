@@ -1,6 +1,13 @@
 package com.erebelo.springmongodbdemo.util;
 
+import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
+
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -8,14 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,12 +38,9 @@ public final class AuthenticationUtil {
     public static HttpHeaders getHttpHeaders() {
         var requestHttpHeaders = getHttpServletRequest();
 
-        var httpHeaders = Collections.list(requestHttpHeaders.getHeaderNames())
-                .stream()
-                .collect(Collectors.toMap(
-                        Function.identity(), h -> Collections.list(requestHttpHeaders.getHeaders(h)),
-                        (oldValue, newValue) -> newValue,
-                        HttpHeaders::new));
+        var httpHeaders = Collections.list(requestHttpHeaders.getHeaderNames()).stream()
+                .collect(Collectors.toMap(Function.identity(), h -> Collections.list(requestHttpHeaders.getHeaders(h)),
+                        (oldValue, newValue) -> newValue, HttpHeaders::new));
 
         httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);

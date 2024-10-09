@@ -1,14 +1,13 @@
 package com.erebelo.springmongodbdemo.context.history;
 
 import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import java.time.Instant;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.Date;
 
 @Log4j2
 @Service
@@ -29,21 +28,21 @@ public class DocumentHistoryService {
             var version = historyDocument.getLong(VERSION);
             var actionEnum = version == null || version == 0 ? HistoryActionEnum.INSERT : HistoryActionEnum.UPDATE;
 
-            createAndSaveHistoryDocument(actionEnum, objectId.toString(), getCollectionName(source.getClass()), historyDocument);
+            createAndSaveHistoryDocument(actionEnum, objectId.toString(), getCollectionName(source.getClass()),
+                    historyDocument);
         }
     }
 
     public void saveDeleteHistory(Document document, Class<?> clazz) {
         if (isToSaveHistory(clazz)) {
-            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(), getCollectionName(clazz),
-                    null);
+            createAndSaveHistoryDocument(HistoryActionEnum.DELETE, document.getObjectId(OBJECT_ID).toString(),
+                    getCollectionName(clazz), null);
         }
     }
 
-    private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName, Document document) {
-        var history = new Document()
-                .append("action", actionEnum.getValue())
-                .append("documentId", documentId);
+    private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName,
+            Document document) {
+        var history = new Document().append("action", actionEnum.getValue()).append("documentId", documentId);
 
         if (HistoryActionEnum.DELETE.equals(actionEnum)) {
             history.append("historyCreatedBy", AuthenticationUtil.getLoggedInUser());

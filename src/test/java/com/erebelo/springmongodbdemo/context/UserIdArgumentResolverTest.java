@@ -1,15 +1,5 @@
 package com.erebelo.springmongodbdemo.context;
 
-import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
-import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.springframework.core.MethodParameter;
-
-import java.util.Objects;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +7,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+
+import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
+import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.springframework.core.MethodParameter;
 
 class UserIdArgumentResolverTest {
 

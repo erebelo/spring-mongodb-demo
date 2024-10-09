@@ -1,16 +1,15 @@
 package com.erebelo.springmongodbdemo.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mockStatic;
+
 import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mockStatic;
 
 class AuditingConfigurationTest {
 

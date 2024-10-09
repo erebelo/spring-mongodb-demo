@@ -1,5 +1,15 @@
 package com.erebelo.springmongodbdemo.exception;
 
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.exception.model.ErrorCode;
@@ -7,6 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,20 +37,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_000;
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 
 @ExtendWith(SpringExtension.class)
 class GlobalExceptionHandlerTest {
@@ -76,7 +75,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testIllegalStateException() {
-        var responseEntity = handler.handleIllegalStateException(new IllegalStateException("IllegalStateException error"));
+        var responseEntity = handler
+                .handleIllegalStateException(new IllegalStateException("IllegalStateException error"));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -90,7 +90,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testIllegalArgumentException() {
-        var responseEntity = handler.handleIllegalArgumentException(new IllegalArgumentException("IllegalArgumentException error"));
+        var responseEntity = handler
+                .handleIllegalArgumentException(new IllegalArgumentException("IllegalArgumentException error"));
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -128,8 +129,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void tesHttpMediaTypeNotSupportedException() {
-        var responseEntity = handler.handleHttpMediaTypeNotSupportedException(new HttpMediaTypeNotSupportedException(
-                "HttpMediaTypeNotSupportedException error"));
+        var responseEntity = handler.handleHttpMediaTypeNotSupportedException(
+                new HttpMediaTypeNotSupportedException("HttpMediaTypeNotSupportedException error"));
         assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -162,15 +163,17 @@ class GlobalExceptionHandlerTest {
         supportedMethods.add("GET");
         supportedMethods.add("POST");
 
-        var responseEntity = handler.handleHttpRequestMethodNotSupportedException(new HttpRequestMethodNotSupportedException(
-                "HttpRequestMethodNotSupportedException error", supportedMethods));
+        var responseEntity = handler.handleHttpRequestMethodNotSupportedException(
+                new HttpRequestMethodNotSupportedException("HttpRequestMethodNotSupportedException error",
+                        supportedMethods));
         assertEquals(HttpStatus.METHOD_NOT_ALLOWED, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
         assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.METHOD_NOT_ALLOWED, exceptionResponse.getStatus());
         assertNull(exceptionResponse.getCode());
-        assertEquals("Request method 'HttpRequestMethodNotSupportedException error' is not supported. Supported methods: GET, POST",
+        assertEquals(
+                "Request method 'HttpRequestMethodNotSupportedException error' is not supported. Supported methods: GET, POST",
                 exceptionResponse.getMessage());
         assertNull(exceptionResponse.getCause());
     }
@@ -194,15 +197,16 @@ class GlobalExceptionHandlerTest {
         assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertNull(exceptionResponse.getCode());
-        assertEquals("[MethodArgumentNotValidException error 1, MethodArgumentNotValidException error 2]", exceptionResponse.getMessage());
+        assertEquals("[MethodArgumentNotValidException error 1, MethodArgumentNotValidException error 2]",
+                exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
         assertNull(exceptionResponse.getCause());
     }
 
     @Test
     void testTransactionSystemException() {
-        var responseEntity = handler.handleTransactionSystemException(new TransactionSystemException("TransactionSystemException error",
-                new RuntimeException("TransactionSystemException error")));
+        var responseEntity = handler.handleTransactionSystemException(new TransactionSystemException(
+                "TransactionSystemException error", new RuntimeException("TransactionSystemException error")));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -217,10 +221,11 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testClientException() {
-        var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
-                new Exception("{\"detail\":\"Invalid route\",\"method\":\"get\",\"status\":404,\"title\":\"Not Found\"," +
-                        "\"type\":\"about:blank\"," +
-                        "\"uri\":\"/metrics/pageviews/aggreg1ate/all-projects/all-1access/all-agents/daily/2015100100/2015103000\"}")));
+        var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST,
+                "ClientException error",
+                new Exception("{\"detail\":\"Invalid route\",\"method\":\"get\",\"status\":404,\"title\":\"Not Found\","
+                        + "\"type\":\"about:blank\","
+                        + "\"uri\":\"/metrics/pageviews/aggreg1ate/all-projects/all-1access/all-agents/daily/2015100100/2015103000\"}")));
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -234,8 +239,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testClientExceptionWithNoCause() {
-        var responseEntity = handler.handleClientException(new ClientException(HttpStatus.BAD_REQUEST, "ClientException error",
-                new Exception("error")));
+        var responseEntity = handler.handleClientException(
+                new ClientException(HttpStatus.BAD_REQUEST, "ClientException error", new Exception("error")));
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         var exceptionResponse = responseEntity.getBody();
@@ -251,8 +256,9 @@ class GlobalExceptionHandlerTest {
     void testCommonException() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        var exceptionResponse = handler.handleCommonException(new CommonException(COMMON_ERROR_400_000, new Exception("Exception error"),
-                "CommonException error"), response);
+        var exceptionResponse = handler.handleCommonException(
+                new CommonException(COMMON_ERROR_400_000, new Exception("Exception error"), "CommonException error"),
+                response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
@@ -266,8 +272,8 @@ class GlobalExceptionHandlerTest {
     void testCommonExceptionWithNoArgs() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        var exceptionResponse = handler.handleCommonException(new CommonException(COMMON_ERROR_400_000, new Exception("Exception error")),
-                response);
+        var exceptionResponse = handler.handleCommonException(
+                new CommonException(COMMON_ERROR_400_000, new Exception("Exception error")), response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
@@ -281,7 +287,8 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionSuccessfully() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|Bad Request to user %s");
 
-        var exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_400_000, "foo"), response);
+        var exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_400_000, "foo"),
+                response);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
@@ -310,7 +317,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
-        assertEquals("Basic error handling failure: no properties found for COMMON-ERROR-500-000", exceptionResponse.getMessage());
+        assertEquals("Basic error handling failure: no properties found for COMMON-ERROR-500-000",
+                exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
         assertNull(exceptionResponse.getCause());
     }
@@ -338,7 +346,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
-        assertEquals("Basic error handling failure: could not get http status code from |Other stuff", exceptionResponse.getMessage());
+        assertEquals("Basic error handling failure: could not get http status code from |Other stuff",
+                exceptionResponse.getMessage());
         assertNotNull(exceptionResponse.getTimestamp());
         assertNull(exceptionResponse.getCause());
     }

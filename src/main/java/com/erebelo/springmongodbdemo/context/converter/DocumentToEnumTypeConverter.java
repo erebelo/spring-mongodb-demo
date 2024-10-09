@@ -1,12 +1,11 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumType;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.data.convert.ReadingConverter;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 @ReadingConverter
 public enum DocumentToEnumTypeConverter implements ConverterFactory<String, EnumType> {
@@ -19,7 +18,8 @@ public enum DocumentToEnumTypeConverter implements ConverterFactory<String, Enum
 
         return source -> {
             if (!targetType.isEnum()) {
-                throw new IllegalStateException(String.format("The targetType [%s] have to be an enum.", targetType.getSimpleName()));
+                throw new IllegalStateException(
+                        String.format("The targetType [%s] have to be an enum.", targetType.getSimpleName()));
             }
 
             try {
@@ -30,8 +30,8 @@ public enum DocumentToEnumTypeConverter implements ConverterFactory<String, Enum
         };
     }
 
-    private <T extends EnumType> EnumType getEnumType(Class<T> targetType, String source) throws IllegalAccessException, InvocationTargetException,
-            NoSuchMethodException {
+    private <T extends EnumType> EnumType getEnumType(Class<T> targetType, String source)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         EnumType enumType;
 
         try {
@@ -40,8 +40,11 @@ public enum DocumentToEnumTypeConverter implements ConverterFactory<String, Enum
         } catch (NoSuchMethodException e) {
             var valuesMethod = targetType.getDeclaredMethod("values");
 
-            enumType =
-                    Arrays.stream((EnumType[]) valuesMethod.invoke(null)).filter(obj -> obj.getValue().equalsIgnoreCase(source)).findFirst().orElseThrow(() -> new IllegalStateException(String.format("The value [%s] doesn't match with any instance of the enum [%s]", source, targetType.getSimpleName())));
+            enumType = Arrays.stream((EnumType[]) valuesMethod.invoke(null))
+                    .filter(obj -> obj.getValue().equalsIgnoreCase(source)).findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            String.format("The value [%s] doesn't match with any instance of the enum [%s]", source,
+                                    targetType.getSimpleName())));
         }
 
         return enumType;

@@ -1,5 +1,8 @@
 package com.erebelo.springmongodbdemo.context;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.context.history.MongoHistoryEventListener;
 import org.bson.Document;
@@ -10,9 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MongoHistoryEventListenerTest {
