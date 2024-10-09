@@ -5,13 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-        <relativePath/>
+        <groupId>com.erebelo</groupId>
+        <artifactId>spring-common-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.erebelo</groupId>
     <artifactId>spring-mongodb-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-mongodb-demo</name>
@@ -119,7 +117,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
                 <configuration>
                     <mainClass>com.erebelo.springmongodbdemo.SpringMongoDBDemoApplication</mainClass>
                     <excludes>
