@@ -5,11 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @EnableMongoAuditing
-@SpringBootApplication(scanBasePackages = {"com.erebelo.springmongodbdemo"})
+@SpringBootApplication(scanBasePackages = {"com.erebelo"})
 public class SpringMongoDBDemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringMongoDBDemoApplication.class, args);
     }
-
 }
