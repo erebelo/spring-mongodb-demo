@@ -12,42 +12,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = ArticlesController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class ArticlesControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @InjectMocks
-    private ArticlesController controller;
-
-    @Mock
-    private ArticlesService service;
-
-    @Mock
+    @Autowired
     private Environment env;
 
-    private static final List<ArticlesDataResponseDTO> RESPONSE = getArticlesDataResponseDTO();
+    @MockBean
+    private ArticlesService service;
 
-    @BeforeEach
-    void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new GlobalExceptionHandler(env))
-                .build();
-    }
+    private static final List<ArticlesDataResponseDTO> RESPONSE = getArticlesDataResponseDTO();
 
     @Test
     void testGetArticlesSuccessfully() throws Exception {
@@ -64,7 +53,7 @@ class ArticlesControllerTest {
                 .andExpect(jsonPath("$.[0].storyTitle").value(RESPONSE.get(0).getStoryTitle()))
                 .andExpect(jsonPath("$.[0].storyUrl").value(RESPONSE.get(0).getStoryUrl()))
                 .andExpect(jsonPath("$.[0].parentId").value(RESPONSE.get(0).getParentId()))
-                .andExpect(jsonPath("$.[0].createdAt").value(RESPONSE.get(0).getCreatedAt())).andReturn();
+                .andExpect(jsonPath("$.[0].createdAt").value(RESPONSE.get(0).getCreatedAt()));
 
         verify(service).getArticles();
     }

@@ -12,41 +12,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
-import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = WikimediaController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class WikimediaControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @InjectMocks
-    private WikimediaController controller;
-
-    @Mock
-    private WikimediaService service;
-
-    @Mock
+    @Autowired
     private Environment env;
 
-    private static final WikimediaResponse RESPONSE = getWikimediaResponse();
+    @MockBean
+    private WikimediaService service;
 
-    @BeforeEach
-    void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new GlobalExceptionHandler(env))
-                .build();
-    }
+    private static final WikimediaResponse RESPONSE = getWikimediaResponse();
 
     @Test
     void testGetWikimediaProjectPageviewsSuccessfully() throws Exception {
@@ -61,7 +50,7 @@ class WikimediaControllerTest {
                 .andExpect(jsonPath("$.items[0].agent").value(RESPONSE.getItems().get(0).getAgent()))
                 .andExpect(jsonPath("$.items[0].granularity").value(RESPONSE.getItems().get(0).getGranularity()))
                 .andExpect(jsonPath("$.items[0].timestamp").value(RESPONSE.getItems().get(0).getTimestamp()))
-                .andExpect(jsonPath("$.items[0].views").value(RESPONSE.getItems().get(0).getViews())).andReturn();
+                .andExpect(jsonPath("$.items[0].views").value(RESPONSE.getItems().get(0).getViews()));
 
         verify(service).getWikimediaProjectPageviews();
     }

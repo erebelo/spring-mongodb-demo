@@ -36,71 +36,49 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
-import com.erebelo.springmongodbdemo.exception.GlobalExceptionHandler;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = ProfileController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class ProfileControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @InjectMocks
-    private ProfileController controller;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
-    private ProfileService service;
-
-    @Mock
+    @Autowired
     private Environment env;
+
+    @MockBean
+    private ProfileService service;
 
     @Captor
     private ArgumentCaptor<?> argumentCaptor;
 
-    @SuppressWarnings("all")
-    private JacksonTester<ProfileRequest> requestJacksonTester;
-
-    @SuppressWarnings("all")
-    private JacksonTester<Map> mapJacksonTester;
-
-    private static final String USER_ID_PARAM = "userId";
-
-    @BeforeEach
-    void init() {
-        var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        JacksonTester.initFields(this, objectMapper);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new GlobalExceptionHandler(env))
-                .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper)).build();
-    }
+    private static final String USER_ID_HEADER = "X-UserId";
 
     @Test
     void testGetProfileSuccessfully() throws Exception {
         given(service.getProfile(anyString())).willReturn(getProfileResponse());
 
-        mockMvc.perform(get(PROFILE).param(USER_ID_PARAM, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher()).andReturn();
+        mockMvc.perform(get(PROFILE).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).getProfile(USER_ID);
     }
@@ -110,7 +88,7 @@ class ProfileControllerTest {
         given(service.getProfile(anyString())).willThrow(new CommonException(COMMON_ERROR_404_001, USER_ID));
         given(env.getProperty(anyString())).willReturn("404|Object not found by userId: %s");
 
-        mockMvc.perform(get(PROFILE).param(USER_ID_PARAM, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get(PROFILE).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound()).andExpectAll(getProfileNotFoundFailureResultMatcher());
 
         verify(service).getProfile(USER_ID);
@@ -121,10 +99,9 @@ class ProfileControllerTest {
     void testInsertProfileSuccessfully() throws Exception {
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
-        mockMvc.perform(post(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(requestJacksonTester.write(getProfileRequest()).getJson())
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isCreated())
-                .andExpectAll(getProfileResponseResultMatcher());
+        mockMvc.perform(post(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated()).andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).insertProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
 
@@ -137,8 +114,8 @@ class ProfileControllerTest {
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc
-                .perform(post(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(requestJacksonTester.write(getProfileRequest()).getJson())
+                .perform(post(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(getProfileRequest()))
                         .accept(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
 
@@ -151,10 +128,9 @@ class ProfileControllerTest {
     void testUpdateProfileSuccessfully() throws Exception {
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
-        mockMvc.perform(put(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(requestJacksonTester.write(getProfileRequest()).getJson())
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
-                .andExpectAll(getProfileResponseResultMatcher());
+        mockMvc.perform(put(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).updateProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
 
@@ -167,8 +143,8 @@ class ProfileControllerTest {
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willThrow(exception);
 
         assertThatThrownBy(() -> mockMvc
-                .perform(put(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(requestJacksonTester.write(getProfileRequest()).getJson())
+                .perform(put(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(getProfileRequest()))
                         .accept(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
 
@@ -181,8 +157,8 @@ class ProfileControllerTest {
     void testPatchProfileSuccessfully() throws Exception {
         given(service.patchProfile(anyString(), any(Map.class))).willReturn(getProfileResponsePatch());
 
-        mockMvc.perform(patch(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
-                .content(mapJacksonTester.write(getProfileRequestMapPatch()).getJson())
+        mockMvc.perform(patch(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
+                .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpectAll(getProfileResponsePatchResultMatcher());
 
@@ -198,8 +174,8 @@ class ProfileControllerTest {
         given(service.patchProfile(anyString(), any(Map.class))).willThrow(exception);
 
         assertThatThrownBy(
-                () -> mockMvc.perform(patch(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
-                        .content(mapJacksonTester.write(getProfileRequestMapPatch()).getJson())
+                () -> mockMvc.perform(patch(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
+                        .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                         .accept(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
 
@@ -212,7 +188,7 @@ class ProfileControllerTest {
     void testDeleteProfileSuccessfully() throws Exception {
         willDoNothing().given(service).deleteProfile(anyString());
 
-        mockMvc.perform(delete(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(delete(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent());
 
         verify(service).deleteProfile(USER_ID);
@@ -224,7 +200,7 @@ class ProfileControllerTest {
         willThrow(exception).given(service).deleteProfile(anyString());
 
         assertThatThrownBy(() -> mockMvc
-                .perform(delete(PROFILE).param(USER_ID_PARAM, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)))
+                .perform(delete(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)))
                 .hasCause(exception);
 
         verify(service).deleteProfile(USER_ID);
