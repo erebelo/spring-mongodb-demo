@@ -4,8 +4,8 @@ import static com.erebelo.springmongodbdemo.constant.BusinessConstant.GLOBAL_EXC
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.LINE_DELIMITERS;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.REQUEST_ID_HEADER;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_000;
-import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
+import com.erebelo.spring.common.utils.serialization.ObjectMapperUtil;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -214,7 +214,7 @@ public class GlobalExceptionHandler {
             int endIndex = clientErrorMessage.lastIndexOf('}') + 1;
             String jsonString = clientErrorMessage.substring(startIndex, endIndex);
 
-            return objectMapper.readValue(jsonString, Object.class);
+            return ObjectMapperUtil.objectMapper.readValue(jsonString, Object.class);
         } catch (Exception e) {
             log.warn("Error parsing JSON string to JSON object", e);
             return null;

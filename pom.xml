@@ -33,6 +33,11 @@
             <artifactId>spring-common-logging</artifactId>
             <version>${common.lib.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.erebelo</groupId>
+            <artifactId>spring-common-utils</artifactId>
+            <version>${common.lib.version}</version>
+        </dependency>
         <!--Common Lib ends here-->
 
         <!--Spring starts here-->

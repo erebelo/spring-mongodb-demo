@@ -29,6 +29,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.erebelo.spring.common.utils.serialization.ByteHandlerUtil;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
@@ -39,7 +40,6 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.impl.ProfileServiceImpl;
-import com.erebelo.springmongodbdemo.util.ByteHandlerUtil;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -329,7 +329,8 @@ class ProfileServiceTest {
                 .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_000)
                 .hasFieldOrPropertyWithValue("args", new Object[]{
-                        "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or WIDOWED]"});
+                        "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or "
+                                + "WIDOWED]"});
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));

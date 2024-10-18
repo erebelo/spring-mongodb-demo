@@ -2,8 +2,8 @@ package com.erebelo.springmongodbdemo.context.interceptor;
 
 import static com.erebelo.springmongodbdemo.constant.ProfileConstant.LOGGED_IN_USER_ID_HEADER;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_401_000;
-import static com.erebelo.springmongodbdemo.util.ObjectMapperUtil.objectMapper;
 
+import com.erebelo.spring.common.utils.serialization.ObjectMapperUtil;
 import com.erebelo.springmongodbdemo.exception.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +44,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
                             System.currentTimeMillis(), null);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
+                    response.getWriter().write(ObjectMapperUtil.objectMapper.writeValueAsString(exceptionResponse));
                 } catch (IOException e) {
                     throw new IllegalStateException(
                             "Interceptor handling failure: error writing into HttpServletResponse", e);
