@@ -29,7 +29,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.erebelo.spring.common.utils.serialization.ByteHandlerUtil;
+import com.erebelo.spring.common.utils.serialization.ByteHandler;
 import com.erebelo.springmongodbdemo.domain.entity.ProfileEntity;
 import com.erebelo.springmongodbdemo.domain.entity.UserProfile;
 import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
@@ -45,9 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -75,15 +73,6 @@ class ProfileServiceTest {
 
     @Captor
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
-
-    private MockedStatic<ByteHandlerUtil> byteHandlerMockedStatic;
-
-    @AfterEach
-    void clear() {
-        if (Objects.nonNull(byteHandlerMockedStatic)) {
-            byteHandlerMockedStatic.close();
-        }
-    }
 
     @Test
     void testGetProfileSuccessfully() {
@@ -176,17 +165,18 @@ class ProfileServiceTest {
     void testUpdateProfileWhenMatchingProfileIsFound() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        byteHandlerMockedStatic = Mockito.mockStatic(ByteHandlerUtil.class);
-        byteHandlerMockedStatic.when(() -> ByteHandlerUtil.byteArrayComparison(any(), any())).thenReturn(true);
+        try (MockedStatic<ByteHandler> mockedStatic = Mockito.mockStatic(ByteHandler.class)) {
+            mockedStatic.when(() -> ByteHandler.byteArrayComparison(any(), any())).thenReturn(true);
 
-        var result = service.updateProfile(USER_ID, getProfileRequest());
+            var result = service.updateProfile(USER_ID, getProfileRequest());
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
+            assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
 
-        verify(repository).findByUserId(USER_ID);
-        verify(mapper).requestToEntity(any(ProfileRequest.class));
-        verify(repository, never()).save(any(ProfileEntity.class));
-        verify(mapper).entityToResponse(any(UserProfile.class));
+            verify(repository).findByUserId(USER_ID);
+            verify(mapper).requestToEntity(any(ProfileRequest.class));
+            verify(repository, never()).save(any(ProfileEntity.class));
+            verify(mapper).entityToResponse(any(UserProfile.class));
+        }
     }
 
     @Test
