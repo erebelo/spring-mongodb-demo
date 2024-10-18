@@ -3,6 +3,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getBasicHttpHeaders;
 
+import com.erebelo.spring.common.utils.threading.AsyncThreadContext;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Log4j2
@@ -38,16 +39,14 @@ public class ArticlesServiceImpl implements ArticlesService {
     @Value("${articles.api.url}")
     private String articlesApiUrl;
 
-    private static final String MDC_KEY_REQUEST_ID = "requestId";
     private static final int INITIAL_PAGE = 1;
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
         log.info("Getting articles from downstream API: {}", articlesApiUrl);
         Integer totalPages = INITIAL_PAGE;
-        var mdcKey = MDC.get(MDC_KEY_REQUEST_ID);
 
-        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE, mdcKey, false);
+        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);
 
         if (Objects.nonNull(firstArticlesResponse)) {
             totalPages = firstArticlesResponse.getTotalPages();
@@ -61,7 +60,9 @@ public class ArticlesServiceImpl implements ArticlesService {
 
             log.info("Fetching articles asynchronously through CompletableFuture");
             List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
-                    .mapToObj(page -> CompletableFuture.supplyAsync(() -> fetchData(page, mdcKey, true))).toList();
+                    .mapToObj(page -> CompletableFuture
+                            .supplyAsync(AsyncThreadContext.withThreadContext(() -> fetchData(page))))
+                    .toList();
 
             log.info("Combining all CompletableFuture results");
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
@@ -100,26 +101,20 @@ public class ArticlesServiceImpl implements ArticlesService {
         return mapper.responseToResponseDTO(allArticlesDataResponses);
     }
 
-    private ArticlesResponse fetchData(int page, String mdcKey, boolean isAsync) {
+    private ArticlesResponse fetchData(int page) {
         try {
-            MDC.put(MDC_KEY_REQUEST_ID, mdcKey); // Setting requestId for asynchronous logs
             log.info("Retrieving articles for page {}", page);
-
             ResponseEntity<ArticlesResponse> response = httpClientAuth.getRestTemplate().exchange(
                     UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
                     HttpMethod.GET, new HttpEntity<>(getBasicHttpHeaders()), new ParameterizedTypeReference<>() {
-                    });
+                    }); // TODO When refactoring the RestTemplate pass the headers filtered
 
             log.info("Articles for page {} retrieved successfully", page);
             return response.hasBody() ? response.getBody() : null;
-        } catch (Exception e) {
+        } catch (RestClientException e) {
             log.warn("Error getting articles from downstream API for page: {}. Error message: {}", page,
                     e.getMessage());
             return null;
-        } finally {
-            if (isAsync) {
-                MDC.remove(MDC_KEY_REQUEST_ID);
-            }
         }
     }
 }

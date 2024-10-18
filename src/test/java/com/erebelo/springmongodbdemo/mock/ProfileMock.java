@@ -29,12 +29,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ProfileMock {
+@UtilityClass
+public class ProfileMock {
 
     private static final String ID = "653307bb6dadb04fa2dc6f77";
     private static final String HASH_OBJECT = "426f65b70a600a628be40394f77bf887216aab2f719b784725bd82fc0c4e18ed";

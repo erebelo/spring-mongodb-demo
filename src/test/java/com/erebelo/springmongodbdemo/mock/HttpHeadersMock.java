@@ -3,15 +3,14 @@ package com.erebelo.springmongodbdemo.mock;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class HttpHeadersMock {
+@UtilityClass
+public class HttpHeadersMock {
 
     public static ServletRequestAttributes getServletRequestAttributes() {
         return new ServletRequestAttributes(buildHttpServletRequest());

@@ -5,11 +5,10 @@ import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
 import java.util.Collections;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArticlesMock {
+@UtilityClass
+public class ArticlesMock {
 
     public static final String ARTICLES_URL = "https://jsonmock.hackerrank.com/api/articles";
     private static final String TITLE = "A Message to Our Customers";

@@ -25,6 +25,7 @@ import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.rest.HttpClientAuth;
 import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
 import java.util.ArrayList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +40,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @ExtendWith(MockitoExtension.class)
 class ArticlesServiceTest {
@@ -59,8 +65,18 @@ class ArticlesServiceTest {
 
     @BeforeEach
     void init() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("RequestID", "12345");
+        RequestAttributes requestAttributes = new ServletRequestAttributes(mockRequest);
+        RequestContextHolder.setRequestAttributes(requestAttributes);
+
         ReflectionTestUtils.setField(service, "articlesApiUrl", ARTICLES_URL);
         given(httpClientAuth.getRestTemplate()).willReturn(mock(RestTemplate.class));
+    }
+
+    @AfterEach
+    void tearDown() {
+        RequestContextHolder.resetRequestAttributes();
     }
 
     @Test
@@ -95,7 +111,7 @@ class ArticlesServiceTest {
     @Test
     void testGetArticlesThrowsNotFoundException() {
         given(httpClientAuth.getRestTemplate().exchange(anyString(), any(), any(),
-                any(ParameterizedTypeReference.class))).willReturn(null);
+                any(ParameterizedTypeReference.class))).willThrow(new RestClientException("Internal Server Error"));
 
         assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getArticles())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_003);
@@ -113,7 +129,7 @@ class ArticlesServiceTest {
         given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=1"), any(), any(),
                 any(ParameterizedTypeReference.class))).willReturn(ResponseEntity.ok(getArticlesResponse()));
         given(httpClientAuth.getRestTemplate().exchange(eq(ARTICLES_URL + "?page=2"), any(), any(),
-                any(ParameterizedTypeReference.class))).willThrow(new RuntimeException("Async error"));
+                any(ParameterizedTypeReference.class))).willThrow(new RestClientException("Async error"));
 
         var result = service.getArticles();
 

@@ -8,8 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,8 +16,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Log4j2
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AuthenticationUtil {
+@UtilityClass
+public class AuthenticationUtil {
 
     public static String getLoggedInUser() {
         return getHeaderByName(LOGGED_IN_USER_ID_HEADER);

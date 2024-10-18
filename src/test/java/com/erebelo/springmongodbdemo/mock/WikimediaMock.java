@@ -3,11 +3,10 @@ package com.erebelo.springmongodbdemo.mock;
 import com.erebelo.springmongodbdemo.domain.response.WikimediaItemResponse;
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import java.util.Collections;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class WikimediaMock {
+@UtilityClass
+public class WikimediaMock {
 
     public static final String WIKIMEDIA_URL = "https://wikimedia.org";
     private static final String PROJECT = "all-projects";

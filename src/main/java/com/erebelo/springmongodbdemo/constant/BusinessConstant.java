@@ -1,15 +1,13 @@
 package com.erebelo.springmongodbdemo.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BusinessConstant {
+@UtilityClass
+public class BusinessConstant {
 
     public static final String DEFAULT_CONNECTION_TIMEOUT = "3000";
     public static final String DEFAULT_SOCKET_TIMEOUT = "5000";
     public static final String REQUEST_ID_HEADER = "RequestID";
-    public static final String REQUEST_ID_HEADER_PREFIX = "GEN-";
     public static final String GLOBAL_EXCEPTION_MESSAGE = "An error occurred for RequestID='{}': {}";
     public static final String LINE_DELIMITERS = "[\\r\\n\\t]+";
     public static final String MERGE_PATCH_MEDIA_TYPE = "application/merge-patch+json";

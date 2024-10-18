@@ -18,7 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 @Log4j2
 @Service
@@ -30,7 +30,7 @@ public class WikimediaServiceImpl implements WikimediaService {
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
 
-    private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews";
+    private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews: ";
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
@@ -40,10 +40,11 @@ public class WikimediaServiceImpl implements WikimediaService {
         try {
             ResponseEntity<WikimediaResponse> response = httpClient.getRestTemplate().exchange(wikimediaPublicApiUrl,
                     HttpMethod.GET, new HttpEntity<>(getHttpHeaders()), new ParameterizedTypeReference<>() {
-                    });
+                    }); // TODO When refactoring the RestTemplate pass the headers filtered
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
-        } catch (HttpClientErrorException e) {
-            throw new ClientException(HttpStatus.valueOf(e.getStatusCode().value()), WIKIMEDIA_CLIENT_ERROR_MESSAGE, e);
+        } catch (RestClientException e) {
+            throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY, WIKIMEDIA_CLIENT_ERROR_MESSAGE + e.getMessage(),
+                    e);
         }
 
         if (Objects.isNull(wikimediaPageViews) || Objects.isNull(wikimediaPageViews.getItems())

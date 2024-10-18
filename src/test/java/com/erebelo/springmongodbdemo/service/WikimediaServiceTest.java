@@ -34,10 +34,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -86,13 +85,13 @@ class WikimediaServiceTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsThrowsClientException() {
+    void testGetWikimediaProjectPageviewsThrowsRestClientException() {
         given(httpClient.getRestTemplate().exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
+                .willThrow(new RestClientException("Internal Server Error"));
 
         assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
-                .withCauseExactlyInstanceOf(HttpClientErrorException.class)
-                .withMessage("Error getting Wikimedia project pageviews");
+                .withCauseExactlyInstanceOf(RestClientException.class)
+                .withMessage("Error getting Wikimedia project pageviews: Internal Server Error");
 
         verify(httpClient.getRestTemplate()).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
