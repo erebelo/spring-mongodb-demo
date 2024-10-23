@@ -12,13 +12,13 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
-import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 @Profile("!local")
 @RequiredArgsConstructor
 public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
