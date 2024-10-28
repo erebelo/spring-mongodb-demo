@@ -29,9 +29,6 @@ class ArticlesControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private Environment env;
-
     @MockBean
     private ArticlesService service;
 
