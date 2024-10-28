@@ -247,10 +247,4 @@ public class ProfileMock {
                 jsonPath("$.spouseProfile.employmentStatus")
                         .value(response.getSpouseProfile().getEmploymentStatus().getValue())};
     }
-
-    public static ResultMatcher[] getProfileNotFoundFailureResultMatcher() {
-        return new ResultMatcher[]{jsonPath("$.status").value("NOT_FOUND"),
-                jsonPath("$.code").value("COMMON-ERROR-404-001"),
-                jsonPath("$.message").value("Object not found by userId: 12345"), jsonPath("$.timestamp").isNotEmpty()};
-    }
 }

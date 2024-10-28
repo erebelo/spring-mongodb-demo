@@ -3,7 +3,6 @@ package com.erebelo.springmongodbdemo.controller;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -41,8 +40,7 @@ class WikimediaControllerTest {
     void testGetWikimediaProjectPageviewsSuccessfully() throws Exception {
         given(service.getWikimediaProjectPageviews()).willReturn(RESPONSE);
 
-        mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()) // TODO use
-                                                                                                            // ResultMatcher
+        mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.items").isArray())
                 .andExpect(jsonPath("$.items", hasSize(RESPONSE.getItems().size())))
                 .andExpect(jsonPath("$.items[0].project").value(RESPONSE.getItems().get(0).getProject()))
@@ -56,12 +54,14 @@ class WikimediaControllerTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsFailure() { // TODO fix it
-        var exception = new CommonException(COMMON_ERROR_404_004);
-        given(service.getWikimediaProjectPageviews()).willThrow(exception);
+    void testGetWikimediaProjectPageviewsFailure() throws Exception {
+        given(service.getWikimediaProjectPageviews()).willThrow(new CommonException(COMMON_ERROR_404_004));
 
-        assertThatThrownBy(() -> mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)))
-                .hasCause(exception);
+        mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-004"))
+                .andExpect(jsonPath("$.message").value("Wikimedia pageviews for all projects not found"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
         verify(service).getWikimediaProjectPageviews();
     }

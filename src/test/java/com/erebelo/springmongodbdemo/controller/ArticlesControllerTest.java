@@ -3,7 +3,6 @@ package com.erebelo.springmongodbdemo.controller;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -42,8 +41,7 @@ class ArticlesControllerTest {
     void testGetArticlesSuccessfully() throws Exception {
         given(service.getArticles()).willReturn(RESPONSE);
 
-        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()) // TODO use
-                                                                                                            // ResultMatcher
+        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$", hasSize(RESPONSE.size())))
                 .andExpect(jsonPath("$.[0].title").value(RESPONSE.get(0).getTitle()))
                 .andExpect(jsonPath("$.[0].url").value(RESPONSE.get(0).getUrl()))
@@ -59,12 +57,15 @@ class ArticlesControllerTest {
     }
 
     @Test
-    void testGetArticlesFailure() { // TODO fix it
-        var exception = new CommonException(COMMON_ERROR_422_003);
-        given(service.getArticles()).willThrow(exception);
+    void testGetArticlesFailure() throws Exception {
+        given(service.getArticles()).willThrow(new CommonException(COMMON_ERROR_422_003));
 
-        assertThatThrownBy(() -> mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)))
-                .hasCause(exception);
+        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.status").value("UNPROCESSABLE_ENTITY"))
+                .andExpect(jsonPath("$.code").value("COMMON-ERROR-422-003"))
+                .andExpect(jsonPath("$.message").value("Error fetching articles from downstream API"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
         verify(service).getArticles();
     }
