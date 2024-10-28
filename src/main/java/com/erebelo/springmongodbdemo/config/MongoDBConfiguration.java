@@ -33,7 +33,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     @Value("${database.port:27017}")
     protected String dbPort;
 
-    @Value("${database.name:demo-db}")
+    @Value("${database.name:demo_db}")
     protected String dbName;
 
     @Value("${database.username:}")

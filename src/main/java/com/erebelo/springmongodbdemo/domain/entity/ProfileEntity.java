@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "profile")
-@DocumentHistory(collection = "profile-history")
+@DocumentHistory(collection = "profile_history")
 public class ProfileEntity extends BaseEntity implements Serializable {
 
     @Id

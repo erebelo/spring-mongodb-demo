@@ -29,10 +29,10 @@ class MongoDBConfigurationTest {
 
     private static final String DB_HOST = "localhost";
     private static final String DB_PORT = "27017";
-    private static final String DB_NAME = "demo-db";
+    private static final String DB_NAME = "demo_db";
     private static final String DB_USERNAME = "admin";
     private static final String DB_PASSWORD = "admin";
-    private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo-db?replicaSet=rs0";
+    private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo_db?replicaSet=rs0";
 
     @BeforeEach
     void init() {
