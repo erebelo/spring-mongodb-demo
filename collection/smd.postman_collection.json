@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f0f1b693-c960-445a-bef5-56de12a56f9b",
+		"_postman_id": "57ca3881-eedf-4ff9-9834-490e4663c4b2",
 		"name": "Spring MongoDB Demo",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3559566"
+		"_exporter_id": "16363964"
 	},
 	"item": [
 		{
@@ -27,6 +27,27 @@
 									"path": [
 										"spring-mongodb-demo",
 										"health-check"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Actuator Health",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/actuator/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"actuator",
+										"health"
 									]
 								}
 							},
@@ -361,6 +382,28 @@
 									"path": [
 										"spring-mongodb-demo",
 										"health-check"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Actuator Health",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/actuator/health",
+									"protocol": "https",
+									"host": [
+										"api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"actuator",
+										"health"
 									]
 								}
 							},
