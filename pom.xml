@@ -30,12 +30,17 @@
         <!--Common Lib starts here-->
         <dependency>
             <groupId>com.erebelo</groupId>
+            <artifactId>spring-common-utils</artifactId>
+            <version>${common.lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.erebelo</groupId>
             <artifactId>spring-common-logging</artifactId>
             <version>${common.lib.version}</version>
         </dependency>
         <dependency>
             <groupId>com.erebelo</groupId>
-            <artifactId>spring-common-utils</artifactId>
+            <artifactId>spring-common-http</artifactId>
             <version>${common.lib.version}</version>
         </dependency>
         <!--Common Lib ends here-->

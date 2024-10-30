@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.service;
+package com.erebelo.springmongodbdemo.service.validation;
 
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,8 +9,6 @@ import static org.mockito.BDDMockito.given;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
-import com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator;
-import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.util.ArrayList;

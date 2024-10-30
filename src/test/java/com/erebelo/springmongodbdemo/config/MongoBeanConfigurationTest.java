@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -38,13 +38,13 @@ class MongoBeanConfigurationTest {
 
     @Test
     void testAuditorProviderBean() {
-        try (MockedStatic<AuthenticationUtil> mockedStatic = mockStatic(AuthenticationUtil.class)) {
-            mockedStatic.when(AuthenticationUtil::getLoggedInUser).thenReturn(USER_ID);
+        try (MockedStatic<HttpHeadersUtil> mockedStatic = mockStatic(HttpHeadersUtil.class)) {
+            mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
 
             var auditorProvider = mongoBeanConfiguration.auditorProvider();
 
             assertThat(auditorProvider.getCurrentAuditor()).isEqualTo(Optional.of(USER_ID));
-            assertThat(AuthenticationUtil.getLoggedInUser()).isEqualTo(USER_ID);
+            assertThat(HttpHeadersUtil.getLoggedInUser()).isEqualTo(USER_ID);
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.util.AuthenticationUtil.getHttpHeaders;
+import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getWikimediaHttpHeaders;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.rest.HttpClient;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class WikimediaServiceImpl implements WikimediaService {
 
-    private final HttpClient httpClient;
+    private final RestTemplate restTemplate;
 
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
@@ -38,9 +38,9 @@ public class WikimediaServiceImpl implements WikimediaService {
         WikimediaResponse wikimediaPageViews;
 
         try {
-            ResponseEntity<WikimediaResponse> response = httpClient.getRestTemplate().exchange(wikimediaPublicApiUrl,
-                    HttpMethod.GET, new HttpEntity<>(getHttpHeaders()), new ParameterizedTypeReference<>() {
-                    }); // TODO When refactoring the RestTemplate pass the headers filtered
+            ResponseEntity<WikimediaResponse> response = restTemplate.exchange(wikimediaPublicApiUrl, HttpMethod.GET,
+                    new HttpEntity<>(getWikimediaHttpHeaders()), new ParameterizedTypeReference<>() {
+                    });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (RestClientException e) {
             throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY, WIKIMEDIA_CLIENT_ERROR_MESSAGE + e.getMessage(),

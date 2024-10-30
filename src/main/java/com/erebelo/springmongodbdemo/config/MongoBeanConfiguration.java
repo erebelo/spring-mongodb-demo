@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.config;
 
-import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +39,6 @@ public class MongoBeanConfiguration {
      */
     @Bean
     public AuditorAware<String> auditorProvider() {
-        return () -> Optional.ofNullable(AuthenticationUtil.getLoggedInUser());
+        return () -> Optional.ofNullable(HttpHeadersUtil.getLoggedInUser());
     }
 }

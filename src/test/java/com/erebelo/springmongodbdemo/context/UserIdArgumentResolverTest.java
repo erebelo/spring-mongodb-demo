@@ -9,7 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
-import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,7 @@ class UserIdArgumentResolverTest {
 
     private final UserIdArgumentResolver userIdArgumentResolver = new UserIdArgumentResolver();
     private final MethodParameter methodParameter = mock(MethodParameter.class);
-    private final MockedStatic<AuthenticationUtil> mockedStatic = mockStatic(AuthenticationUtil.class);
+    private final MockedStatic<HttpHeadersUtil> mockedStatic = mockStatic(HttpHeadersUtil.class);
 
     private static final String STRING_CLASS = "java.lang.String";
     private static final String BOOLEAN_CLASS = "java.lang.Boolean";
@@ -29,7 +29,7 @@ class UserIdArgumentResolverTest {
 
     @BeforeEach
     void init() {
-        mockedStatic.when(AuthenticationUtil::getLoggedInUser).thenReturn(USER_ID);
+        mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
     }
 
     @AfterEach
@@ -70,7 +70,7 @@ class UserIdArgumentResolverTest {
         given(methodParameter.getParameterType()).willReturn(myClass);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(false);
 
-        Boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
+        boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
 
         assertFalse(result);
     }
@@ -80,6 +80,6 @@ class UserIdArgumentResolverTest {
         var result = userIdArgumentResolver.resolveArgument(null, null, null, null);
 
         assertThat(result).isEqualTo(USER_ID);
-        assertThat(AuthenticationUtil.getLoggedInUser()).isEqualTo(USER_ID);
+        assertThat(HttpHeadersUtil.getLoggedInUser()).isEqualTo(USER_ID);
     }
 }

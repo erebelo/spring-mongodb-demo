@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import com.erebelo.springmongodbdemo.context.history.DocumentHistory;
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.domain.entity.BaseEntity;
-import com.erebelo.springmongodbdemo.util.AuthenticationUtil;
+import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bson.Document;
@@ -95,8 +95,8 @@ class DocumentHistoryServiceTest {
     void testDeleteHistory() {
         when(mongoTemplate.insert(any(Document.class), anyString())).thenReturn(new Document());
 
-        try (MockedStatic<AuthenticationUtil> mockedStatic = Mockito.mockStatic(AuthenticationUtil.class)) {
-            mockedStatic.when(AuthenticationUtil::getLoggedInUser).thenReturn(USER_ID);
+        try (MockedStatic<HttpHeadersUtil> mockedStatic = Mockito.mockStatic(HttpHeadersUtil.class)) {
+            mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
 
             var document = new Document().append("_id", new ObjectId());
 
