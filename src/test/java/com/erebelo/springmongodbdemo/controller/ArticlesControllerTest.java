@@ -56,8 +56,8 @@ class ArticlesControllerTest {
     void testGetArticlesFailure() throws Exception {
         given(service.getArticles()).willThrow(new CommonException(COMMON_ERROR_404_005));
 
-        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
+        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-005"))
                 .andExpect(jsonPath("$.message").value("Articles not found"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());

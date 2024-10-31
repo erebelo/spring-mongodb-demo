@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
@@ -21,6 +20,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
@@ -123,22 +123,22 @@ class ArticlesServiceTest {
 
     @Test
     void testGetArticlesThrowsNotFoundException() {
-        given(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
-                .willThrow(new RestClientException("Internal Server Error"));
+        given(restTemplate.exchange(eq(ARTICLES_URL + "?page=1"), any(), any(), any(ParameterizedTypeReference.class)))
+                .willReturn(ResponseEntity.notFound().build());
 
         assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getArticles())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_005);
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
-        verify(mapper, never()).responseToResponseDTO(anyList());
-
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
                 .isEqualTo(getArticlesHttpHeaders());
+
+        verify(mapper, never()).responseToResponseDTO(anyList());
     }
 
     @Test
-    void testGetArticlesIgnoreExceptionWhenHittingArticlesSecondTime() {
+    void testGetArticlesThrowsRestClientExceptionWhenHittingArticlesSecondTime() {
         doAnswer(invocation -> {
             Runnable task = invocation.getArgument(0);
             task.run();
@@ -150,10 +150,9 @@ class ArticlesServiceTest {
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=2"), any(), any(), any(ParameterizedTypeReference.class)))
                 .willThrow(new RestClientException("Async error"));
 
-        var result = service.getArticles();
-
-        assertThat(result).hasSize(1);
-        assertThat(result).usingRecursiveComparison().isEqualTo(getArticlesDataResponseDTO());
+        assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getArticles())
+                .withCauseExactlyInstanceOf(RestClientException.class)
+                .withMessage("Error getting articles from downstream API for page: 2. Error message: Async error");
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
@@ -165,6 +164,6 @@ class ArticlesServiceTest {
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
                 .isEqualTo(getArticlesHttpHeaders());
 
-        verify(mapper).responseToResponseDTO(anyList());
+        verify(mapper, never()).responseToResponseDTO(anyList());
     }
 }

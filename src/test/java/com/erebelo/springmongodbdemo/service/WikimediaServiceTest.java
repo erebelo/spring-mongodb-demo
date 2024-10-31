@@ -92,7 +92,7 @@ class WikimediaServiceTest {
 
         assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .withCauseExactlyInstanceOf(RestClientException.class)
-                .withMessage("Error getting Wikimedia project pageviews: Internal Server Error");
+                .withMessage("Error getting Wikimedia project pageviews. Error message: Internal Server Error");
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));

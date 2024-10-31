@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,25 +78,20 @@ public class ArticlesServiceImpl implements ArticlesService {
                             AsyncThreadContext.withThreadContext(() -> fetchData(page)), asyncTaskExecutor))
                     .toList();
 
-            log.info("Combining all CompletableFuture results");
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-
-            CompletableFuture<Void> exceptionalResult = allOf.exceptionally(throwable -> {
-                log.warn("Error waiting for CompletableFuture to complete. Error message: {}",
-                        throwable.getCause().getMessage());
-                return null;
-            });
-
-            log.info("Waiting for all CompletableFuture to complete");
-            exceptionalResult.join();
+            try {
+                log.info("Waiting for all CompletableFuture to complete");
+                allArticlesResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            } catch (CompletionException e) {
+                if (e.getCause() instanceof ClientException) {
+                    throw (ClientException) e.getCause();
+                }
+                throw new RuntimeException(e);
+            }
 
             long totalTime = System.currentTimeMillis() - startTime;
             log.info("Total time taken to retrieve {} article pages asynchronously: {} milliseconds", totalPages,
                     totalTime);
-
-            log.info("Collecting results from completed CompletableFutures");
-            allArticlesResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
-                    .collect(Collectors.toList());
         }
 
         if (Objects.nonNull(firstArticlesResponse)) {
