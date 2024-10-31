@@ -30,7 +30,8 @@ public class WikimediaServiceImpl implements WikimediaService {
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
 
-    private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews: ";
+    private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews. Error "
+            + "message: %s";
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
@@ -43,8 +44,8 @@ public class WikimediaServiceImpl implements WikimediaService {
                     });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (RestClientException e) {
-            throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY, WIKIMEDIA_CLIENT_ERROR_MESSAGE + e.getMessage(),
-                    e);
+            throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    String.format(WIKIMEDIA_CLIENT_ERROR_MESSAGE, e.getMessage()), e);
         }
 
         if (Objects.isNull(wikimediaPageViews) || Objects.isNull(wikimediaPageViews.getItems())

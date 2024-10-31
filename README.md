@@ -28,7 +28,8 @@ This project utilizes the following libraries:
 - [spring-common-parent](https://github.com/erebelo/spring-common-parent) to manage the Spring Boot version and provide common configurations for plugins and formatting.
 - [spring-common-lib](https://github.com/erebelo/spring-common-lib) for shared utilities and features such as:
     - **Logging**: Provides Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
-    - **Utils**: Includes utility classes for serialization, object mapping, managing thread context in asynchronous operations, and other common tasks.
+    - **Http**: Provides pre-configured HTTP client utilities, offering customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
+    - **Utils**: Includes utility classes for serialization, object mapping, managing thread context in asynchronous operations, and configuring asynchronous task execution.
 - Git hooks are set up for code formatting using [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks).
 
 ## Run App

@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
@@ -54,13 +54,12 @@ class ArticlesControllerTest {
 
     @Test
     void testGetArticlesFailure() throws Exception {
-        given(service.getArticles()).willThrow(new CommonException(COMMON_ERROR_422_003));
+        given(service.getArticles()).willThrow(new CommonException(COMMON_ERROR_404_005));
 
         mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.status").value("UNPROCESSABLE_ENTITY"))
-                .andExpect(jsonPath("$.code").value("COMMON-ERROR-422-003"))
-                .andExpect(jsonPath("$.message").value("Error fetching articles from downstream API"))
+                .andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-005"))
+                .andExpect(jsonPath("$.message").value("Articles not found"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
         verify(service).getArticles();

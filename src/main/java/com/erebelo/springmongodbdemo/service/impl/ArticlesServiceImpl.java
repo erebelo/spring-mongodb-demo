@@ -1,12 +1,13 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
 import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getArticlesHttpHeaders;
 
 import com.erebelo.spring.common.utils.threading.AsyncThreadContext;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
+import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
 import com.erebelo.springmongodbdemo.service.ArticlesService;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -42,6 +44,8 @@ public class ArticlesServiceImpl implements ArticlesService {
     private String articlesApiUrl;
 
     private static final int INITIAL_PAGE = 1;
+    private static final String ARTICLES_CLIENT_ERROR_MESSAGE = "Error getting articles from downstream API for page:"
+            + " %d. Error message: %s";
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
@@ -103,7 +107,7 @@ public class ArticlesServiceImpl implements ArticlesService {
                 .toList();
 
         if (allArticlesDataResponses.isEmpty()) {
-            throw new CommonException(COMMON_ERROR_422_003);
+            throw new CommonException(COMMON_ERROR_404_005);
         }
 
         log.info("{} articles found", allArticlesDataResponses.size());
@@ -121,9 +125,8 @@ public class ArticlesServiceImpl implements ArticlesService {
             log.info("Articles for page {} retrieved successfully", page);
             return response.hasBody() ? response.getBody() : null;
         } catch (RestClientException e) {
-            log.warn("Error getting articles from downstream API for page: {}. Error message: {}", page,
-                    e.getMessage());
-            return null;
+            throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    String.format(ARTICLES_CLIENT_ERROR_MESSAGE, page, e.getMessage()), e);
         }
     }
 }

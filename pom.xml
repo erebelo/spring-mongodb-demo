@@ -82,11 +82,6 @@
         <!--Spring ends here-->
 
         <!--Utilities starts here-->
-        <dependency>  <!--HttpClient Template-->
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>${httpclient5.version}</version>
-        </dependency>
         <dependency>  <!--Swagger-->
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

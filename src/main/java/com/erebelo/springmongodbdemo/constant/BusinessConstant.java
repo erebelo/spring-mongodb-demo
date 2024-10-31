@@ -5,8 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BusinessConstant {
 
-    public static final String DEFAULT_CONNECTION_TIMEOUT = "3000";
-    public static final String DEFAULT_SOCKET_TIMEOUT = "5000";
     public static final String REQUEST_ID_HEADER = "RequestID";
     public static final String GLOBAL_EXCEPTION_MESSAGE = "An error occurred for RequestID='{}': {}";
     public static final String LINE_DELIMITERS = "[\\r\\n\\t]+";

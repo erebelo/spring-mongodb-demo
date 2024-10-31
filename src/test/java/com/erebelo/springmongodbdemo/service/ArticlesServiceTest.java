@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.service;
 
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.ARTICLES_URL;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.TOTAL_PAGES;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
@@ -127,7 +127,7 @@ class ArticlesServiceTest {
                 .willThrow(new RestClientException("Internal Server Error"));
 
         assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getArticles())
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_003);
+                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_005);
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
