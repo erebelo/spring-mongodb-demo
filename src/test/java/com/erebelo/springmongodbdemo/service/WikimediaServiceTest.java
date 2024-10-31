@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
+import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getWikimediaHttpHeaders;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.WIKIMEDIA_URL;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,8 +81,8 @@ class WikimediaServiceTest {
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
 
-        // assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-        // .isEqualTo(getWikimediaHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getWikimediaHttpHeaders());
     }
 
     @Test
@@ -96,8 +97,8 @@ class WikimediaServiceTest {
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
 
-        // assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-        // .isEqualTo(getWikimediaHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getWikimediaHttpHeaders());
     }
 
     @Test
@@ -111,7 +112,7 @@ class WikimediaServiceTest {
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 any(ParameterizedTypeReference.class));
 
-        // assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-        // .isEqualTo(getWikimediaHttpHeaders());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getWikimediaHttpHeaders());
     }
 }

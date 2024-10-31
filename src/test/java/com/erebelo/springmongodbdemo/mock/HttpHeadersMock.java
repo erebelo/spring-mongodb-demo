@@ -18,7 +18,6 @@ public class HttpHeadersMock {
 
     public static HttpHeaders getWikimediaHttpHeaders() {
         var httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.ACCEPT, "*/*");
         httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.setAcceptCharset(List.of(StandardCharsets.UTF_8));
