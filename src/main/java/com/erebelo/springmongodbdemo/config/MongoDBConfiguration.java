@@ -10,6 +10,15 @@ import com.erebelo.springmongodbdemo.context.converter.LocalDateToStringConverte
 import com.erebelo.springmongodbdemo.context.converter.StringToLocalDateConverter;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.util.Objects;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +32,8 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 @RequiredArgsConstructor
 public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
-    private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s%s/%s?replicaSet=rs0";
+    private static final String CONNECTION_STRING_TEMPLATE = "mongodb://%s:%s@%s:%s/%s?ssl=true&replicaSet=rs0"
+            + "&authSource=admin";
 
     private final Environment env;
 
@@ -34,17 +44,24 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     protected String dbPort;
 
     @Value("${database.name:demo_db}")
-    protected String dbName;
+    private String dbName;
 
     @Value("${database.username:}")
-    protected String dbUsername;
+    private String dbUsername;
+
+    @Value("${database.ssl.truststore}")
+    private String truststore;
+
+    @Value("${database.ssl.truststore.password}")
+    private String truststorePassword;
 
     @Override
     protected String getDatabaseName() {
         return dbName;
     }
 
-    // Heap memory security breach: do not use @Value annotation to get passwords
+    // Heap memory security breach: do not use @Value or @ConfigurationProperties
+    // annotation to get passwords
     private String getDbPassword() {
         return env.getProperty("database.password");
     }
@@ -72,14 +89,48 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.applyConnectionString(getConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE);
+        builder.applyConnectionString(getConnectionString()).retryReads(Boolean.FALSE).retryWrites(Boolean.FALSE)
+                .applyToSslSettings(bdr -> {
+                    bdr.enabled(Boolean.TRUE);
+                    bdr.context(createSslContext());
+                });
     }
 
     private ConnectionString getConnectionString() {
-        var databaseCredentials = String.format("%s:%s@", dbUsername, getDbPassword());
-        var clusterEndpoint = String.format("%s:%s", dbHost, dbPort);
+        return new ConnectionString(String.format(CONNECTION_STRING_TEMPLATE, dbUsername, getDbPassword(), dbHost,
+                dbPort, getDatabaseName()));
+    }
 
-        return new ConnectionString(
-                String.format(CONNECTION_STRING_TEMPLATE, databaseCredentials, clusterEndpoint, getDatabaseName()));
+    private SSLContext createSslContext() {
+        try {
+            Objects.requireNonNull(truststore, "Truststore path cannot be null");
+            Objects.requireNonNull(truststorePassword, "Truststore password cannot be null");
+
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            try (InputStream in = getClass().getClassLoader().getResourceAsStream(truststore)) {
+                if (in == null) {
+                    throw new IOException("Truststore file not found: " + truststore);
+                }
+                keystore.load(in, truststorePassword.toCharArray());
+            }
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory
+                    .getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keystore, truststorePassword.toCharArray());
+
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory
+                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keystore);
+
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
+                    SecureRandom.getInstanceStrong());
+
+            return sslContext;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load truststore", e);
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("SSL context initialization failed", e);
+        }
     }
 }

@@ -32,7 +32,7 @@ class MongoDBConfigurationTest {
     private static final String DB_NAME = "demo_db";
     private static final String DB_USERNAME = "admin";
     private static final String DB_PASSWORD = "admin";
-    private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo_db?replicaSet=rs0";
+    private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo_db?ssl=true&replicaSet=rs0&authSource=admin";
 
     @BeforeEach
     void init() {
@@ -40,6 +40,9 @@ class MongoDBConfigurationTest {
         ReflectionTestUtils.setField(mongoDBConfiguration, "dbPort", DB_PORT);
         ReflectionTestUtils.setField(mongoDBConfiguration, "dbName", DB_NAME);
         ReflectionTestUtils.setField(mongoDBConfiguration, "dbUsername", DB_USERNAME);
+        // TODO
+        ReflectionTestUtils.setField(mongoDBConfiguration, "truststore", null);
+        ReflectionTestUtils.setField(mongoDBConfiguration, "truststorePassword", null);
     }
 
     @Test

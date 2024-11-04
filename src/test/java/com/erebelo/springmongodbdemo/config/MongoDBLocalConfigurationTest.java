@@ -23,7 +23,7 @@ class MongoDBLocalConfigurationTest {
     private static final String DB_HOST = "localhost";
     private static final String DB_PORT = "27017";
     private static final String DB_NAME = "demo_db";
-    private static final String LOCAL_CONNECTION_STRING = "mongodb://localhost:27017/demo_db?replicaSet=rs0";
+    private static final String LOCAL_CONNECTION_STRING = "mongodb://localhost:27017/demo_db?ssl=false&replicaSet=rs0&authSource=admin";
 
     @BeforeEach
     void init() {

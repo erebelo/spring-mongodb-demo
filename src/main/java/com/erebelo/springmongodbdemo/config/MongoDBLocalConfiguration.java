@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 @Profile("local")
 public class MongoDBLocalConfiguration extends MongoDBConfiguration {
 
-    private static final String LOCAL_CONNECTION_STRING_TEMPLATE = "mongodb://%s:%s/%s?replicaSet=rs0&authSource=admin";
+    private static final String LOCAL_CONNECTION_STRING_TEMPLATE = "mongodb://%s:%s/%s?ssl=false&replicaSet=rs0&authSource=admin";
 
     public MongoDBLocalConfiguration(Environment env) {
         super(env);
