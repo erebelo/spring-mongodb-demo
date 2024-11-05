@@ -12,7 +12,8 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 - **ConstraintValidator** is used to validate request fields and their associated business rules by declaring an annotation in the request class.
 - **Logging** are employed to track application logs using Log4j2.
 - **Global Exception Handler** is implemented to manage errors.
-- **Template Method** design pattern used for different RestTemplate implementations.
+- **RestTemplate** is used for making HTTP requests to REST APIs.
+- **SSL/TLS** is configured to establish secure connections to MongoDB.
 - **Unit Tests** are implemented covering the entire application.
 
 ## Requirements
@@ -27,15 +28,23 @@ This project utilizes the following libraries:
 
 - [spring-common-parent](https://github.com/erebelo/spring-common-parent) to manage the Spring Boot version and provide common configurations for plugins and formatting.
 - [spring-common-lib](https://github.com/erebelo/spring-common-lib) for shared utilities and features such as:
-    - **Logging**: Provides Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
-    - **Http**: Provides pre-configured HTTP client utilities, offering customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
-    - **Utils**: Includes utility classes for serialization, object mapping, managing thread context in asynchronous operations, and configuring asynchronous task execution.
+  - **Logging**: Provides Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
+  - **Http**: Provides pre-configured HTTP client utilities, offering customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
+  - **Utils**: Includes utility classes for serialization, object mapping, managing thread context in asynchronous operations, and configuring asynchronous task execution.
 - Git hooks are set up for code formatting using [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks).
 
 ## Run App
 
-- Set the following environment variables if running the project for a spring profile other than **local**: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and `DB_PASSWORD`.
-- Run the SpringMongoDBDemoApplication class as Java Application.
+### Local Environment
+
+- Run the `SpringMongoDBDemoApplication` class as Java Application.
+
+### Non-Local Environments
+
+For environments other than local, additional configurations are required:
+
+- **Generate Keystore**: Generate a `mongodb-keystore.p12` file and place it in the `/resources` directory. This keystore will store the necessary certificates. For detailed steps on generating the required certificates and creating the keystore file, follow the instructions in the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/tree/main/docs/ssl-tls-setup.md).
+- **Set Environment Variables**: Set the following environment variables to configure the application: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`, and `DB_SSL_KEYSTORE_PASSWORD`.
 
 ## Collection
 
