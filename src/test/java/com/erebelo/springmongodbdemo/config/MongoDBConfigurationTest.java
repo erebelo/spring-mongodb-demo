@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -14,7 +15,9 @@ import static org.mockito.Mockito.verify;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.cert.CertificateException;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -48,6 +51,8 @@ class MongoDBConfigurationTest {
     private static final String DB_KEYSTORE_PASSWORD = "mockKeystorePassword";
     private static final String CONNECTION_STRING = "mongodb://admin:admin@localhost:27017/demo_db?ssl=true"
             + "&replicaSet=rs0&authSource=admin";
+    private static final String KEYSTORE_PROPERTY = "keystore";
+    private static final String KEYSTORE_PASSWORD_PROPERTY = "keystorePassword";
 
     @BeforeEach
     void init() {
@@ -82,6 +87,7 @@ class MongoDBConfigurationTest {
             MongoClientSettings.Builder newBuilder = Mockito.mock(MongoClientSettings.Builder.class);
             given(newBuilder.retryReads(Boolean.FALSE)).willReturn(newBuilder);
             given(newBuilder.retryWrites(Boolean.FALSE)).willReturn(newBuilder);
+            given(newBuilder.applyToSslSettings(any())).willReturn(newBuilder);
             return newBuilder;
         });
 
@@ -94,8 +100,8 @@ class MongoDBConfigurationTest {
 
     @Test
     void testConfigureClientSettingsWithSslContextSuccessfully() throws Exception {
-        ReflectionTestUtils.setField(config, "keystore", DB_KEYSTORE);
-        ReflectionTestUtils.setField(config, "keystorePassword", DB_KEYSTORE_PASSWORD);
+        ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, DB_KEYSTORE);
+        ReflectionTestUtils.setField(config, KEYSTORE_PASSWORD_PROPERTY, DB_KEYSTORE_PASSWORD);
 
         try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class);
                 MockedStatic<KeyManagerFactory> keyManagerFactoryMockedStatic = mockStatic(KeyManagerFactory.class);
@@ -131,7 +137,7 @@ class MongoDBConfigurationTest {
 
     @Test
     void testConfigureClientSettingsWithSslContextThrowsNullPointerExceptionForMissingKeystore() {
-        ReflectionTestUtils.setField(config, "keystore", null);
+        ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, null);
 
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
@@ -141,8 +147,8 @@ class MongoDBConfigurationTest {
 
     @Test
     void testConfigureClientSettingsWithSslContextThrowsNullPointerExceptionForMissingKeystorePassword() {
-        ReflectionTestUtils.setField(config, "keystore", DB_KEYSTORE);
-        ReflectionTestUtils.setField(config, "keystorePassword", null);
+        ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, DB_KEYSTORE);
+        ReflectionTestUtils.setField(config, KEYSTORE_PASSWORD_PROPERTY, null);
 
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
@@ -151,13 +157,34 @@ class MongoDBConfigurationTest {
     }
 
     @Test
-    void testConfigureClientSettingsThrowsIllegalStateExceptionForKeystoreNotFound() {
-        ReflectionTestUtils.setField(config, "keystore", "nonexistent-keystore.p12");
-        ReflectionTestUtils.setField(config, "keystorePassword", DB_KEYSTORE_PASSWORD);
+    void testConfigureClientSettingsWithSslContextThrowsIllegalStateExceptionForKeystoreNotFound() {
+        ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, "nonexistent-keystore.p12");
+        ReflectionTestUtils.setField(config, KEYSTORE_PASSWORD_PROPERTY, DB_KEYSTORE_PASSWORD);
 
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
         Exception exception = assertThrows(IllegalStateException.class, () -> config.configureClientSettings(builder));
         assertTrue(exception.getMessage().contains("Failed to load keystore"));
+    }
+
+    @Test
+    void testConfigureClientSettingsWithSslContextThrowsIllegalStateExceptionForGeneralSecurityException()
+            throws Exception {
+        ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, DB_KEYSTORE);
+        ReflectionTestUtils.setField(config, KEYSTORE_PASSWORD_PROPERTY, DB_KEYSTORE_PASSWORD);
+
+        try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class)) {
+            KeyStore mockKeyStore = mock(KeyStore.class);
+            keyStoreMockedStatic.when(() -> KeyStore.getInstance("PKCS12")).thenReturn(mockKeyStore);
+            doThrow(new CertificateException("CertificateException Exception")).when(mockKeyStore).load(any(), any());
+
+            MongoClientSettings.Builder builder = MongoClientSettings.builder();
+            IllegalStateException thrown = assertThrows(IllegalStateException.class,
+                    () -> config.configureClientSettings(builder));
+
+            assertEquals("SSL context initialization failed", thrown.getMessage());
+            assertNotNull(thrown.getCause());
+            assertTrue(thrown.getCause() instanceof GeneralSecurityException);
+        }
     }
 }
