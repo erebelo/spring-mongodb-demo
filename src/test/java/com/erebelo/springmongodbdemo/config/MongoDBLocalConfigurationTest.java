@@ -18,7 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 class MongoDBLocalConfigurationTest {
 
     @InjectMocks
-    private MongoDBLocalConfiguration mongoDBLocalConfiguration;
+    private MongoDBLocalConfiguration config;
 
     private static final String DB_HOST = "localhost";
     private static final String DB_PORT = "27017";
@@ -27,9 +27,9 @@ class MongoDBLocalConfigurationTest {
 
     @BeforeEach
     void init() {
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbHost", DB_HOST);
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbPort", DB_PORT);
-        ReflectionTestUtils.setField(mongoDBLocalConfiguration, "dbName", DB_NAME);
+        ReflectionTestUtils.setField(config, "dbHost", DB_HOST);
+        ReflectionTestUtils.setField(config, "dbPort", DB_PORT);
+        ReflectionTestUtils.setField(config, "dbName", DB_NAME);
     }
 
     @Test
@@ -39,10 +39,11 @@ class MongoDBLocalConfigurationTest {
         given(builderMock.applyConnectionString(any(ConnectionString.class))).willAnswer(invocation -> {
             MongoClientSettings.Builder newBuilder = Mockito.mock(MongoClientSettings.Builder.class);
             given(newBuilder.retryReads(Boolean.FALSE)).willReturn(newBuilder);
+            given(newBuilder.retryWrites(Boolean.FALSE)).willReturn(newBuilder);
             return newBuilder;
         });
 
-        mongoDBLocalConfiguration.configureClientSettings(builderMock);
+        config.configureClientSettings(builderMock);
 
         verify(builderMock).applyConnectionString(new ConnectionString(LOCAL_CONNECTION_STRING));
     }
