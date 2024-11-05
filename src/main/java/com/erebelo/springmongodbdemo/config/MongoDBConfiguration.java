@@ -49,11 +49,11 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     @Value("${database.username:}")
     private String dbUsername;
 
-    @Value("${database.ssl.truststore}")
-    private String truststore;
+    @Value("${database.ssl.keystore}")
+    private String keystore;
 
-    @Value("${database.ssl.truststore.password}")
-    private String truststorePassword;
+    @Value("${database.ssl.keystore.password}")
+    private String keystorePassword;
 
     @Override
     protected String getDatabaseName() {
@@ -103,20 +103,21 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
     private SSLContext createSslContext() {
         try {
-            Objects.requireNonNull(truststore, "Truststore path cannot be null");
-            Objects.requireNonNull(truststorePassword, "Truststore password cannot be null");
+            Objects.requireNonNull(keystore, "Keystore path cannot be null");
+            Objects.requireNonNull(keystorePassword, "Keystore password cannot be null");
 
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            try (InputStream in = getClass().getClassLoader().getResourceAsStream(truststore)) {
+            KeyStore keystore = KeyStore.getInstance("PKCS12");
+
+            try (InputStream in = getClass().getClassLoader().getResourceAsStream(this.keystore)) {
                 if (in == null) {
-                    throw new IOException("Truststore file not found: " + truststore);
+                    throw new IOException("Keystore file not found: " + this.keystore);
                 }
-                keystore.load(in, truststorePassword.toCharArray());
+                keystore.load(in, keystorePassword.toCharArray());
             }
 
             KeyManagerFactory keyManagerFactory = KeyManagerFactory
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keystore, truststorePassword.toCharArray());
+            keyManagerFactory.init(keystore, keystorePassword.toCharArray());
 
             TrustManagerFactory trustManagerFactory = TrustManagerFactory
                     .getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -128,7 +129,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
 
             return sslContext;
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to load truststore", e);
+            throw new IllegalStateException("Failed to load keystore", e);
         } catch (GeneralSecurityException e) {
             throw new IllegalStateException("SSL context initialization failed", e);
         }
