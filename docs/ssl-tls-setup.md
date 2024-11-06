@@ -1,6 +1,6 @@
 # Enable SSL/TLS on MongoDB Server
 
-To enable SSL/TLS for MongoDB, follow these steps to generate the necessary certificates and configure MongoDB to use SSL/TLS.
+Follow these steps to generate the necessary certificates and configure MongoDB for SSL/TLS.
 
 ## Step 1: Generate Certificates
 
@@ -50,7 +50,7 @@ To enable SSL/TLS for MongoDB, follow these steps to generate the necessary cert
 
 ## Step 2: Create the PKCS12 Keystore for Java
 
-To create a PKCS12 keystore compatible with Java's SSL/TLS configuration:
+To create a PKCS12 keystore compatible with Java's SSL/TLS configuration, run the following command:
 
 ```bash
 openssl pkcs12 -export -in mongodb.crt -inkey mongodb.key -out mongodb-keystore.p12 -name "mongo" -CAfile ca.crt -caname "mongo-ca" -password pass:<KEYSTORE_PASSWORD>
