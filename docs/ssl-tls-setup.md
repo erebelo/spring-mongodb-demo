@@ -20,7 +20,12 @@ To enable SSL/TLS for MongoDB, follow these steps to generate the necessary cert
    openssl req -new -key mongodb.key -out mongodb.csr
    ```
 
-   **NOTE**: When prompted for the **Common Name**, enter the appropriate value based on your environment. For local environments, use `localhost`. For other environments, use the IP address or domain name of the MongoDB server.
+   **NOTE**: When prompted for the **Common Name**, enter the appropriate value based on your environment:
+
+   - For local environments, use `localhost`.
+   - For other environments, use the IP address or domain name of the MongoDB server.
+
+   The **Common Name** must be different from the one used by the previous step when generating the CA certificate.
 
 3. **Sign MongoDB's Certificate with the CA**
 
@@ -35,7 +40,9 @@ To enable SSL/TLS for MongoDB, follow these steps to generate the necessary cert
    ```
 
 5. **Set Correct Permissions**
+
    Ensure that the permissions on the certificates and keys are secure:
+
    ```bash
    chmod 600 mongodb.pem
    chmod 600 ca.crt
