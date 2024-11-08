@@ -1,16 +1,14 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumType;
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumValueType;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 
 @WritingConverter
-public enum EnumTypeWritingConverter implements Converter<EnumType, String> {
-
-    INSTANCE;
+public class EnumValueTypeWritingConverter implements Converter<EnumValueType, String> {
 
     @Override
-    public String convert(EnumType source) {
+    public String convert(EnumValueType source) {
         return source.getValue();
     }
 

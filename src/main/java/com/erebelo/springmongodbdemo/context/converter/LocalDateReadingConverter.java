@@ -7,9 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
-public enum LocalDateReadingConverter implements Converter<Date, LocalDate> {
-
-    INSTANCE;
+public class LocalDateReadingConverter implements Converter<Date, LocalDate> {
 
     @Override
     public LocalDate convert(Date source) {

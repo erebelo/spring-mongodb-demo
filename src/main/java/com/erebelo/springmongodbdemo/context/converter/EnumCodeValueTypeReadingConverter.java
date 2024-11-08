@@ -9,9 +9,7 @@ import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
-public enum EnumCodeValueTypeReadingConverter implements ConverterFactory<Document, EnumCodeValueType> {
-
-    INSTANCE;
+public class EnumCodeValueTypeReadingConverter implements ConverterFactory<Document, EnumCodeValueType> {
 
     @Override
     @SuppressWarnings("unchecked")

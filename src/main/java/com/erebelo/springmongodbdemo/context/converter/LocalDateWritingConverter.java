@@ -7,9 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 
 @WritingConverter
-public enum LocalDateWritingConverter implements Converter<LocalDate, Date> {
-
-    INSTANCE;
+public class LocalDateWritingConverter implements Converter<LocalDate, Date> {
 
     @Override
     public Date convert(LocalDate source) {

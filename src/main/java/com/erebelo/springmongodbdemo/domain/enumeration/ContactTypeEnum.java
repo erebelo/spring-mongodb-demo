@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.domain.enumeration;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumType;
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumValueType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum ContactTypeEnum implements EnumType {
+public enum ContactTypeEnum implements EnumValueType {
 
     @JsonProperty("Phone")
     PHONE("Phone"),

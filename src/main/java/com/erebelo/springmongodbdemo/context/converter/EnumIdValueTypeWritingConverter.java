@@ -1,17 +1,15 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdType;
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdValueType;
 import org.bson.Document;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 
 @WritingConverter
-public enum EnumIdTypeWritingConverter implements Converter<EnumIdType, Document> {
-
-    INSTANCE;
+public class EnumIdValueTypeWritingConverter implements Converter<EnumIdValueType, Document> {
 
     @Override
-    public Document convert(EnumIdType source) {
+    public Document convert(EnumIdValueType source) {
         var document = new Document();
         document.put("id", source.getId());
         document.put("value", source.getValue());

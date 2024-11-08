@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.domain.enumeration.types;
 
-public interface EnumIdType {
+public interface EnumIdValueType {
 
     Integer getId();
 

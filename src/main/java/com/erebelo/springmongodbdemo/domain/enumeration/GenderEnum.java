@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.domain.enumeration;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdType;
+import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdValueType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum GenderEnum implements EnumIdType {
+public enum GenderEnum implements EnumIdValueType {
 
     @JsonProperty("Male")
     MALE(1, "Male"),
