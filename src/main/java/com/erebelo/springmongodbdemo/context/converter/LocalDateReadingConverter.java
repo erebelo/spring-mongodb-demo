@@ -1,17 +1,18 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
+import java.util.Date;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
-public enum StringToLocalDateConverter implements Converter<String, LocalDate> {
+public enum LocalDateReadingConverter implements Converter<Date, LocalDate> {
 
     INSTANCE;
 
     @Override
-    public LocalDate convert(String source) {
-        return LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    public LocalDate convert(Date source) {
+        return LocalDate.ofInstant(source.toInstant(), ZoneOffset.UTC);
     }
 }

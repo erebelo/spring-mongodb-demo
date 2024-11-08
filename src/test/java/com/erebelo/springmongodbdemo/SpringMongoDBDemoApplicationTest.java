@@ -1,8 +1,10 @@
 package com.erebelo.springmongodbdemo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
+import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -32,6 +34,8 @@ class SpringMongoDBDemoApplicationTest {
             SpringMongoDBDemoApplication.main(new String[]{});
 
             mockedStatic.verify(() -> SpringApplication.run(SpringMongoDBDemoApplication.class, new String[]{}));
+
+            assertEquals("America/Sao_Paulo", TimeZone.getDefault().getID());
         }
     }
 }

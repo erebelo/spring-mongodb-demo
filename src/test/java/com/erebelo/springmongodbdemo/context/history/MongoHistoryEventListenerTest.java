@@ -1,10 +1,8 @@
-package com.erebelo.springmongodbdemo.context;
+package com.erebelo.springmongodbdemo.context.history;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
-import com.erebelo.springmongodbdemo.context.history.MongoHistoryEventListener;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

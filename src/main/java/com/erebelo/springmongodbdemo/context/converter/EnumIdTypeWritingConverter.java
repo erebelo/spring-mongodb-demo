@@ -6,7 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 
 @WritingConverter
-public enum EnumIdTypeToDocumentConverter implements Converter<EnumIdType, Document> {
+public enum EnumIdTypeWritingConverter implements Converter<EnumIdType, Document> {
 
     INSTANCE;
 

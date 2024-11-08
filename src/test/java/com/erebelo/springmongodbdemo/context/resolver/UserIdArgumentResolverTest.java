@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context;
+package com.erebelo.springmongodbdemo.context.resolver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import com.erebelo.springmongodbdemo.context.resolver.UserIdArgumentResolver;
 import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;

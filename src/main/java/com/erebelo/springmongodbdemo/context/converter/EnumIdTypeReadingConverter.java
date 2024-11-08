@@ -9,7 +9,7 @@ import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
-public enum DocumentToEnumIdTypeConverter implements ConverterFactory<Document, EnumIdType> {
+public enum EnumIdTypeReadingConverter implements ConverterFactory<Document, EnumIdType> {
 
     INSTANCE;
 

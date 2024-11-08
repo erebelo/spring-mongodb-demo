@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.context;
+package com.erebelo.springmongodbdemo.context.interceptor;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-import com.erebelo.springmongodbdemo.context.interceptor.HeaderInterceptor;
-import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

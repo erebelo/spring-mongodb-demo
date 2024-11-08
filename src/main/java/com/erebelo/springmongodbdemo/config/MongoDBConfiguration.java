@@ -1,13 +1,13 @@
 package com.erebelo.springmongodbdemo.config;
 
-import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumCodeValueTypeConverter;
-import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumIdTypeConverter;
-import com.erebelo.springmongodbdemo.context.converter.DocumentToEnumTypeConverter;
-import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeToDocumentConverter;
-import com.erebelo.springmongodbdemo.context.converter.EnumIdTypeToDocumentConverter;
-import com.erebelo.springmongodbdemo.context.converter.EnumTypeToDocumentConverter;
-import com.erebelo.springmongodbdemo.context.converter.LocalDateToStringConverter;
-import com.erebelo.springmongodbdemo.context.converter.StringToLocalDateConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumIdTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumIdTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.LocalDateReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.LocalDateWritingConverter;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import java.io.IOException;
@@ -71,20 +71,20 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
         // Converts before persisting the document in the database and after fetching it
 
         // LocalDate
-        adapter.registerConverter(LocalDateToStringConverter.INSTANCE);
-        adapter.registerConverter(StringToLocalDateConverter.INSTANCE);
+        adapter.registerConverter(LocalDateWritingConverter.INSTANCE);
+        adapter.registerConverter(LocalDateReadingConverter.INSTANCE);
 
         // EnumType
-        adapter.registerConverter(EnumTypeToDocumentConverter.INSTANCE);
-        adapter.registerConverterFactory(DocumentToEnumTypeConverter.INSTANCE);
+        adapter.registerConverter(EnumTypeWritingConverter.INSTANCE);
+        adapter.registerConverterFactory(EnumTypeReadingConverter.INSTANCE);
 
         // EnumIdType
-        adapter.registerConverter(EnumIdTypeToDocumentConverter.INSTANCE);
-        adapter.registerConverterFactory(DocumentToEnumIdTypeConverter.INSTANCE);
+        adapter.registerConverter(EnumIdTypeWritingConverter.INSTANCE);
+        adapter.registerConverterFactory(EnumIdTypeReadingConverter.INSTANCE);
 
         // EnumCodeValueType
-        adapter.registerConverter(EnumCodeValueTypeToDocumentConverter.INSTANCE);
-        adapter.registerConverterFactory(DocumentToEnumCodeValueTypeConverter.INSTANCE);
+        adapter.registerConverter(EnumCodeValueTypeWritingConverter.INSTANCE);
+        adapter.registerConverterFactory(EnumCodeValueTypeReadingConverter.INSTANCE);
     }
 
     @Override
