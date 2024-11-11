@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
-import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getArticlesHttpHeaders;
+import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
 
 import com.erebelo.spring.common.utils.threading.AsyncThreadContext;
 import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
@@ -115,7 +115,8 @@ public class ArticlesServiceImpl implements ArticlesService {
             log.info("Retrieving articles for page {}", page);
             ResponseEntity<ArticlesResponse> response = restTemplate.exchange(
                     UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
-                    HttpMethod.GET, new HttpEntity<>(getArticlesHttpHeaders()), new ParameterizedTypeReference<>() {
+                    HttpMethod.GET, new HttpEntity<>(getDownstreamApiHttpHeaders()),
+                    new ParameterizedTypeReference<>() {
                     });
 
             log.info("Articles for page {} retrieved successfully", page);

@@ -7,7 +7,7 @@ import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataRes
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTONextPage;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesResponse;
 import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesResponseNextPage;
-import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getArticlesHttpHeaders;
+import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getDownstreamApiHttpHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,12 +111,12 @@ class ArticlesServiceTest {
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-                .isEqualTo(getArticlesHttpHeaders());
+                .isEqualTo(getDownstreamApiHttpHeaders());
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-                .isEqualTo(getArticlesHttpHeaders());
+                .isEqualTo(getDownstreamApiHttpHeaders());
 
         verify(mapper).responseToResponseDTO(anyList());
     }
@@ -132,7 +132,7 @@ class ArticlesServiceTest {
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-                .isEqualTo(getArticlesHttpHeaders());
+                .isEqualTo(getDownstreamApiHttpHeaders());
 
         verify(mapper, never()).responseToResponseDTO(anyList());
     }
@@ -157,12 +157,12 @@ class ArticlesServiceTest {
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-                .isEqualTo(getArticlesHttpHeaders());
+                .isEqualTo(getDownstreamApiHttpHeaders());
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), any(ParameterizedTypeReference.class));
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
-                .isEqualTo(getArticlesHttpHeaders());
+                .isEqualTo(getDownstreamApiHttpHeaders());
 
         verify(mapper, never()).responseToResponseDTO(anyList());
     }

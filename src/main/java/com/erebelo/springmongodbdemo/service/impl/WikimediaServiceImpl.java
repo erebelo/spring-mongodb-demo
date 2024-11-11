@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getWikimediaHttpHeaders;
+import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
@@ -40,7 +40,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 
         try {
             ResponseEntity<WikimediaResponse> response = restTemplate.exchange(wikimediaPublicApiUrl, HttpMethod.GET,
-                    new HttpEntity<>(getWikimediaHttpHeaders()), new ParameterizedTypeReference<>() {
+                    new HttpEntity<>(getDownstreamApiHttpHeaders()), new ParameterizedTypeReference<>() {
                     });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
         } catch (RestClientException e) {
