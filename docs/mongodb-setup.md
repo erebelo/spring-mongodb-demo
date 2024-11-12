@@ -160,9 +160,9 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
 
 7. Use an IDE like **MongoDB Compass** or **Studio 3T** to connect with the following connection string:
 
-```bash
-mongodb://<DB_USER>:<DB_PASSWORD>@localhost:27017/?authSource=<DB_NAME>&replicaSet=rs0
-```
+   ```bash
+   mongodb://<DB_USER>:<DB_PASSWORD>@localhost:27017/?authSource=<DB_NAME>&replicaSet=rs0
+   ```
 
 ## (Optional) Enable SSL/TLS
 
