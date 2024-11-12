@@ -33,7 +33,7 @@ This project utilizes the following libraries:
   - **Http**: Pre-configured HTTP client utilities with customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
   - **Utils**: Utility classes for serialization, object mapping, thread context management in asynchronous operations, and configuring asynchronous task execution with `CompletableFuture`.
 - [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks): Automated Git hooks to enforce code formatting standards with Maven and the Spotless plugin.
-- [MongoDB Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/docs/mongodb_setup.md): Instructions for MongoDB setup and index creation.
+- [MongoDB Setup](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/mongodb-setup.md): Instructions for MongoDB setup and index creation.
 
 ## Run App
 
@@ -45,7 +45,7 @@ This project utilizes the following libraries:
 
 For environments other than local, additional configurations are required:
 
-- **Generate Keystore**: Generate a `mongodb-keystore.p12` file and place it in the `/resources` directory. This keystore will store the necessary certificates. For detailed steps on generating the required certificates and creating the keystore file, follow the instructions in the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/tree/main/docs/ssl-tls-setup.md).
+- **Generate Keystore**: Generate a `mongodb-keystore.p12` file and place it in the `/resources` directory. This keystore will store the necessary certificates. For detailed steps on generating the required certificates and creating the keystore file, follow the instructions in the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/ssl-tls-setup.md).
 - **Set Environment Variables**: Set the following environment variables to configure the application: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`, and `DB_SSL_KEYSTORE_PASSWORD`.
 
 ## Collection
