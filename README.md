@@ -4,34 +4,36 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 
 ## Features
 
-- **HandlerInterceptor** is utilized to intercept requests to verify whether they contain the required HTTP header attribute.
-- **HandlerMethodArgumentResolver** is employed to retrieve a header value and assign it to an argument type in controller methods.
-- **AbstractMongoEventListener** is utilized to persist historical data for each POST, UPDATE, PATCH, and DELETE operation.
-- **AuditorAware** is utilized to insert values for auditable attributes such as username, document version, and date of operations in the persisted document.
-- **Converter** and **ConverterFactory** are used to customize data transformations, such as converting enums to String or Object, and formatting LocalDate to Date (UTC, no offset) for MongoDB persistence and retrieval.
-- **ConstraintValidator** is used to validate request fields and their associated business rules by declaring an annotation in the request class.
-- **Logging** are employed to track application logs using Log4j2.
-- **Global Exception Handler** is implemented to manage errors.
-- **RestTemplate** is used for making HTTP requests to REST APIs.
-- **SSL/TLS** is configured to establish secure connections to MongoDB.
-- **Unit Tests** are implemented covering the entire application.
+- **HandlerInterceptor**: Intercepts requests to verify whether they contain the required HTTP header attribute.
+- **HandlerMethodArgumentResolver**: Retrieves a header value and assigns it to an argument type in controller methods.
+- **AbstractMongoEventListener**: Persists historical data for each POST, UPDATE, PATCH, and DELETE operation.
+- **AuditorAware**: Inserts values for auditable attributes such as `username`, document `version`, and `date` of operations in the persisted document.
+- **Converter** and **ConverterFactory**: Customize data transformations, such as converting enums to `String` or `Object`, and formatting `LocalDate` to `Date` (UTC, no offset) for MongoDB persistence and retrieval.
+- **ConstraintValidator**: Validates request fields and associated business rules by declaring an annotation in the request class.
+- **Asynchronous Task Execution**: Uses `CompletableFuture` to handle tasks asynchronously, optimizing performance by managing threads and enabling non-blocking operations.
+- **Logging**: Tracks application logs using `Log4j2`.
+- **Global Exception Handler**: Manages errors across the application.
+- **RestTemplate**: Facilitates HTTP requests to REST APIs.
+- **SSL/TLS**: Configures secure connections to MongoDB.
+- **Unit Tests**: Comprehensive test coverage for the entire application.
 
 ## Requirements
 
 - Java 17
-- Spring Boot 3.3.4
+- Spring Boot 3.3.5
 - Apache Maven 3.8.6
 
 ## References
 
 This project utilizes the following libraries:
 
-- [spring-common-parent](https://github.com/erebelo/spring-common-parent) to manage the Spring Boot version and provide common configurations for plugins and formatting.
-- [spring-common-lib](https://github.com/erebelo/spring-common-lib) for shared utilities and features such as:
-  - **Logging**: Provides Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
-  - **Http**: Provides pre-configured HTTP client utilities, offering customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
-  - **Utils**: Includes utility classes for serialization, object mapping, managing thread context in asynchronous operations, and configuring asynchronous task execution.
-- Git hooks are set up for code formatting using [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks).
+- [spring-common-parent](https://github.com/erebelo/spring-common-parent): Manages the Spring Boot version and provide common configurations for plugins and formatting.
+- [spring-common-lib](https://github.com/erebelo/spring-common-lib): Provides shared utilities and features, including:
+  - **Logging**: Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
+  - **Http**: Pre-configured HTTP client utilities with customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
+  - **Utils**: Utility classes for serialization, object mapping, thread context management in asynchronous operations, and configuring asynchronous task execution with `CompletableFuture`.
+- [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks): Automated Git hooks to enforce code formatting standards with Maven and the Spotless plugin.
+- [MongoDB Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/docs/mongodb_setup.md): Instructions for MongoDB setup and index creation.
 
 ## Run App
 
