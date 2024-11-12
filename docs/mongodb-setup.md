@@ -6,7 +6,7 @@ Download the [MongoDB](https://www.mongodb.com/try/download/community) ZIP file 
 
 ## 2. Download MongoDB Shell
 
-Download [MongoDB Shell](https://www.mongodb.com/try/download/shell) (required for latest mongodb versions).
+Download the [MongoDB Shell](https://www.mongodb.com/try/download/shell) ZIP file (required for latest mongodb versions) and extract it.
 
 ## 3. Set Environment Variables
 
