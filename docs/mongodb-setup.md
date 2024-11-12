@@ -31,7 +31,7 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
     ```bash
     mongod --replSet rs0 --dbpath C:\data\db
     ```
-2.  Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) the follow the steps:
+2.  Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) then follow the steps:
 
     2.1 Use the following connection string to connect to MongoDB:
 
@@ -57,7 +57,7 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
    ```bash
    mongod --replSet rs0 --dbpath C:\data\db
    ```
-2. Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) the follow the steps:
+2. Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) then follow the steps:
 
    2.1 Connect to MongoDB using the connection string:
 
@@ -114,7 +114,7 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
 
    2.4. Exit the MongoDB Shell.
 
-3. Generate a random sequence of 756 bytes using OpenSSL in the mongodb path (`C:\dev\mongodb`) and grant read permission only for the file owner:
+3. Generate a random sequence of 756 bytes using OpenSSL in the MongoDB bin path (`C:\dev\mongodb\bin`) and grant read permission only for the file owner:
 
    ```bash
    openssl rand -base64 756 > keyfile
@@ -122,7 +122,7 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
    $ chmod 400 keyfile
    ```
 
-4. Create the `mongod-auth.conf` file in the bin path (`C:\dev\mongodb\bin`) with the following content:
+4. Create the `mongod-auth.conf` file in the MongoDB bin path (`C:\dev\mongodb\bin`) with the following content:
 
    ```yaml
    storage:
@@ -139,7 +139,7 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
 
    security:
      authorization: enabled
-     keyFile: C:\dev\mongodb\bin\auth\keyfile
+     keyFile: C:\dev\mongodb\bin\keyfile
 
    replication:
      replSetName: rs0
@@ -164,13 +164,15 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
    mongodb://<DB_USER>:<DB_PASSWORD>@localhost:27017/?authSource=<DB_NAME>&replicaSet=rs0
    ```
 
+   **Note**: Replace `<DB_USER>`, `<DB_PASSWORD>`, and `<DB_NAME>` with the correct values.
+
 ## (Optional) Enable SSL/TLS
 
 Refer to the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/ssl-tls-setup.md) documentation for step-by-step instructions on setting up secure connections. This includes generating SSL certificates, configuring MongoDB to use them, and ensuring secure communication between MongoDB instances and clients.
 
 ## (Optional) Index creation
 
-1.  Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) the follow the steps:
+1.  Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) then follow the steps:
 
     1.1 Use the following connection string to connect to MongoDB:
 
@@ -196,6 +198,6 @@ Refer to the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/sprin
     db.profile_history.createIndex({"document.userId": 1}, {name: "user_id_index"})
     ```
 
-    **Note**: Replace `<REGULAR_PWD>` with the desired password for 'regular' user.
+    **Note**: Replace `<REGULAR_PWD>` with the correct password for 'regular' user.
 
     1.3. Exit the MongoDB Shell, leaving the `mongod` terminal open.
