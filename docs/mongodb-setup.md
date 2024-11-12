@@ -158,24 +158,27 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
    mongod --config C:\dev\mongodb\bin\mongod-auth.conf
    ```
 
-7. Connect to MongoDB with Authentication
+7. Use an IDE like **MongoDB Compass** or **Studio 3T** to connect with the following connection string:
 
-- Use an IDE like **MongoDB Compass** or **Studio 3T** to connect with the following connection string:
-  ```bash
-  mongodb://<DB_USER>:<DB_PASSWORD>@localhost:27017/?authSource=<DB_NAME>&replicaSet=rs0
-  ```
+```bash
+mongodb://<DB_USER>:<DB_PASSWORD>@localhost:27017/?authSource=<DB_NAME>&replicaSet=rs0
+```
+
+## (Optional) Enable SSL/TLS
+
+Refer to the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/ssl-tls-setup.md) documentation for step-by-step instructions on setting up secure connections. This includes generating SSL certificates, configuring MongoDB to use them, and ensuring secure communication between MongoDB instances and clients.
 
 ## (Optional) Index creation
 
 1.  Open the MongoDB Shell (`mongo.exe` or `mongosh.exe`) the follow the steps:
 
-    2.1 Use the following connection string to connect to MongoDB:
+    1.1 Use the following connection string to connect to MongoDB:
 
     ```bash
     mongodb://localhost:27017/
     ```
 
-    2.2 Create indexes for `profile` and `profile_history` collections from `demo_db` database:
+    1.2 Create indexes for `profile` and `profile_history` collections from `demo_db` database:
 
     ```bash
     use demo_db
@@ -195,4 +198,4 @@ Add the MongoDB bin path (`C:\dev\mongodb\bin`) to the system environment variab
 
     **Note**: Replace `<REGULAR_PWD>` with the desired password for 'regular' user.
 
-    2.3. Exit the MongoDB Shell, leaving the `mongod` terminal open.
+    1.3. Exit the MongoDB Shell, leaving the `mongod` terminal open.

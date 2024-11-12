@@ -53,4 +53,4 @@ This is a Git pre-commit hook script that checks for code formatting before allo
 
 ## Conclusion
 
-Using these scripts will help maintain consistent code formatting in your project, ensuring that all team members adhere to the same standards. If you encounter any issues or have questions, feel free to reach out for help.
+Using these scripts will help maintain consistent code formatting in your project, ensuring that all team members adhere to the same standards.

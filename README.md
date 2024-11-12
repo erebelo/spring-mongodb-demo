@@ -23,17 +23,18 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 - Spring Boot 3.3.5
 - Apache Maven 3.8.6
 
-## References
-
-This project utilizes the following libraries:
+## Libraries
 
 - [spring-common-parent](https://github.com/erebelo/spring-common-parent): Manages the Spring Boot version and provide common configurations for plugins and formatting.
 - [spring-common-lib](https://github.com/erebelo/spring-common-lib): Provides shared utilities and features, including:
   - **Logging**: Log4j2 with ECS (Elastic Common Schema) layout (for non-local environments).
   - **Http**: Pre-configured HTTP client utilities with customizable RestTemplate configurations for efficient connection management, proxy settings, and basic authentication.
   - **Utils**: Utility classes for serialization, object mapping, thread context management in asynchronous operations, and configuring asynchronous task execution with `CompletableFuture`.
-- [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks): Automated Git hooks to enforce code formatting standards with Maven and the Spotless plugin.
+
+## References
+
 - [MongoDB Setup](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/mongodb-setup.md): Instructions for MongoDB setup and index creation.
+- [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks): Automated Git hooks to enforce code formatting standards with Maven and the Spotless plugin.
 
 ## Run App
 

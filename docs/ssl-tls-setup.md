@@ -2,7 +2,7 @@
 
 Follow these steps to generate the necessary certificates and configure MongoDB for SSL/TLS.
 
-## Step 1: Generate Certificates
+## 1. Generate Certificates
 
 1. **Generate the CA's Private Key and Certificate**
 
@@ -48,7 +48,7 @@ Follow these steps to generate the necessary certificates and configure MongoDB 
    chmod 600 ca.crt
    ```
 
-## Step 2: Create the PKCS12 Keystore for Java
+## 2. Create the PKCS12 Keystore for Java
 
 To create a PKCS12 keystore compatible with Java's SSL/TLS configuration, run the following command:
 
@@ -60,7 +60,7 @@ openssl pkcs12 -export -in mongodb.crt -inkey mongodb.key -out mongodb-keystore.
 
 Place the generated `mongodb-keystore.p12` file in the `/resources` directory of your Spring Boot application.
 
-## MongoDB Configuration
+## 3. MongoDB Configuration
 
 Update the `mongod.conf` file as follows to configure MongoDB with SSL/TLS:
 
@@ -88,7 +88,7 @@ replication:
   replSetName: rs0
 ```
 
-## Start MongoDB with Replica Set and SSL/TLS
+## 4. Start MongoDB with Replica Set and SSL/TLS
 
 Use the following command in a batch file (`start_mongodb_repl_set_ssl.bat`) or directly in the command line to start MongoDB with the specified configuration:
 
@@ -99,11 +99,9 @@ pause
 
 Now your MongoDB server is set up with SSL/TLS, and your Spring Boot application is ready to connect securely in non-local environments.
 
-## Connecting to MongoDB with an IDE
+## 5. Connect to MongoDB with an IDE
 
 To connect to your MongoDB server with SSL/TLS using an IDE like **MongoDB Compass** or **Studio 3T**, follow these steps:
-
-### Configure SSL/TLS Connection Settings
 
 Under the SSL tab:
 
