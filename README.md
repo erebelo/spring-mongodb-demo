@@ -46,8 +46,8 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 
 For environments other than local, additional configurations are required:
 
-- **Generate Keystore**: Generate a `mongodb-keystore.p12` file and place it in the `/resources` directory. This keystore will store the necessary certificates. For detailed steps on generating the required certificates and creating the keystore file, follow the instructions in the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/ssl-tls-setup.md).
 - **Set Environment Variables**: Set the following environment variables to configure the application: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`, and `DB_SSL_KEYSTORE_PASSWORD`.
+- **Generate Keystore**: Generate a `mongodb-keystore.p12` file and place it in the `/resources` directory. This keystore will store the necessary certificates. For detailed steps on generating the required certificates and creating the keystore file, follow the instructions in the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/ssl-tls-setup.md).
 
 ## Collection
 
