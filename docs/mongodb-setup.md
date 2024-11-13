@@ -1,5 +1,9 @@
 # MongoDB Setup
 
+This guide provides step-by-step instructions to set up MongoDB with replica sets, authentication, SSL/TLS, and indexing.
+
+**NOTE**: This setup uses **MongoDB version 8**, which includes changes in documentation and configuration that may differ from other versions. For accurate guidance, refer to the [MongoDB v8 documentation](https://www.mongodb.com/docs/manual/).
+
 ## 1. Download MongoDB
 
 Download the [MongoDB](https://www.mongodb.com/try/download/community) ZIP file and extract it.

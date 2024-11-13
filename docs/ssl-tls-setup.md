@@ -2,6 +2,8 @@
 
 Follow these steps to generate the necessary certificates and configure MongoDB for SSL/TLS.
 
+**NOTE**: This setup uses **MongoDB version 8**, which includes changes in documentation and configuration that may differ from other versions. For accurate guidance, refer to the [MongoDB v8 documentation](https://www.mongodb.com/docs/manual/).
+
 ## 1. Generate Certificates
 
 1. **Generate the CA's Private Key and Certificate**
