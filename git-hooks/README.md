@@ -38,7 +38,7 @@ bash git-hooks/remove-hooks.sh
 
 This is a Git pre-commit hook script that checks for code formatting before allowing a commit. It uses the Spotless Maven plugin to ensure that your code follows the specified formatting rules.
 
-#### How it works:
+## How it works
 
 - Checks if the `mvn` command is available in your PATH.
 - Runs `mvn spotless:check` to validate the code formatting.

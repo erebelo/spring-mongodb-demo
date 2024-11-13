@@ -111,3 +111,14 @@ Under the SSL tab:
 - SSL Certificate:
   - Root CA File: Choose the `ca.crt` file.
   - Client Certificate: Choose the `mongodb.pem` file.
+
+## How it works
+
+- The server (MongoDB) uses its certificates and private key to authenticate itself to the client.
+- The client (Java App) uses its PKCS12 keystore (containing the client certificate and private key) to authenticate to the server and establish the secure connection.
+- The SSL/TLS handshake occurs when the client first establishes a connection to the server. During this handshake, the client and server agree on encryption keys to be used for the session.
+- After the handshake, data exchanged between the client and server is encrypted and decrypted using the keys agreed upon during the handshake.
+  - The server decrypts the data it receives and stores it in the database, while also encrypting any data sent back to the client.
+  - Similarly, the client encrypts the data it sends and decrypts the data it receives
+
+This process ensures that data is protected against interception or tampering during transmission, maintaining secure communication between both parties over the encrypted connection.
