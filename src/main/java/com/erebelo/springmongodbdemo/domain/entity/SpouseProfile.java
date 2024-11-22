@@ -9,16 +9,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SpouseProfile implements Serializable {
 
     @NotBlank(message = "spouseProfile.firstName is mandatory")
