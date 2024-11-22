@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @Log4j2
 @UtilityClass
@@ -21,6 +22,15 @@ public class HttpHeadersUtil {
         var httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
         httpHeaders.setAcceptCharset(List.of(StandardCharsets.UTF_8));
+
+        return httpHeaders;
+    }
+
+    public static HttpHeaders getFileApiResponseHeaders(String filename, long contentLength) {
+        var httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", filename);
+        httpHeaders.setContentLength(contentLength);
 
         return httpHeaders;
     }

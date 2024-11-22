@@ -13,5 +13,6 @@ public class BusinessConstant {
     public static final String PROFILE = "/profile";
     public static final String WIKIMEDIA = "/wikimedia";
     public static final String ARTICLES = "/articles";
+    public static final String FILES = "/files";
 
 }
