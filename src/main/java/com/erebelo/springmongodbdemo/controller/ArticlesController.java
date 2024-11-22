@@ -27,7 +27,7 @@ public class ArticlesController {
     @Operation(summary = "GET Articles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ArticlesDataResponseDTO>> getArticles() {
-        log.info("Getting articles");
+        log.info("GET {}", ARTICLES);
         var response = service.getArticles();
 
         return ResponseEntity.ok(response);

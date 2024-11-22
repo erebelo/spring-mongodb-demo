@@ -20,7 +20,7 @@ public class HealthCheckController {
     @Operation(summary = "GET Health Check")
     @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getHealthCheck() {
-        log.info("Getting health check");
+        log.info("GET {}", HEALTH_CHECK);
         return ResponseEntity.ok("Spring MongoDB Demo application is up and running");
     }
 }

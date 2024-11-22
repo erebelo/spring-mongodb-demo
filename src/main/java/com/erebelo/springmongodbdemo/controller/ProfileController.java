@@ -36,56 +36,42 @@ public class ProfileController {
 
     private final ProfileService service;
 
-    private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
-
     @Operation(summary = "GET Profile")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
-        log.info("Getting profile");
-        var response = service.getProfile(userId);
-
-        log.info(RESPONSE_BODY_LOGGER, response);
-        return ResponseEntity.ok(response);
+        log.info("GET {}", PROFILE);
+        return ResponseEntity.ok(service.getProfile(userId));
     }
 
     @Operation(summary = "POST Profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId,
             @Valid @RequestBody ProfileRequest profileRequest) {
-        log.info("Inserting profile");
-        var response = service.insertProfile(userId, profileRequest);
-
-        log.info(RESPONSE_BODY_LOGGER, response);
+        log.info("POST {} - userId={}", PROFILE, userId);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri())
-                .body(response);
+                .body(service.insertProfile(userId, profileRequest));
     }
 
     @Operation(summary = "PUT Profile")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId,
             @Valid @RequestBody ProfileRequest profileRequest) {
-        log.info("Updating profile");
-        var response = service.updateProfile(userId, profileRequest);
-
-        log.info(RESPONSE_BODY_LOGGER, response);
-        return ResponseEntity.ok(response);
+        log.info("PUT {} - userId={}", PROFILE, userId);
+        return ResponseEntity.ok(service.updateProfile(userId, profileRequest));
     }
 
     @Operation(summary = "PATCH Profile")
     @PatchMapping(consumes = MERGE_PATCH_MEDIA_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> patchProfile(@UserId String userId,
             @Valid @RequestBody Map<String, Object> profileRequestMap) {
-        log.info("Patching profile");
-        var response = service.patchProfile(userId, profileRequestMap);
-
-        log.info(RESPONSE_BODY_LOGGER, response);
-        return ResponseEntity.ok(response);
+        log.info("PATCH {} - userId={}", PROFILE, userId);
+        return ResponseEntity.ok(service.patchProfile(userId, profileRequestMap));
     }
 
     @Operation(summary = "DELETE Profile")
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
-        log.info("Deleting profile");
+        log.info("DELETE {} - userId={}", PROFILE, userId);
         service.deleteProfile(userId);
 
         return ResponseEntity.noContent().build();

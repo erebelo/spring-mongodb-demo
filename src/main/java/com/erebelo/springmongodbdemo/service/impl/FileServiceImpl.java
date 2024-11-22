@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public String uploadFile(MultipartFile multipartFile) {
-        log.info("Uploading file: {}", multipartFile.getOriginalFilename());
+        log.info("Uploading file");
 
         var filename = multipartFile.getOriginalFilename();
         var dataBytes = extractFileBytes(multipartFile);

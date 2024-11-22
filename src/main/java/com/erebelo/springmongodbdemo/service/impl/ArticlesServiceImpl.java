@@ -50,7 +50,7 @@ public class ArticlesServiceImpl implements ArticlesService {
 
     @Override
     public List<ArticlesDataResponseDTO> getArticles() {
-        log.info("Getting articles from downstream API: {}", articlesApiUrl);
+        log.info("Fetching articles from downstream API: {}", articlesApiUrl);
         Integer totalPages = INITIAL_PAGE;
 
         ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);

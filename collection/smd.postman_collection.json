@@ -357,6 +357,82 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Files",
+					"item": [
+						{
+							"name": "Get Files",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/files",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"files"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Files by Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/files/6740ee3dc9832a48f6996c94",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"files",
+										"6740ee3dc9832a48f6996c94"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Files",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/spring-mongodb-demo/files",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"spring-mongodb-demo",
+										"files"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -694,6 +770,85 @@
 									"path": [
 										"spring-mongodb-demo",
 										"articles"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Files",
+					"item": [
+						{
+							"name": "Get Files",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/files",
+									"protocol": "https",
+									"host": [
+										"api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"files"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Files by Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/files/6740ee3dc9832a48f6996c94",
+									"protocol": "https",
+									"host": [
+										"api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"files",
+										"6740ee3dc9832a48f6996c94"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Files",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "https://api.erebelo.com/spring-mongodb-demo/files",
+									"protocol": "https",
+									"host": [
+										"api",
+										"erebelo",
+										"com"
+									],
+									"path": [
+										"spring-mongodb-demo",
+										"files"
 									]
 								}
 							},

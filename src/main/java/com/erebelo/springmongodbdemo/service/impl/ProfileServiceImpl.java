@@ -48,16 +48,19 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public ProfileResponse getProfile(String userId) {
-        log.info("Getting profile: {}", userId);
+        log.info("Fetching profile with userId: {}", userId);
         var profile = repository.findByUserId(userId)
                 .orElseThrow(() -> new CommonException(COMMON_ERROR_404_001, userId));
 
+        log.info("Profile successfully retrieved: {}", profile);
         return mapper.entityToResponse(profile.getProfile());
     }
 
     @Override
     @Transactional
     public ProfileResponse insertProfile(String userId, ProfileRequest profileRequest) {
+        log.info("Creating profile with userId: {}", userId);
+
         log.info(CHECK_OBJ_LOGGER, userId);
         repository.findByUserId(userId).ifPresent(o -> {
             throw new CommonException(COMMON_ERROR_409_001);
@@ -71,12 +74,15 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("Inserting profile");
         profile = repository.insert(profile);
 
+        log.info("Profile created successfully: {}", profile);
         return mapper.entityToResponse(profile.getProfile());
     }
 
     @Override
     @Transactional
     public ProfileResponse updateProfile(String userId, ProfileRequest profileRequest) {
+        log.info("Updating profile with userId: {}", userId);
+
         log.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId)
                 .orElseThrow(() -> new CommonException(COMMON_ERROR_404_002, userId));
@@ -97,12 +103,15 @@ public class ProfileServiceImpl implements ProfileService {
             log.info("No updates found for profile object by put request");
         }
 
+        log.info("Profile updated successfully: {}", profile);
         return mapper.entityToResponse(profile.getProfile());
     }
 
     @Override
     @Transactional
     public ProfileResponse patchProfile(String userId, Map<String, Object> profileRequestMap) {
+        log.info("Patching profile with userId: {}", userId);
+
         log.info("Validating map request attributes");
         if (isNull(profileRequestMap) || profileRequestMap.isEmpty()) {
             throw new CommonException(COMMON_ERROR_400_001,
@@ -149,10 +158,13 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public void deleteProfile(String userId) {
+        log.info("Deleting profile with userId: {}", userId);
+
         log.info(CHECK_OBJ_LOGGER, userId);
         var profile = repository.findByUserId(userId)
                 .orElseThrow(() -> new CommonException(COMMON_ERROR_404_003, userId));
 
+        log.info("Profile deleted successfully");
         repository.delete(profile);
     }
 

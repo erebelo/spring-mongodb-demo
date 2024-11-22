@@ -35,7 +35,8 @@ public class WikimediaServiceImpl implements WikimediaService {
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
-        log.info("Getting daily aggregated Wikimedia pageviews for all projects");
+        log.info("Fetching daily aggregated Wikimedia pageviews for all projects from downstream API: {}",
+                wikimediaPublicApiUrl);
         WikimediaResponse wikimediaPageViews;
 
         try {
