@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.domain.enumeration;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdValueType;
+import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumIdValueType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.HashMap;

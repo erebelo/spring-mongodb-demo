@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumValueType;
+import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumValueType;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;
 

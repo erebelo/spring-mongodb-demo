@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArticlesResponse {
+public class ArticleResponse {
 
     private Integer page;
 
@@ -27,6 +27,6 @@ public class ArticlesResponse {
     @JsonProperty("total_pages")
     private Integer totalPages;
 
-    private List<ArticlesDataResponse> data;
+    private List<ArticleDataResponse> data;
 
 }

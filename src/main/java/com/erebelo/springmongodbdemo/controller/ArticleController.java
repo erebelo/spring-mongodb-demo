@@ -2,8 +2,8 @@ package com.erebelo.springmongodbdemo.controller;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
 
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.service.ArticlesService;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
+import com.erebelo.springmongodbdemo.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ARTICLES)
 @RequiredArgsConstructor
 @Tag(name = "Articles API")
-public class ArticlesController {
+public class ArticleController {
 
-    private final ArticlesService service;
+    private final ArticleService service;
 
     @Operation(summary = "GET Articles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ArticlesDataResponseDTO>> getArticles() {
+    public ResponseEntity<List<ArticleDataResponseDTO>> getArticles() {
         log.info("GET {}", ARTICLES);
         var response = service.getArticles();
 

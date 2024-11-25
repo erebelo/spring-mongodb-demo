@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.service.validation;
+package com.erebelo.springmongodbdemo.validation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

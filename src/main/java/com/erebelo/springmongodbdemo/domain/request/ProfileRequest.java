@@ -4,7 +4,7 @@ import com.erebelo.springmongodbdemo.domain.enumeration.EmploymentStatusEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.GenderEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.HealthLevelEnum;
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
-import com.erebelo.springmongodbdemo.service.validation.ProfileValidator;
+import com.erebelo.springmongodbdemo.validation.ProfileValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

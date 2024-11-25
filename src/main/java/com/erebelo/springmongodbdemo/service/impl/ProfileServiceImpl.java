@@ -8,10 +8,10 @@ import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_000;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_002;
-import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateContactNumbers;
-import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateDateOfBirth;
-import static com.erebelo.springmongodbdemo.service.validation.ProfileConstraintValidator.validateSpouseProfile;
 import static com.erebelo.springmongodbdemo.util.HashAlgorithmUtil.generateSHAHashObject;
+import static com.erebelo.springmongodbdemo.validation.ProfileConstraintValidator.validateContactNumbers;
+import static com.erebelo.springmongodbdemo.validation.ProfileConstraintValidator.validateDateOfBirth;
+import static com.erebelo.springmongodbdemo.validation.ProfileConstraintValidator.validateSpouseProfile;
 import static java.util.Objects.isNull;
 
 import com.erebelo.spring.common.utils.serialization.ByteHandler;
@@ -23,7 +23,7 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ProfileMapper;
 import com.erebelo.springmongodbdemo.repository.ProfileRepository;
 import com.erebelo.springmongodbdemo.service.ProfileService;
-import com.erebelo.springmongodbdemo.service.validation.FieldMessage;
+import com.erebelo.springmongodbdemo.validation.FieldMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.Collections;

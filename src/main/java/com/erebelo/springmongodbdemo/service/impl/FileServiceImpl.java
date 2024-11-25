@@ -5,13 +5,13 @@ import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_409_002;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_422_003;
 
-import com.erebelo.springmongodbdemo.domain.entity.FileDocument;
+import com.erebelo.springmongodbdemo.domain.entity.FileEntity;
 import com.erebelo.springmongodbdemo.domain.response.FileResponse;
 import com.erebelo.springmongodbdemo.domain.response.FileResponseDTO;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.FileMapper;
 import com.erebelo.springmongodbdemo.repository.FileRepository;
-import com.erebelo.springmongodbdemo.repository.projection.FileDocumentProjection;
+import com.erebelo.springmongodbdemo.repository.projection.FileEntityProjection;
 import com.erebelo.springmongodbdemo.service.FileService;
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +34,7 @@ public class FileServiceImpl implements FileService {
     @Transactional(readOnly = true)
     public List<FileResponseDTO> getFiles() {
         log.info("Fetching all files");
-        List<FileDocumentProjection> fileProjections = repository.findAllFileDocumentsProjection();
+        List<FileEntityProjection> fileProjections = repository.findAllFileEntityProjection();
 
         if (fileProjections.isEmpty()) {
             throw new CommonException(COMMON_ERROR_404_006);
@@ -48,10 +48,10 @@ public class FileServiceImpl implements FileService {
     @Transactional(readOnly = true)
     public FileResponse getFileById(String id) {
         log.info("Fetching file with id: {}", id);
-        FileDocument file = repository.findById(id).orElseThrow(() -> new CommonException(COMMON_ERROR_404_007, id));
+        FileEntity file = repository.findById(id).orElseThrow(() -> new CommonException(COMMON_ERROR_404_007, id));
 
         log.info("File {} successfully retrieved", file.getName());
-        return mapper.documentToResponse(file);
+        return mapper.entityToResponse(file);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FileServiceImpl implements FileService {
         });
 
         log.info("Inserting file");
-        String fileId = repository.save(mapper.fileToDocument(filename, dataBytes)).getId();
+        String fileId = repository.save(mapper.objToEntity(filename, dataBytes)).getId();
 
         log.info("File {} uploaded successfully: {}", filename, fileId);
         return fileId;

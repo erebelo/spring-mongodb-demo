@@ -5,6 +5,8 @@ import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getFileApiRespo
 
 import com.erebelo.springmongodbdemo.domain.response.FileResponseDTO;
 import com.erebelo.springmongodbdemo.service.FileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,16 +25,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping(FILES)
 @RequiredArgsConstructor
+@Tag(name = "Files API")
 public class FileController {
 
     private final FileService service;
 
+    @Operation(summary = "Get Files")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FileResponseDTO>> getFiles() {
         log.info("GET {}", FILES);
         return ResponseEntity.ok(service.getFiles());
     }
 
+    @Operation(summary = "GET File by Id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> getFileById(@PathVariable String id) {
         log.info("GET {}/{}", FILES, id);
@@ -45,6 +50,7 @@ public class FileController {
     /**
      * Uploads a single file. Supports files up to 16MB in size.
      */
+    @Operation(summary = "POST Files")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
         log.info("POST {} - fileName={}, fileSize={} bytes, contentType={}", FILES, file.getOriginalFilename(),

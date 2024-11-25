@@ -3,7 +3,7 @@ package com.erebelo.springmongodbdemo.context.converter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdValueType;
+import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumIdValueType;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;

@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = "files")
 @DocumentHistory(collection = "files_history")
-public class FileDocument {
+public class FileEntity {
 
     @Id
     private String id;

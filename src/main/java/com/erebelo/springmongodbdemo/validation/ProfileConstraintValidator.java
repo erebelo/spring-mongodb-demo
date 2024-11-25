@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.service.validation;
+package com.erebelo.springmongodbdemo.validation;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;

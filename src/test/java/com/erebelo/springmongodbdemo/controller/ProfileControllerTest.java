@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.MERGE_PATCH_MEDIA_TYPE;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILE;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILES;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_400_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_001;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_002;
@@ -73,7 +73,7 @@ class ProfileControllerTest {
     void testGetProfileSuccessfully() throws Exception {
         given(service.getProfile(anyString())).willReturn(getProfileResponse());
 
-        mockMvc.perform(get(PROFILE).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get(PROFILES).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
         verify(service).getProfile(USER_ID);
@@ -83,7 +83,7 @@ class ProfileControllerTest {
     void testGetProfileNotFoundFailure() throws Exception {
         given(service.getProfile(anyString())).willThrow(new CommonException(COMMON_ERROR_404_001, USER_ID));
 
-        mockMvc.perform(get(PROFILE).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get(PROFILES).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-001"))
                 .andExpect(jsonPath("$.message").value("Object not found by userId: 12345"))
@@ -96,7 +96,7 @@ class ProfileControllerTest {
     void testInsertProfileSuccessfully() throws Exception {
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
-        mockMvc.perform(post(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(post(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated()).andExpectAll(getProfileResponseResultMatcher());
 
@@ -110,7 +110,7 @@ class ProfileControllerTest {
         given(service.insertProfile(anyString(), any(ProfileRequest.class)))
                 .willThrow(new CommonException(COMMON_ERROR_409_001));
 
-        mockMvc.perform(post(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(post(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.status").value("CONFLICT"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-409-001"))
@@ -127,7 +127,7 @@ class ProfileControllerTest {
     void testUpdateProfileSuccessfully() throws Exception {
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
-        mockMvc.perform(put(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(put(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
@@ -141,7 +141,7 @@ class ProfileControllerTest {
         given(service.updateProfile(anyString(), any(ProfileRequest.class)))
                 .willThrow(new CommonException(COMMON_ERROR_404_002, USER_ID));
 
-        mockMvc.perform(put(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(put(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-002"))
@@ -158,7 +158,7 @@ class ProfileControllerTest {
     void testPatchProfileSuccessfully() throws Exception {
         given(service.patchProfile(anyString(), any(Map.class))).willReturn(getProfileResponsePatch());
 
-        mockMvc.perform(patch(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
+        mockMvc.perform(patch(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
                 .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpectAll(getProfileResponsePatchResultMatcher());
@@ -174,7 +174,7 @@ class ProfileControllerTest {
         given(service.patchProfile(anyString(), any(Map.class)))
                 .willThrow(new CommonException(COMMON_ERROR_400_001, Collections.singletonList(errorMsg)));
 
-        mockMvc.perform(patch(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
+        mockMvc.perform(patch(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
                 .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
@@ -191,7 +191,7 @@ class ProfileControllerTest {
     void testDeleteProfileSuccessfully() throws Exception {
         willDoNothing().given(service).deleteProfile(anyString());
 
-        mockMvc.perform(delete(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(delete(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent());
 
         verify(service).deleteProfile(USER_ID);
@@ -201,7 +201,7 @@ class ProfileControllerTest {
     void testDeleteProfileFailure() throws Exception {
         willThrow(new CommonException(COMMON_ERROR_404_003, USER_ID)).given(service).deleteProfile(anyString());
 
-        mockMvc.perform(delete(PROFILE).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(delete(PROFILES).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-003"))
                 .andExpect(jsonPath("$.message")

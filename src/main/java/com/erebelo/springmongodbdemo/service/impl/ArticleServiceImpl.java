@@ -4,13 +4,13 @@ import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum
 import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
 
 import com.erebelo.spring.common.utils.threading.AsyncThreadContext;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponse;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
+import com.erebelo.springmongodbdemo.domain.response.ArticleResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
-import com.erebelo.springmongodbdemo.service.ArticlesService;
+import com.erebelo.springmongodbdemo.mapper.ArticleMapper;
+import com.erebelo.springmongodbdemo.service.ArticleService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,33 +35,33 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class ArticlesServiceImpl implements ArticlesService {
+public class ArticleServiceImpl implements ArticleService {
 
     private final RestTemplate restTemplate;
     private final Executor asyncTaskExecutor;
-    private final ArticlesMapper mapper;
+    private final ArticleMapper mapper;
 
-    @Value("${articles.api.url}")
-    private String articlesApiUrl;
+    @Value("${article.api.url}")
+    private String articleApiUrl;
 
     private static final int INITIAL_PAGE = 1;
-    private static final String ARTICLES_CLIENT_ERROR_MESSAGE = "Error getting articles from downstream API for page:"
+    private static final String ARTICLE_CLIENT_ERROR_MESSAGE = "Error getting articles from downstream API for page:"
             + " %d. Error message: %s";
 
     @Override
-    public List<ArticlesDataResponseDTO> getArticles() {
-        log.info("Fetching articles from downstream API: {}", articlesApiUrl);
+    public List<ArticleDataResponseDTO> getArticles() {
+        log.info("Fetching articles from downstream API: {}", articleApiUrl);
         Integer totalPages = INITIAL_PAGE;
 
-        ArticlesResponse firstArticlesResponse = fetchData(INITIAL_PAGE);
+        ArticleResponse firstArticleResponse = fetchData(INITIAL_PAGE);
 
-        if (Objects.nonNull(firstArticlesResponse)) {
-            totalPages = firstArticlesResponse.getTotalPages();
+        if (Objects.nonNull(firstArticleResponse)) {
+            totalPages = firstArticleResponse.getTotalPages();
         } else {
-            log.warn("Empty or null response from first articles downstream API call");
+            log.warn("Empty or null response from first article downstream API call");
         }
 
-        List<ArticlesResponse> allArticlesResponses = new ArrayList<>();
+        List<ArticleResponse> allArticleResponses = new ArrayList<>();
         if (Objects.nonNull(totalPages) && totalPages > INITIAL_PAGE) {
             long startTime = System.currentTimeMillis();
 
@@ -73,14 +73,14 @@ public class ArticlesServiceImpl implements ArticlesService {
              * calls.
              */
             log.info("Fetching articles asynchronously through CompletableFuture");
-            List<CompletableFuture<ArticlesResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
+            List<CompletableFuture<ArticleResponse>> futures = IntStream.rangeClosed(INITIAL_PAGE + 1, totalPages)
                     .mapToObj(page -> CompletableFuture.supplyAsync(
                             AsyncThreadContext.withThreadContext(() -> fetchData(page)), asyncTaskExecutor))
                     .toList();
 
             try {
                 log.info("Waiting for all CompletableFuture to complete");
-                allArticlesResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
+                allArticleResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
                         .collect(Collectors.toList());
             } catch (CompletionException e) {
                 if (e.getCause() instanceof ClientException) {
@@ -94,27 +94,27 @@ public class ArticlesServiceImpl implements ArticlesService {
                     totalTime);
         }
 
-        if (Objects.nonNull(firstArticlesResponse)) {
-            allArticlesResponses.add(0, firstArticlesResponse);
+        if (Objects.nonNull(firstArticleResponse)) {
+            allArticleResponses.add(0, firstArticleResponse);
         }
 
-        List<ArticlesDataResponse> allArticlesDataResponses = allArticlesResponses.stream()
+        List<ArticleDataResponse> allArticleDataResponses = allArticleResponses.stream()
                 .filter(response -> response.getData() != null).flatMap(response -> response.getData().stream())
                 .toList();
 
-        if (allArticlesDataResponses.isEmpty()) {
+        if (allArticleDataResponses.isEmpty()) {
             throw new CommonException(COMMON_ERROR_404_005);
         }
 
-        log.info("{} articles found", allArticlesDataResponses.size());
-        return mapper.responseToResponseDTO(allArticlesDataResponses);
+        log.info("{} articles found", allArticleDataResponses.size());
+        return mapper.responseToResponseDTO(allArticleDataResponses);
     }
 
-    private ArticlesResponse fetchData(int page) {
+    private ArticleResponse fetchData(int page) {
         try {
             log.info("Retrieving articles for page {}", page);
-            ResponseEntity<ArticlesResponse> response = restTemplate.exchange(
-                    UriComponentsBuilder.fromUriString(articlesApiUrl).queryParam("page", page).toUriString(),
+            ResponseEntity<ArticleResponse> response = restTemplate.exchange(
+                    UriComponentsBuilder.fromUriString(articleApiUrl).queryParam("page", page).toUriString(),
                     HttpMethod.GET, new HttpEntity<>(getDownstreamApiHttpHeaders()),
                     new ParameterizedTypeReference<>() {
                     });
@@ -123,7 +123,7 @@ public class ArticlesServiceImpl implements ArticlesService {
             return response.hasBody() ? response.getBody() : null;
         } catch (RestClientException e) {
             throw new ClientException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    String.format(ARTICLES_CLIENT_ERROR_MESSAGE, page, e.getMessage()), e);
+                    String.format(ARTICLE_CLIENT_ERROR_MESSAGE, page, e.getMessage()), e);
         }
     }
 }

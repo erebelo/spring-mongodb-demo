@@ -1,12 +1,12 @@
 package com.erebelo.springmongodbdemo.service;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.ARTICLES_URL;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.TOTAL_PAGES;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTONextPage;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesResponse;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesResponseNextPage;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.ARTICLES_URL;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.TOTAL_PAGES;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataResponseDTO;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataResponseDTONextPage;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponse;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponseNextPage;
 import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getDownstreamApiHttpHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -19,11 +19,11 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.mapper.ArticlesMapper;
-import com.erebelo.springmongodbdemo.service.impl.ArticlesServiceImpl;
+import com.erebelo.springmongodbdemo.mapper.ArticleMapper;
+import com.erebelo.springmongodbdemo.service.impl.ArticleServiceImpl;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import org.junit.jupiter.api.AfterEach;
@@ -50,10 +50,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @ExtendWith(MockitoExtension.class)
-class ArticlesServiceTest {
+class ArticleServiceTest {
 
     @InjectMocks
-    private ArticlesServiceImpl service;
+    private ArticleServiceImpl service;
 
     @Mock
     private RestTemplate restTemplate;
@@ -62,7 +62,7 @@ class ArticlesServiceTest {
     private Executor asyncTaskExecutor;
 
     @Spy
-    private final ArticlesMapper mapper = Mappers.getMapper(ArticlesMapper.class);
+    private final ArticleMapper mapper = Mappers.getMapper(ArticleMapper.class);
 
     @Captor
     private ArgumentCaptor<HttpEntity<?>> httpEntityArgumentCaptor;
@@ -78,7 +78,7 @@ class ArticlesServiceTest {
         mockedStatic.when(RequestContextHolder::getRequestAttributes)
                 .thenReturn(new ServletRequestAttributes(mockHttpServletRequest));
 
-        ReflectionTestUtils.setField(service, "articlesApiUrl", ARTICLES_URL);
+        ReflectionTestUtils.setField(service, "articleApiUrl", ARTICLES_URL);
     }
 
     @AfterEach
@@ -95,15 +95,15 @@ class ArticlesServiceTest {
         }).when(asyncTaskExecutor).execute(any(Runnable.class));
 
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=1"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponse()));
+                .willReturn(ResponseEntity.ok(getArticleResponse()));
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=2"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponseNextPage()));
+                .willReturn(ResponseEntity.ok(getArticleResponseNextPage()));
 
         var result = service.getArticles();
 
-        var articlesResponseDTO = new ArrayList<ArticlesDataResponseDTO>();
-        articlesResponseDTO.add(getArticlesDataResponseDTO().get(0));
-        articlesResponseDTO.add(getArticlesDataResponseDTONextPage().get(0));
+        var articlesResponseDTO = new ArrayList<ArticleDataResponseDTO>();
+        articlesResponseDTO.add(getArticleDataResponseDTO().get(0));
+        articlesResponseDTO.add(getArticleDataResponseDTONextPage().get(0));
 
         assertThat(result).hasSize(TOTAL_PAGES);
         assertThat(result).usingRecursiveComparison().isEqualTo(articlesResponseDTO);
@@ -146,7 +146,7 @@ class ArticlesServiceTest {
         }).when(asyncTaskExecutor).execute(any(Runnable.class));
 
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=1"), any(), any(), any(ParameterizedTypeReference.class)))
-                .willReturn(ResponseEntity.ok(getArticlesResponse()));
+                .willReturn(ResponseEntity.ok(getArticleResponse()));
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=2"), any(), any(), any(ParameterizedTypeReference.class)))
                 .willThrow(new RestClientException("Async error"));
 

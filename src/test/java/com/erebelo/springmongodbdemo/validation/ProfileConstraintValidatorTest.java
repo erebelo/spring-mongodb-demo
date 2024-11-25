@@ -1,4 +1,4 @@
-package com.erebelo.springmongodbdemo.service.validation;
+package com.erebelo.springmongodbdemo.validation;
 
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

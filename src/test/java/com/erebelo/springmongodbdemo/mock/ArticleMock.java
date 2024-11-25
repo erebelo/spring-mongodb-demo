@@ -1,14 +1,14 @@
 package com.erebelo.springmongodbdemo.mock;
 
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponse;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
-import com.erebelo.springmongodbdemo.domain.response.ArticlesResponse;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponse;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
+import com.erebelo.springmongodbdemo.domain.response.ArticleResponse;
 import java.util.Collections;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ArticlesMock {
+public class ArticleMock {
 
     public static final String ARTICLES_URL = "https://jsonmock.hackerrank.com/api/articles";
     private static final String TITLE = "A Message to Our Customers";
@@ -28,34 +28,34 @@ public class ArticlesMock {
     private static final Integer TOTAL = 2;
     public static final Integer TOTAL_PAGES = 2;
 
-    public static List<ArticlesDataResponseDTO> getArticlesDataResponseDTO() {
-        return Collections.singletonList(ArticlesDataResponseDTO.builder().title(TITLE).url(URL).author(AUTHOR)
+    public static List<ArticleDataResponseDTO> getArticleDataResponseDTO() {
+        return Collections.singletonList(ArticleDataResponseDTO.builder().title(TITLE).url(URL).author(AUTHOR)
                 .numComments(NUM_COMMENTS).storyId(STORY_ID).storyTitle(STORY_TITLE).storyUrl(STORY_URL)
                 .parentId(PARENT_ID).createdAt(CREATED_AT).build());
     }
 
-    public static List<ArticlesDataResponseDTO> getArticlesDataResponseDTONextPage() {
-        var responseDTO = getArticlesDataResponseDTO();
-        return Collections.singletonList(ArticlesDataResponseDTO.builder().title(NEW_TITLE).url(NEW_URL)
+    public static List<ArticleDataResponseDTO> getArticleDataResponseDTONextPage() {
+        var responseDTO = getArticleDataResponseDTO();
+        return Collections.singletonList(ArticleDataResponseDTO.builder().title(NEW_TITLE).url(NEW_URL)
                 .author(responseDTO.get(0).getAuthor()).numComments(responseDTO.get(0).getNumComments())
                 .storyId(responseDTO.get(0).getStoryId()).storyTitle(responseDTO.get(0).getStoryTitle())
                 .storyUrl(responseDTO.get(0).getStoryUrl()).parentId(responseDTO.get(0).getParentId())
                 .createdAt(responseDTO.get(0).getCreatedAt()).build());
     }
 
-    public static ArticlesResponse getArticlesResponse() {
-        return ArticlesResponse.builder().page(PAGE).perPage(PER_PAGE).total(TOTAL).totalPages(TOTAL_PAGES)
-                .data(Collections.singletonList(ArticlesDataResponse.builder().title(TITLE).url(URL).author(AUTHOR)
+    public static ArticleResponse getArticleResponse() {
+        return ArticleResponse.builder().page(PAGE).perPage(PER_PAGE).total(TOTAL).totalPages(TOTAL_PAGES)
+                .data(Collections.singletonList(ArticleDataResponse.builder().title(TITLE).url(URL).author(AUTHOR)
                         .numComments(NUM_COMMENTS).storyId(STORY_ID).storyTitle(STORY_TITLE).storyUrl(STORY_URL)
                         .parentId(PARENT_ID).createdAt(CREATED_AT).build()))
                 .build();
     }
 
-    public static ArticlesResponse getArticlesResponseNextPage() {
-        var response = getArticlesResponse();
-        return ArticlesResponse.builder().page(NEXT_PAGE).perPage(response.getPerPage()).total(response.getTotal())
+    public static ArticleResponse getArticleResponseNextPage() {
+        var response = getArticleResponse();
+        return ArticleResponse.builder().page(NEXT_PAGE).perPage(response.getPerPage()).total(response.getTotal())
                 .totalPages(response.getTotalPages())
-                .data(Collections.singletonList(ArticlesDataResponse.builder().title(NEW_TITLE).url(NEW_URL)
+                .data(Collections.singletonList(ArticleDataResponse.builder().title(NEW_TITLE).url(NEW_URL)
                         .author(response.getData().get(0).getAuthor())
                         .numComments(response.getData().get(0).getNumComments())
                         .storyId(response.getData().get(0).getStoryId())

@@ -118,14 +118,14 @@ Connection String:
 
    **NOTE**: Replace `<ADMIN_PWD>` and `<ROOT_PWD>` with the desired passwords for 'admin' and 'root' users.
 
-   2.3. Create the `demo_db` database and collections (`profile` and `profile_history`), and create a new user (`regular`) for the `demo_db`:
+   2.3. Create the `demo_db` database and collections (`profiles` and `profiles_history`), and create a new user (`regular`) for the `demo_db`:
 
    ```bash
    use demo_db
 
-   db.createCollection("profile")
+   db.createCollection("profiles")
 
-   db.createCollection("profile_history")
+   db.createCollection("profiles_history")
 
    db.createUser({
      user: "regular",
@@ -200,22 +200,22 @@ Refer to the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/sprin
     mongodb://localhost:27017/
     ```
 
-    1.2 Create indexes for `profile` and `profile_history` collections from `demo_db` database:
+    1.2 Create indexes for `profiles` and `profiles_history` collections from `demo_db` database:
 
     ```bash
     use demo_db
 
     db.auth("regular", "<REGULAR_PWD>")
 
-    db.createCollection("profile")
+    db.createCollection("profiles")
 
-    db.createCollection("profile_history")
+    db.createCollection("profiles_history")
 
-    db.profile.createIndex({userId: 1}, {unique: true, name: "user_id_index"})
+    db.profiles.createIndex({userId: 1}, {unique: true, name: "user_id_index"})
 
-    db.profile_history.createIndex({documentId: 1}, {name: "document_id_index"})
+    db.profiles_history.createIndex({documentId: 1}, {name: "document_id_index"})
 
-    db.profile_history.createIndex({"document.userId": 1}, {name: "user_id_index"})
+    db.profiles_history.createIndex({"document.userId": 1}, {name: "user_id_index"})
     ```
 
     **NOTE**: Replace `<REGULAR_PWD>` with the correct password for 'regular' user.

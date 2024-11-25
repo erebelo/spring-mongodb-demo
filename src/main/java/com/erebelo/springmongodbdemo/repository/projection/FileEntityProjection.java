@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.repository.projection;
 
-public interface FileDocumentProjection {
+public interface FileEntityProjection {
 
     String getId();
 

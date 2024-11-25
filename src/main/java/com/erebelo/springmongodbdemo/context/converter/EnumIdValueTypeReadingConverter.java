@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import com.erebelo.springmongodbdemo.domain.enumeration.types.EnumIdValueType;
+import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumIdValueType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.bson.Document;

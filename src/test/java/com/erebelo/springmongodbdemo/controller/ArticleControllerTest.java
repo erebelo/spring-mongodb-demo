@@ -2,7 +2,7 @@ package com.erebelo.springmongodbdemo.controller;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
-import static com.erebelo.springmongodbdemo.mock.ArticlesMock.getArticlesDataResponseDTO;
+import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataResponseDTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.erebelo.springmongodbdemo.domain.response.ArticlesDataResponseDTO;
+import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
-import com.erebelo.springmongodbdemo.service.ArticlesService;
+import com.erebelo.springmongodbdemo.service.ArticleService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = ArticlesController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-class ArticlesControllerTest {
+@WebMvcTest(controllers = ArticleController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+class ArticleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private ArticlesService service;
+    private ArticleService service;
 
-    private static final List<ArticlesDataResponseDTO> RESPONSE = getArticlesDataResponseDTO();
+    private static final List<ArticleDataResponseDTO> RESPONSE = getArticleDataResponseDTO();
 
     @Test
     void testGetArticlesSuccessfully() throws Exception {
