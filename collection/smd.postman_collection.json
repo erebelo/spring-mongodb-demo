@@ -76,7 +76,7 @@
 					]
 				},
 				{
-					"name": "Profile",
+					"name": "Profiles",
 					"item": [
 						{
 							"name": "GET Profile",
@@ -90,7 +90,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"raw": "http://localhost:8080/spring-mongodb-demo/profiles",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -98,7 +98,7 @@
 									"port": "8080",
 									"path": [
 										"spring-mongodb-demo",
-										"profile"
+										"profiles"
 									]
 								}
 							},
@@ -125,7 +125,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"raw": "http://localhost:8080/spring-mongodb-demo/profiles",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -133,7 +133,7 @@
 									"port": "8080",
 									"path": [
 										"spring-mongodb-demo",
-										"profile"
+										"profiles"
 									]
 								}
 							},
@@ -160,7 +160,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"raw": "http://localhost:8080/spring-mongodb-demo/profiles",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -168,7 +168,7 @@
 									"port": "8080",
 									"path": [
 										"spring-mongodb-demo",
-										"profile"
+										"profiles"
 									]
 								}
 							},
@@ -200,7 +200,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"raw": "http://localhost:8080/spring-mongodb-demo/profiles",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -208,7 +208,7 @@
 									"port": "8080",
 									"path": [
 										"spring-mongodb-demo",
-										"profile"
+										"profiles"
 									]
 								}
 							},
@@ -226,7 +226,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/profile",
+									"raw": "http://localhost:8080/spring-mongodb-demo/profiles",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -234,7 +234,7 @@
 									"port": "8080",
 									"path": [
 										"spring-mongodb-demo",
-										"profile"
+										"profiles"
 									]
 								}
 							},
@@ -382,12 +382,12 @@
 							"response": []
 						},
 						{
-							"name": "Get Files by Id",
+							"name": "Get File by Id",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/spring-mongodb-demo/files/6740ee3dc9832a48f6996c94",
+									"raw": "http://localhost:8080/spring-mongodb-demo/files/6740fe21b06bcc0379d34d00",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -396,14 +396,14 @@
 									"path": [
 										"spring-mongodb-demo",
 										"files",
-										"6740ee3dc9832a48f6996c94"
+										"6740fe21b06bcc0379d34d00"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "POST Files",
+							"name": "POST File",
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -488,7 +488,7 @@
 					]
 				},
 				{
-					"name": "Profile",
+					"name": "Profiles",
 					"item": [
 						{
 							"name": "GET Profile",
@@ -802,7 +802,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Files by Id",
+							"name": "Get File by Id",
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -824,7 +824,7 @@
 							"response": []
 						},
 						{
-							"name": "POST Files",
+							"name": "POST File",
 							"request": {
 								"method": "POST",
 								"header": [],
