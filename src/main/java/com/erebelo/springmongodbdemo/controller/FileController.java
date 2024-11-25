@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.FILES;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.FILES_PATH;
 import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getFileApiResponseHeaders;
 
 import com.erebelo.springmongodbdemo.domain.response.FileResponseDTO;
@@ -23,7 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Log4j2
 @RestController
-@RequestMapping(FILES)
+@RequestMapping(FILES_PATH)
 @RequiredArgsConstructor
 @Tag(name = "Files API")
 public class FileController {
@@ -33,14 +33,14 @@ public class FileController {
     @Operation(summary = "Get Files")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FileResponseDTO>> getFiles() {
-        log.info("GET {}", FILES);
+        log.info("GET {}", FILES_PATH);
         return ResponseEntity.ok(service.getFiles());
     }
 
     @Operation(summary = "GET File by Id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> getFileById(@PathVariable String id) {
-        log.info("GET {}/{}", FILES, id);
+        log.info("GET {}/{}", FILES_PATH, id);
         var response = service.getFileById(id);
 
         return ResponseEntity.ok().headers(getFileApiResponseHeaders(response.getName(), response.getData().length))
@@ -53,7 +53,7 @@ public class FileController {
     @Operation(summary = "POST Files")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
-        log.info("POST {} - fileName={}, fileSize={} bytes, contentType={}", FILES, file.getOriginalFilename(),
+        log.info("POST {} - fileName={}, fileSize={} bytes, contentType={}", FILES_PATH, file.getOriginalFilename(),
                 file.getSize(), file.getContentType());
         String fileId = service.uploadFile(file);
 

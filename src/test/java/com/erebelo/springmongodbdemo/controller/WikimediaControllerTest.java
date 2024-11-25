@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA_PATH;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
 import static org.hamcrest.Matchers.hasSize;
@@ -36,7 +36,7 @@ class WikimediaControllerTest {
     void testGetWikimediaProjectPageviewsSuccessfully() throws Exception {
         given(service.getWikimediaProjectPageviews()).willReturn(RESPONSE);
 
-        mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
+        mockMvc.perform(get(WIKIMEDIA_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.items").isArray())
                 .andExpect(jsonPath("$.items", hasSize(RESPONSE.getItems().size())))
                 .andExpect(jsonPath("$.items[0].project").value(RESPONSE.getItems().get(0).getProject()))
@@ -53,7 +53,7 @@ class WikimediaControllerTest {
     void testGetWikimediaProjectPageviewsFailure() throws Exception {
         given(service.getWikimediaProjectPageviews()).willThrow(new CommonException(COMMON_ERROR_404_004));
 
-        mockMvc.perform(get(WIKIMEDIA).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
+        mockMvc.perform(get(WIKIMEDIA_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-004"))
                 .andExpect(jsonPath("$.message").value("Wikimedia pageviews for all projects not found"))

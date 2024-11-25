@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES_PATH;
 
 import com.erebelo.springmongodbdemo.domain.response.ArticleDataResponseDTO;
 import com.erebelo.springmongodbdemo.service.ArticleService;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@RequestMapping(ARTICLES)
+@RequestMapping(ARTICLES_PATH)
 @RequiredArgsConstructor
 @Tag(name = "Articles API")
 public class ArticleController {
@@ -27,7 +27,7 @@ public class ArticleController {
     @Operation(summary = "GET Articles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ArticleDataResponseDTO>> getArticles() {
-        log.info("GET {}", ARTICLES);
+        log.info("GET {}", ARTICLES_PATH);
         var response = service.getArticles();
 
         return ResponseEntity.ok(response);

@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.HEALTH_CHECK;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.HEALTH_CHECK_PATH;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@RequestMapping(HEALTH_CHECK)
+@RequestMapping(HEALTH_CHECK_PATH)
 @Tag(name = "Health Check API")
 public class HealthCheckController {
 
     @Operation(summary = "GET Health Check")
     @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getHealthCheck() {
-        log.info("GET {}", HEALTH_CHECK);
+        log.info("GET {}", HEALTH_CHECK_PATH);
         return ResponseEntity.ok("Spring MongoDB Demo application is up and running");
     }
 }

@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.WIKIMEDIA_PATH;
 
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@RequestMapping(WIKIMEDIA)
+@RequestMapping(WIKIMEDIA_PATH)
 @RequiredArgsConstructor
 @Tag(name = "Wikimedia API")
 public class WikimediaController {
@@ -26,7 +26,7 @@ public class WikimediaController {
     @Operation(summary = "GET Wikimedia project pageviews")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WikimediaResponse> getWikimediaProjectPageviews() {
-        log.info("GET {}", WIKIMEDIA);
+        log.info("GET {}", WIKIMEDIA_PATH);
         var response = service.getWikimediaProjectPageviews();
 
         return ResponseEntity.ok(response);

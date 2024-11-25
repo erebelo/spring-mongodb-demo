@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.HEALTH_CHECK;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.HEALTH_CHECK_PATH;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -20,7 +20,7 @@ class HealthCheckControllerTest {
 
     @Test
     void testGetHealthCheck() throws Exception {
-        mockMvc.perform(get(HEALTH_CHECK)).andExpect(status().isOk())
+        mockMvc.perform(get(HEALTH_CHECK_PATH)).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Spring MongoDB Demo application is up and running")));
     }
 }

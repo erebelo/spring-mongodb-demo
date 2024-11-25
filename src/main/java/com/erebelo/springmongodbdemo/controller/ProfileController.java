@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.controller;
 
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.MERGE_PATCH_MEDIA_TYPE;
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILES;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.PROFILES_PATH;
 
 import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
 import com.erebelo.springmongodbdemo.context.resolver.UserId;
@@ -28,7 +28,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Log4j2
 @RestController
-@RequestMapping(PROFILES)
+@RequestMapping(PROFILES_PATH)
 @HeaderLoggedInUser
 @RequiredArgsConstructor
 @Tag(name = "Profiles API")
@@ -39,7 +39,7 @@ public class ProfileController {
     @Operation(summary = "GET Profiles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
-        log.info("GET {}", PROFILES);
+        log.info("GET {}", PROFILES_PATH);
         return ResponseEntity.ok(service.getProfile(userId));
     }
 
@@ -47,7 +47,7 @@ public class ProfileController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> insertProfile(@UserId String userId,
             @Valid @RequestBody ProfileRequest profileRequest) {
-        log.info("POST {} - userId={}", PROFILES, userId);
+        log.info("POST {} - userId={}", PROFILES_PATH, userId);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri())
                 .body(service.insertProfile(userId, profileRequest));
     }
@@ -56,7 +56,7 @@ public class ProfileController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId,
             @Valid @RequestBody ProfileRequest profileRequest) {
-        log.info("PUT {} - userId={}", PROFILES, userId);
+        log.info("PUT {} - userId={}", PROFILES_PATH, userId);
         return ResponseEntity.ok(service.updateProfile(userId, profileRequest));
     }
 
@@ -64,14 +64,14 @@ public class ProfileController {
     @PatchMapping(consumes = MERGE_PATCH_MEDIA_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> patchProfile(@UserId String userId,
             @Valid @RequestBody Map<String, Object> profileRequestMap) {
-        log.info("PATCH {} - userId={}", PROFILES, userId);
+        log.info("PATCH {} - userId={}", PROFILES_PATH, userId);
         return ResponseEntity.ok(service.patchProfile(userId, profileRequestMap));
     }
 
     @Operation(summary = "DELETE Profiles")
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
-        log.info("DELETE {} - userId={}", PROFILES, userId);
+        log.info("DELETE {} - userId={}", PROFILES_PATH, userId);
         service.deleteProfile(userId);
 
         return ResponseEntity.noContent().build();

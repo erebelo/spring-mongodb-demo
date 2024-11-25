@@ -9,10 +9,10 @@ public class BusinessConstant {
     public static final String GLOBAL_EXCEPTION_MESSAGE = "An error occurred for RequestID='{}': {}";
     public static final String LINE_DELIMITERS = "[\\r\\n\\t]+";
     public static final String MERGE_PATCH_MEDIA_TYPE = "application/merge-patch+json";
-    public static final String HEALTH_CHECK = "/health-check";
-    public static final String PROFILES = "/profiles";
-    public static final String WIKIMEDIA = "/wikimedia";
-    public static final String ARTICLES = "/articles";
-    public static final String FILES = "/files";
+    public static final String HEALTH_CHECK_PATH = "/health-check";
+    public static final String PROFILES_PATH = "/profiles";
+    public static final String WIKIMEDIA_PATH = "/wikimedia";
+    public static final String ARTICLES_PATH = "/articles";
+    public static final String FILES_PATH = "/files";
 
 }

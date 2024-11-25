@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES;
+import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ARTICLES_PATH;
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataResponseDTO;
 import static org.hamcrest.Matchers.hasSize;
@@ -37,7 +37,7 @@ class ArticleControllerTest {
     void testGetArticlesSuccessfully() throws Exception {
         given(service.getArticles()).willReturn(RESPONSE);
 
-        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
+        mockMvc.perform(get(ARTICLES_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$", hasSize(RESPONSE.size())))
                 .andExpect(jsonPath("$.[0].title").value(RESPONSE.get(0).getTitle()))
                 .andExpect(jsonPath("$.[0].url").value(RESPONSE.get(0).getUrl()))
@@ -56,7 +56,7 @@ class ArticleControllerTest {
     void testGetArticlesFailure() throws Exception {
         given(service.getArticles()).willThrow(new CommonException(COMMON_ERROR_404_005));
 
-        mockMvc.perform(get(ARTICLES).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
+        mockMvc.perform(get(ARTICLES_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.code").value("COMMON-ERROR-404-005"))
                 .andExpect(jsonPath("$.message").value("Articles not found"))
