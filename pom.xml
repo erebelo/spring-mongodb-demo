@@ -82,7 +82,7 @@
         <!--Spring ends here-->
 
         <!--Utilities starts here-->
-        <dependency>  <!--Swagger-->
+        <dependency> <!--Swagger-->
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.openapi.version}</version>
