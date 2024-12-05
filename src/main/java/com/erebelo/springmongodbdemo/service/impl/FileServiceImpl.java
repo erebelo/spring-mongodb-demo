@@ -50,7 +50,7 @@ public class FileServiceImpl implements FileService {
         log.info("Fetching file with id: {}", id);
         FileEntity file = repository.findById(id).orElseThrow(() -> new CommonException(COMMON_ERROR_404_007, id));
 
-        log.info("File {} successfully retrieved", file.getName());
+        log.info("File successfully retrieved: {}", file.getName());
         return mapper.entityToResponse(file);
     }
 
@@ -74,7 +74,7 @@ public class FileServiceImpl implements FileService {
         log.info("Inserting file");
         String fileId = repository.save(mapper.objToEntity(filename, dataBytes)).getId();
 
-        log.info("File {} uploaded successfully: {}", filename, fileId);
+        log.info("File uploaded successfully: filename={}, fileId={}", filename, fileId);
         return fileId;
     }
 
