@@ -4,20 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-<!--    <parent>-->
-<!--        <groupId>com.erebelo</groupId>-->
-<!--        <artifactId>spring-common-parent</artifactId>-->
-<!--        <version>1.0.1-SNAPSHOT</version>-->
-<!--    </parent>-->
-
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-        <relativePath/>
+        <groupId>com.erebelo</groupId>
+        <artifactId>spring-common-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
-
-    <groupId>com.erebelo</groupId>
 
     <artifactId>spring-mongodb-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -26,13 +17,12 @@
 
     <properties>
         <java.version>17</java.version>
-        <common.lib.version>1.0.125-SNAPSHOT</common.lib.version>
+        <common.lib.version>1.0.1-SNAPSHOT</common.lib.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <httpclient5.version>5.3</httpclient5.version>
-        <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
-        <lombok.version>1.18.32</lombok.version>
-        <mapstruct.version>1.6.2</mapstruct.version>
+        <springdoc.openapi.version>2.8.3</springdoc.openapi.version>
+        <lombok.version>1.18.36</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <dependencies>
