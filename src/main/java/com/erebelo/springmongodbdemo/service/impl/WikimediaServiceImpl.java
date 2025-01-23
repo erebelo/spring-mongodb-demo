@@ -1,15 +1,12 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
-import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
-import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
-
 import com.erebelo.springmongodbdemo.domain.response.WikimediaResponse;
 import com.erebelo.springmongodbdemo.exception.model.ClientException;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
-import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -20,12 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_004;
+import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
+
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class WikimediaServiceImpl implements WikimediaService {
 
-    private final RestTemplate restTemplate;
+    @Autowired
+    @Qualifier("serviceTwoRestTemplate")
+    private RestTemplate restTemplate;
 
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
@@ -40,7 +43,8 @@ public class WikimediaServiceImpl implements WikimediaService {
         WikimediaResponse wikimediaPageViews;
 
         try {
-            ResponseEntity<WikimediaResponse> response = restTemplate.exchange(wikimediaPublicApiUrl, HttpMethod.GET,
+            ResponseEntity<WikimediaResponse> response = restTemplate.exchange(wikimediaPublicApiUrl,
+                    HttpMethod.GET,
                     new HttpEntity<>(getDownstreamApiHttpHeaders()), new ParameterizedTypeReference<>() {
                     });
             wikimediaPageViews = response.hasBody() ? response.getBody() : null;
