@@ -20,10 +20,9 @@
         <common.lib.version>1.0.1-SNAPSHOT</common.lib.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <httpclient5.version>5.3</httpclient5.version>
-        <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
-        <lombok.version>1.18.32</lombok.version>
-        <mapstruct.version>1.6.2</mapstruct.version>
+        <springdoc.openapi.version>2.8.3</springdoc.openapi.version>
+        <lombok.version>1.18.36</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <dependencies>
