@@ -9,7 +9,6 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.WikimediaService;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,15 +24,17 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class WikimediaServiceImpl implements WikimediaService {
 
-    @Autowired
-    @Qualifier("serviceTwoRestTemplate")
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Value("${wikimedia.public.api.url}")
     private String wikimediaPublicApiUrl;
 
     private static final String WIKIMEDIA_CLIENT_ERROR_MESSAGE = "Error getting Wikimedia project pageviews. Error "
             + "message: %s";
+
+    public WikimediaServiceImpl(@Qualifier("serviceTwoRestTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public WikimediaResponse getWikimediaProjectPageviews() {
