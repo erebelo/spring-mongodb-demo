@@ -70,7 +70,7 @@ class WikimediaServiceTest {
     }
 
     @Test
-    void testGetWikimediaProjectPageviewsSuccessfully() {
+    void testGetWikimediaProjectPageviewsSuccessful() {
         given(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .willReturn(ResponseEntity.ok(getWikimediaResponse()));
 

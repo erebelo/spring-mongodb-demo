@@ -99,7 +99,7 @@ class MongoDBConfigurationTest {
     }
 
     @Test
-    void testConfigureClientSettingsWithSslContextSuccessfully() throws Exception {
+    void testConfigureClientSettingsWithSslContextSuccessful() throws Exception {
         ReflectionTestUtils.setField(config, KEYSTORE_PROPERTY, DB_KEYSTORE);
         ReflectionTestUtils.setField(config, KEYSTORE_PASSWORD_PROPERTY, DB_KEYSTORE_PASSWORD);
 

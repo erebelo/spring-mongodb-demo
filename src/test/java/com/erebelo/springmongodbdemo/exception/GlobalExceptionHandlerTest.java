@@ -284,7 +284,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testParseCommonExceptionSuccessfully() {
+    void testParseCommonExceptionSuccessful() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|Bad Request to user %s");
 
         var exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_400_000, "foo"),

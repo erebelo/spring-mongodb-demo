@@ -87,7 +87,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void testGetArticlesSuccessfully() {
+    void testGetArticlesSuccessful() {
         doAnswer(invocation -> {
             Runnable task = invocation.getArgument(0);
             task.run();

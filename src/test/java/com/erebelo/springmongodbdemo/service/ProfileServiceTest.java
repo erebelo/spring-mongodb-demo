@@ -75,7 +75,7 @@ class ProfileServiceTest {
     private ArgumentCaptor<ProfileEntity> entityArgumentCaptor;
 
     @Test
-    void testGetProfileSuccessfully() {
+    void testGetProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var result = service.getProfile(USER_ID);
@@ -99,7 +99,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testInsertProfileSuccessfully() {
+    void testInsertProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
         given(repository.insert(any(ProfileEntity.class))).willReturn(getProfileEntity());
 
@@ -132,7 +132,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testUpdateProfileSuccessfully() {
+    void testUpdateProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
         var profileEntity = getProfileEntity();
@@ -195,7 +195,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testPatchProfileSuccessfully() {
+    void testPatchProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
         given(repository.save(any(ProfileEntity.class))).willReturn(getProfileEntityPatch());
 
@@ -331,7 +331,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void testDeleteProfileSuccessfully() {
+    void testDeleteProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
         willDoNothing().given(repository).delete(any(ProfileEntity.class));
 

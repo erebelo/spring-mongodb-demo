@@ -48,8 +48,8 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = ProfileController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -61,7 +61,7 @@ class ProfileControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private ProfileService service;
 
     @Captor
@@ -70,7 +70,7 @@ class ProfileControllerTest {
     private static final String USER_ID_HEADER = "X-UserId";
 
     @Test
-    void testGetProfileSuccessfully() throws Exception {
+    void testGetProfileSuccessful() throws Exception {
         given(service.getProfile(anyString())).willReturn(getProfileResponse());
 
         mockMvc.perform(get(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
@@ -93,7 +93,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testInsertProfileSuccessfully() throws Exception {
+    void testInsertProfileSuccessful() throws Exception {
         given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(post(PROFILES_PATH).header(USER_ID_HEADER, USER_ID)
@@ -126,7 +126,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testUpdateProfileSuccessfully() throws Exception {
+    void testUpdateProfileSuccessful() throws Exception {
         given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(put(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -157,7 +157,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testPatchProfileSuccessfully() throws Exception {
+    void testPatchProfileSuccessful() throws Exception {
         given(service.patchProfile(anyString(), any(Map.class))).willReturn(getProfileResponsePatch());
 
         mockMvc.perform(patch(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
@@ -190,7 +190,7 @@ class ProfileControllerTest {
     }
 
     @Test
-    void testDeleteProfileSuccessfully() throws Exception {
+    void testDeleteProfileSuccessful() throws Exception {
         willDoNothing().given(service).deleteProfile(anyString());
 
         mockMvc.perform(

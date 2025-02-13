@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = ArticleController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -28,13 +28,13 @@ class ArticleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ArticleService service;
 
     private static final List<ArticleDataResponseDTO> RESPONSE = getArticleDataResponseDTO();
 
     @Test
-    void testGetArticlesSuccessfully() throws Exception {
+    void testGetArticlesSuccessful() throws Exception {
         given(service.getArticles()).willReturn(RESPONSE);
 
         mockMvc.perform(get(ARTICLES_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())

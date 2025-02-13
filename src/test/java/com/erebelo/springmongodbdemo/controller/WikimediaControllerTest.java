@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = WikimediaController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -27,13 +27,13 @@ class WikimediaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private WikimediaService service;
 
     private static final WikimediaResponse RESPONSE = getWikimediaResponse();
 
     @Test
-    void testGetWikimediaProjectPageviewsSuccessfully() throws Exception {
+    void testGetWikimediaProjectPageviewsSuccessful() throws Exception {
         given(service.getWikimediaProjectPageviews()).willReturn(RESPONSE);
 
         mockMvc.perform(get(WIKIMEDIA_PATH).accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
