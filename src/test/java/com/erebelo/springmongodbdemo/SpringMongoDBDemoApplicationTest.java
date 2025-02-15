@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
@@ -22,7 +23,7 @@ class SpringMongoDBDemoApplicationTest {
     @Test
     void contextLoads() {
         // This test simply checks if the Spring context loads successfully
-        // If it doesn't, it will throw an exception
+        assertNotNull(contextMock, "Spring context should not be null");
     }
 
     @Test
