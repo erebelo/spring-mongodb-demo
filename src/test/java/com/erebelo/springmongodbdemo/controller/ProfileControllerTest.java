@@ -19,8 +19,11 @@ import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponseP
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponsePatchResultMatcher;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponseResultMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -40,7 +43,6 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -65,7 +67,10 @@ class ProfileControllerTest {
     private ProfileService service;
 
     @Captor
-    private ArgumentCaptor<?> argumentCaptor;
+    private ArgumentCaptor<ProfileRequest> profileRequestArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Object>> mapArgumentCaptor;
 
     private static final String USER_ID_HEADER = "X-UserId";
 
@@ -101,9 +106,9 @@ class ProfileControllerTest {
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated()).andExpectAll(getProfileResponseResultMatcher());
 
-        verify(service).insertProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
+        verify(service).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
-        assertThat(argumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
+        assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
@@ -120,9 +125,9 @@ class ProfileControllerTest {
                         .value("The object already exists. Try updating it instead of entering it"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).insertProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
+        verify(service).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
-        assertThat(argumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
+        assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
@@ -133,9 +138,9 @@ class ProfileControllerTest {
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
-        verify(service).updateProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
+        verify(service).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
-        assertThat(argumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
+        assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
@@ -151,29 +156,29 @@ class ProfileControllerTest {
                         .format("Object not found by userId: %s. Try entering it instead of updating it", USER_ID)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).updateProfile(eq(USER_ID), (ProfileRequest) argumentCaptor.capture());
+        verify(service).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
-        assertThat(argumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
+        assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
     void testPatchProfileSuccessful() throws Exception {
-        given(service.patchProfile(anyString(), any(Map.class))).willReturn(getProfileResponsePatch());
+        given(service.patchProfile(anyString(), anyMap())).willReturn(getProfileResponsePatch());
 
         mockMvc.perform(patch(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
                 .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpectAll(getProfileResponsePatchResultMatcher());
 
-        verify(service).patchProfile(eq(USER_ID), (Map<String, Object>) argumentCaptor.capture());
+        verify(service).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
 
-        assertPatchArgumentCaptorValues((Map<String, Object>) argumentCaptor.getValue());
+        assertPatchArgumentCaptorValues(mapArgumentCaptor.getValue());
     }
 
     @Test
     void testPatchProfileFailure() throws Exception {
         var errorMsg = "request body is mandatory and must contain some attribute";
-        given(service.patchProfile(anyString(), any(Map.class)))
+        given(service.patchProfile(anyString(), anyMap()))
                 .willThrow(new CommonException(COMMON_ERROR_400_001, Collections.singletonList(errorMsg)));
 
         mockMvc.perform(patch(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
@@ -184,9 +189,9 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.message", containsString(errorMsg)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).patchProfile(eq(USER_ID), (Map<String, Object>) argumentCaptor.capture());
+        verify(service).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
 
-        assertPatchArgumentCaptorValues((Map<String, Object>) argumentCaptor.getValue());
+        assertPatchArgumentCaptorValues(mapArgumentCaptor.getValue());
     }
 
     @Test
@@ -219,11 +224,11 @@ class ProfileControllerTest {
     private void assertPatchArgumentCaptorValues(Map<String, Object> profileRequestMap) {
         assertThat(profileRequestMap).usingRecursiveComparison()
                 .ignoringFields("dateOfBirth", "healthLevel", "contactNumbers").isEqualTo(getProfileRequestMapPatch());
-        assertThat(profileRequestMap.get("dateOfBirth")).isEqualTo(NEW_DATE_OF_BIRTH.toString());
-        assertThat(profileRequestMap.get("healthLevel")).isEqualTo(NEW_HEALTH_LEVEL.getValue());
 
-        var contactNumbers = (List<Map<String, Object>>) profileRequestMap.get("contactNumbers");
-        assertThat(contactNumbers.get(0).get("contactType")).isEqualTo(CONTACT_TYPE.getValue());
-        assertThat(contactNumbers.get(0).get("contactValue")).isEqualTo(NEW_CONTACT_VALUE);
+        assertThat(profileRequestMap).extracting("dateOfBirth", "healthLevel")
+                .containsExactly(NEW_DATE_OF_BIRTH.toString(), NEW_HEALTH_LEVEL.getValue());
+
+        assertThat(profileRequestMap).extracting("contactNumbers").asInstanceOf(LIST).first().asInstanceOf(MAP)
+                .containsEntry("contactType", CONTACT_TYPE.getValue()).containsEntry("contactValue", NEW_CONTACT_VALUE);
     }
 }

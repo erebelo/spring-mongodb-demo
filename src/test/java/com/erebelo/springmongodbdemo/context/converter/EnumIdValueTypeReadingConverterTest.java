@@ -1,7 +1,8 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumIdValueType;
 import org.bson.Document;
@@ -17,9 +18,9 @@ class EnumIdValueTypeReadingConverterTest {
 
         Document document = new Document("value", "value-1");
 
-        assertThat(converter).isNotNull();
+        assertNotNull(converter);
         EnumIdValueType convertedValue = converter.convert(document);
-        assertThat(convertedValue).isEqualTo(TestEnum.VALUE_1);
+        assertEquals(TestEnum.VALUE_1, convertedValue);
     }
 
     @Test
@@ -29,7 +30,7 @@ class EnumIdValueTypeReadingConverterTest {
 
         Document document = new Document("value", "value-1");
 
-        assertThat(converter).isNotNull();
+        assertNotNull(converter);
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> converter.convert(document))
                 .withMessage("The targetType [EnumIdValueType] was expected to be an enum.");
     }
@@ -41,7 +42,7 @@ class EnumIdValueTypeReadingConverterTest {
 
         Document document = new Document("value", "value-invalid");
 
-        assertThat(converter).isNotNull();
+        assertNotNull(converter);
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> converter.convert(document))
                 .withMessage("The value [value-invalid] doesn't match any instance of enum [TestEnum]");
     }

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -71,7 +72,8 @@ class WikimediaServiceTest {
 
     @Test
     void testGetWikimediaProjectPageviewsSuccessful() {
-        given(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        given(restTemplate.exchange(anyString(), any(), any(),
+                ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any()))
                 .willReturn(ResponseEntity.ok(getWikimediaResponse()));
 
         var result = service.getWikimediaProjectPageviews();
@@ -79,7 +81,7 @@ class WikimediaServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(getWikimediaResponse());
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+                ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any());
 
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
                 .isEqualTo(getDownstreamApiHttpHeaders());
@@ -87,7 +89,7 @@ class WikimediaServiceTest {
 
     @Test
     void testGetWikimediaProjectPageviewsThrowsRestClientException() {
-        given(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        given(restTemplate.exchange(anyString(), any(), any(), ArgumentMatchers.<ParameterizedTypeReference<?>>any()))
                 .willThrow(new RestClientException("Internal Server Error"));
 
         assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
@@ -95,7 +97,7 @@ class WikimediaServiceTest {
                 .withMessage("Error getting Wikimedia project pageviews. Error message: Internal Server Error");
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+                ArgumentMatchers.<ParameterizedTypeReference<?>>any());
 
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
                 .isEqualTo(getDownstreamApiHttpHeaders());
@@ -103,14 +105,15 @@ class WikimediaServiceTest {
 
     @Test
     void testGetWikimediaProjectPageviewsThrowsNotFoundException() {
-        given(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        given(restTemplate.exchange(anyString(), any(), any(),
+                ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any()))
                 .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 
         assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
                 .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_004);
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
-                any(ParameterizedTypeReference.class));
+                ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any());
 
         assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
                 .isEqualTo(getDownstreamApiHttpHeaders());

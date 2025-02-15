@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -43,8 +43,8 @@ class MongoBeanConfigurationTest {
 
             var auditorProvider = mongoBeanConfiguration.auditorProvider();
 
-            assertThat(auditorProvider.getCurrentAuditor()).isEqualTo(Optional.of(USER_ID));
-            assertThat(HttpHeadersUtil.getLoggedInUser()).isEqualTo(USER_ID);
+            assertEquals(Optional.of(USER_ID), auditorProvider.getCurrentAuditor());
+            assertEquals(USER_ID, HttpHeadersUtil.getLoggedInUser());
         }
     }
 }

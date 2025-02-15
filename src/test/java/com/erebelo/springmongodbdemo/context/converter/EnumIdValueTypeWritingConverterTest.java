@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,8 @@ class EnumIdValueTypeWritingConverterTest {
 
         Document convertedDocument = converter.convert(source);
 
-        assertThat(convertedDocument).isNotNull();
-        assertThat(convertedDocument.getInteger("id")).isEqualTo(1);
-        assertThat(convertedDocument.getString("value")).isEqualTo("value-1");
+        assertNotNull(convertedDocument);
+        assertEquals(1, convertedDocument.getInteger("id"));
+        assertEquals("value-1", convertedDocument.getString("value"));
     }
 }

@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.erebelo.springmongodbdemo.domain.entity.BaseEntity;
 import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
@@ -43,55 +43,49 @@ class DocumentHistoryServiceTest {
 
     @Test
     void testCreateHistory() {
-        when(mongoTemplate.insert(any(Document.class), anyString())).thenReturn(new Document());
+        given(mongoTemplate.insert(any(Document.class), anyString())).willReturn(new Document());
 
-        var document = new Document()
-                .append("_id", new ObjectId())
-                .append("name", "test-create")
-                .append("version", 0L);
+        var document = new Document().append("_id", new ObjectId()).append("name", "test-create").append("version", 0L);
 
         service.saveChangeHistory(document, new TestEntity(null, "test-create"));
 
         verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
         var capturedValue = documentArgumentCaptor.getValue();
-        assertEquals(capturedValue.get("action"), "INSERT");
+        assertEquals("INSERT", capturedValue.get("action"));
         assertEquals(capturedValue.get("documentId"), document.getObjectId("_id").toString());
         assertNotNull(capturedValue.get("document"));
 
         var capturedDocument = (Document) capturedValue.get("document");
         assertNull(capturedDocument.getObjectId("_id"));
-        assertEquals(capturedDocument.get("name"), "test-create");
-        assertEquals(capturedDocument.get("version"), 0L);
+        assertEquals("test-create", capturedDocument.get("name"));
+        assertEquals(0L, capturedDocument.get("version"));
     }
 
     @Test
     void testUpdateHistory() {
-        when(mongoTemplate.insert(any(Document.class), anyString())).thenReturn(new Document());
+        given(mongoTemplate.insert(any(Document.class), anyString())).willReturn(new Document());
 
-        var document = new Document()
-                .append("_id", new ObjectId())
-                .append("name", "test-update")
-                .append("version", 1L);
+        var document = new Document().append("_id", new ObjectId()).append("name", "test-update").append("version", 1L);
 
         service.saveChangeHistory(document, new TestEntity(null, "test-update"));
 
         verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
         var capturedValue = documentArgumentCaptor.getValue();
-        assertEquals(capturedValue.get("action"), "UPDATE");
+        assertEquals("UPDATE", capturedValue.get("action"));
         assertEquals(capturedValue.get("documentId"), document.getObjectId("_id").toString());
         assertNotNull(capturedValue.get("document"));
 
         var capturedDocument = (Document) capturedValue.get("document");
         assertNull(capturedDocument.getObjectId("_id"));
-        assertEquals(capturedDocument.get("name"), "test-update");
-        assertEquals(capturedDocument.get("version"), 1L);
+        assertEquals("test-update", capturedDocument.get("name"));
+        assertEquals(1L, capturedDocument.get("version"));
     }
 
     @Test
     void testDeleteHistory() {
-        when(mongoTemplate.insert(any(Document.class), anyString())).thenReturn(new Document());
+        given(mongoTemplate.insert(any(Document.class), anyString())).willReturn(new Document());
 
         try (MockedStatic<HttpHeadersUtil> mockedStatic = Mockito.mockStatic(HttpHeadersUtil.class)) {
             mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
@@ -103,9 +97,9 @@ class DocumentHistoryServiceTest {
             verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
             var capturedValue = documentArgumentCaptor.getValue();
-            assertEquals(capturedValue.get("action"), "DELETE");
+            assertEquals("DELETE", capturedValue.get("action"));
             assertEquals(document.getObjectId("_id").toString(), capturedValue.get("documentId"));
-            assertEquals(capturedValue.get("historyCreatedBy"), USER_ID);
+            assertEquals(USER_ID, capturedValue.get("historyCreatedBy"));
             assertNotNull(capturedValue.get("historyCreatedDateTime"));
             assertNull(capturedValue.get("document"));
         }

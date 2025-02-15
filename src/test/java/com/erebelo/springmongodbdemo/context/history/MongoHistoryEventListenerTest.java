@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.context.history;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import org.bson.Document;
@@ -27,7 +26,7 @@ class MongoHistoryEventListenerTest {
 
         eventListener.onAfterSave(event);
 
-        verify(service).saveChangeHistory(eq(event.getDocument()), eq(event.getSource()));
+        verify(service).saveChangeHistory(event.getDocument(), event.getSource());
     }
 
     @Test
@@ -36,6 +35,6 @@ class MongoHistoryEventListenerTest {
 
         eventListener.onAfterDelete(event);
 
-        verify(service).saveDeleteHistory(eq(new Document()), eq(Object.class));
+        verify(service).saveDeleteHistory(new Document(), Object.class);
     }
 }

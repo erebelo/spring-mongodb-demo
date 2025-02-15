@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +10,6 @@ class EnumValueTypeWritingConverterTest {
     void testConvertEnumValueTypeToString() {
         String convertedValue = new EnumValueTypeWritingConverter().convert(() -> "value");
 
-        assertThat(convertedValue).isEqualTo("value");
+        assertEquals("value", convertedValue);
     }
 }

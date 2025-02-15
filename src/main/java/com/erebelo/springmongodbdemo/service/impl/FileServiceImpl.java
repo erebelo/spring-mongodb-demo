@@ -59,8 +59,8 @@ public class FileServiceImpl implements FileService {
     public String uploadFile(MultipartFile multipartFile) {
         log.info("Uploading file");
 
-        var filename = multipartFile.getOriginalFilename();
-        var dataBytes = extractFileBytes(multipartFile);
+        String filename = multipartFile.getOriginalFilename();
+        byte[] dataBytes = extractFileBytes(multipartFile);
 
         if (dataBytes.length == 0 || !isValidFilename(filename)) {
             throw new CommonException(COMMON_ERROR_422_003);

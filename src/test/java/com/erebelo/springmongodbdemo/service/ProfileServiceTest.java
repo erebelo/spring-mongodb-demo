@@ -19,7 +19,11 @@ import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileRequestMa
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponse;
 import static com.erebelo.springmongodbdemo.mock.ProfileMock.getProfileResponsePatch;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -90,9 +94,10 @@ class ProfileServiceTest {
     void testGetProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getProfile(USER_ID))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_001)
-                .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
+        CommonException exception = assertThrows(CommonException.class, () -> service.getProfile(USER_ID));
+
+        assertEquals(COMMON_ERROR_404_001, exception.getErrorCode());
+        assertArrayEquals(new Object[]{USER_ID}, exception.getArgs());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).entityToResponse(any(UserProfile.class));
@@ -120,10 +125,12 @@ class ProfileServiceTest {
     @Test
     void testInsertProfileThrowsConflictException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
+        ProfileRequest profileRequest = getProfileRequest();
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.insertProfile(USER_ID, getProfileRequest()))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_409_001);
+        CommonException exception = assertThrows(CommonException.class,
+                () -> service.insertProfile(USER_ID, profileRequest));
+
+        assertEquals(COMMON_ERROR_409_001, exception.getErrorCode());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
@@ -149,8 +156,8 @@ class ProfileServiceTest {
 
         assertThat(result).usingRecursiveComparison().ignoringFields("estimatedAnnualIncome", "employmentStatus")
                 .isEqualTo(getProfileResponse());
-        assertThat(result.getEstimatedAnnualIncome()).isEqualTo(NEW_ESTIMATED_ANNUAL_INCOME);
-        assertThat(result.getEmploymentStatus()).isEqualTo(EmploymentStatusEnum.RETIRED);
+        assertEquals(NEW_ESTIMATED_ANNUAL_INCOME, result.getEstimatedAnnualIncome());
+        assertEquals(EmploymentStatusEnum.RETIRED, result.getEmploymentStatus());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).requestToEntity(any(ProfileRequest.class));
@@ -182,11 +189,13 @@ class ProfileServiceTest {
     @Test
     void testUpdateProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
+        ProfileRequest profileRequest = getProfileRequest();
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.updateProfile(USER_ID, getProfileRequest()))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_002)
-                .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
+        CommonException exception = assertThrows(CommonException.class,
+                () -> service.updateProfile(USER_ID, profileRequest));
+
+        assertEquals(COMMON_ERROR_404_002, exception.getErrorCode());
+        assertArrayEquals(new Object[]{USER_ID}, exception.getArgs());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).requestToEntity(any(ProfileRequest.class));
@@ -240,11 +249,14 @@ class ProfileServiceTest {
 
     @Test
     void testPatchProfileThrowsBadRequestException() {
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.patchProfile(USER_ID, new HashMap<>()))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_400_001)
-                .hasFieldOrPropertyWithValue("args", new Object[]{
-                        Collections.singletonList("request body is mandatory and must contain some attribute")});
+        Map<String, Object> map = new HashMap<>();
+
+        CommonException exception = assertThrows(CommonException.class, () -> service.patchProfile(USER_ID, map));
+
+        assertEquals(COMMON_ERROR_400_001, exception.getErrorCode());
+        assertArrayEquals(
+                new Object[]{Collections.singletonList("request body is mandatory and must contain some attribute")},
+                exception.getArgs());
 
         verify(repository, never()).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
@@ -257,11 +269,12 @@ class ProfileServiceTest {
     @Test
     void testPatchProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
+        Map<String, Object> map = getProfileRequestMapPatch();
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.patchProfile(USER_ID, getProfileRequestMapPatch()))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_002)
-                .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
+        CommonException exception = assertThrows(CommonException.class, () -> service.patchProfile(USER_ID, map));
+
+        assertEquals(COMMON_ERROR_404_002, exception.getErrorCode());
+        assertArrayEquals(new Object[]{USER_ID}, exception.getArgs());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
@@ -274,10 +287,11 @@ class ProfileServiceTest {
     @Test
     void testPatchProfileWithEmptyObjectThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.of(new ProfileEntity()));
+        Map<String, Object> map = getProfileRequestMapPatch();
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.patchProfile(USER_ID, getProfileRequestMapPatch()))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_002);
+        CommonException exception = assertThrows(CommonException.class, () -> service.patchProfile(USER_ID, map));
+
+        assertEquals(COMMON_ERROR_422_002, exception.getErrorCode());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper, never()).entityToRequest(any(UserProfile.class));
@@ -294,11 +308,13 @@ class ProfileServiceTest {
         var profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("firstName", new LinkedHashMap<>());
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
-                .withCauseExactlyInstanceOf(MismatchedInputException.class)
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_001)
-                .withMessageContaining("Cannot deserialize value of type");
+        CommonException exception = assertThrows(CommonException.class,
+                () -> service.patchProfile(USER_ID, profileRequestMap));
+
+        assertInstanceOf(MismatchedInputException.class, exception.getCause(),
+                "Cause should be an instance of " + "MismatchedInputException");
+        assertEquals(COMMON_ERROR_422_001, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("Cannot deserialize value of type"));
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
@@ -315,12 +331,13 @@ class ProfileServiceTest {
         var profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("maritalStatus", MaritalStatusEnum.SINGLE.getValue());
 
-        assertThatExceptionOfType(CommonException.class)
-                .isThrownBy(() -> service.patchProfile(USER_ID, profileRequestMap))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_422_000)
-                .hasFieldOrPropertyWithValue("args", new Object[]{
-                        "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or "
-                                + "WIDOWED]"});
+        CommonException exception = assertThrows(CommonException.class,
+                () -> service.patchProfile(USER_ID, profileRequestMap));
+
+        assertEquals(COMMON_ERROR_422_000, exception.getErrorCode());
+        assertArrayEquals(new Object[]{
+                "[spouseProfile should not be filled in when marital status equals SINGLE, DIVORCED, or " + "WIDOWED]"},
+                exception.getArgs());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
@@ -345,9 +362,10 @@ class ProfileServiceTest {
     void testDeleteProfileThrowsNotFoundException() {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
 
-        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.deleteProfile(USER_ID))
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_003)
-                .hasFieldOrPropertyWithValue("args", new Object[]{USER_ID});
+        CommonException exception = assertThrows(CommonException.class, () -> service.deleteProfile(USER_ID));
+
+        assertEquals(COMMON_ERROR_404_003, exception.getErrorCode());
+        assertArrayEquals(new Object[]{USER_ID}, exception.getArgs());
 
         verify(repository).findByUserId(USER_ID);
         verify(repository, never()).delete(any(ProfileEntity.class));

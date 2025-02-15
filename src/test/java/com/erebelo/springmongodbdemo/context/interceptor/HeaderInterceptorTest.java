@@ -79,6 +79,7 @@ class HeaderInterceptorTest {
 
     static class TestController {
         public void testMethod() {
+            // Method is empty for testing
         }
     }
 }

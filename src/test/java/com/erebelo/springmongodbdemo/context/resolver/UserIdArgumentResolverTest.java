@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context.resolver;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,6 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.core.MethodParameter;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 class UserIdArgumentResolverTest {
 
@@ -22,8 +25,6 @@ class UserIdArgumentResolverTest {
     private final MethodParameter methodParameter = mock(MethodParameter.class);
     private final MockedStatic<HttpHeadersUtil> mockedStatic = mockStatic(HttpHeadersUtil.class);
 
-    private static final String STRING_CLASS = "java.lang.String";
-    private static final String BOOLEAN_CLASS = "java.lang.Boolean";
     private static final String USER_ID = "12345";
 
     @BeforeEach
@@ -39,10 +40,8 @@ class UserIdArgumentResolverTest {
     }
 
     @Test
-    void testSupportsParameterThenReturnTrue() throws ClassNotFoundException {
-        Class myClass = Class.forName(STRING_CLASS);
-
-        given(methodParameter.getParameterType()).willReturn(myClass);
+    void testSupportsParameterThenReturnTrue() {
+        given(methodParameter.getParameterType()).willAnswer(invocation -> String.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(true);
 
         var result = userIdArgumentResolver.supportsParameter(methodParameter);
@@ -51,10 +50,8 @@ class UserIdArgumentResolverTest {
     }
 
     @Test
-    void testSupportsParameterThenReturnFalse() throws ClassNotFoundException {
-        Class myClass = Class.forName(BOOLEAN_CLASS);
-
-        given(methodParameter.getParameterType()).willReturn(myClass);
+    void testSupportsParameterThenReturnFalse() {
+        given(methodParameter.getParameterType()).willAnswer(invocation -> Boolean.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(true);
 
         var result = userIdArgumentResolver.supportsParameter(methodParameter);
@@ -63,10 +60,8 @@ class UserIdArgumentResolverTest {
     }
 
     @Test
-    void testSupportsParameterByHasParameterAnnotationThenReturnFalse() throws ClassNotFoundException {
-        Class myClass = Class.forName(STRING_CLASS);
-
-        given(methodParameter.getParameterType()).willReturn(myClass);
+    void testSupportsParameterByHasParameterAnnotationThenReturnFalse() {
+        given(methodParameter.getParameterType()).willAnswer(invocation -> String.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(false);
 
         boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
@@ -76,9 +71,10 @@ class UserIdArgumentResolverTest {
 
     @Test
     void testResolveArgumentThenReturnObject() {
-        var result = userIdArgumentResolver.resolveArgument(null, null, null, null);
+        var result = userIdArgumentResolver.resolveArgument(mock(MethodParameter.class),
+                mock(ModelAndViewContainer.class), mock(NativeWebRequest.class), mock(WebDataBinderFactory.class));
 
-        assertThat(result).isEqualTo(USER_ID);
-        assertThat(HttpHeadersUtil.getLoggedInUser()).isEqualTo(USER_ID);
+        assertEquals(USER_ID, result);
+        assertEquals(USER_ID, HttpHeadersUtil.getLoggedInUser());
     }
 }

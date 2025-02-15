@@ -1,7 +1,7 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumValueType;
@@ -17,7 +17,7 @@ class EnumValueTypeReadingConverterTest {
 
         assertNotNull(converter);
         EnumValueType convertedValue = converter.convert("value-1");
-        assertThat(convertedValue).isEqualTo(TestEnum.VALUE_1);
+        assertEquals(TestEnum.VALUE_1, convertedValue);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -13,7 +13,6 @@ class LocalDateWritingConverterTest {
     void testConvertLocalDateToDate() {
         Date convertedDate = new LocalDateWritingConverter().convert(LocalDate.of(2024, 11, 8));
 
-        assertThat(convertedDate.toInstant())
-                .isEqualTo(LocalDate.of(2024, 11, 8).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assertEquals(LocalDate.of(2024, 11, 8).atStartOfDay().toInstant(ZoneOffset.UTC), convertedDate.toInstant());
     }
 }

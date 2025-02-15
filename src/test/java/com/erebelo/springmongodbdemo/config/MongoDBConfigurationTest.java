@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -110,19 +110,19 @@ class MongoDBConfigurationTest {
 
             KeyStore mockKeyStore = mock(KeyStore.class);
             keyStoreMockedStatic.when(() -> KeyStore.getInstance("PKCS12")).thenReturn(mockKeyStore);
-            doNothing().when(mockKeyStore).load(any(), any());
+            willDoNothing().given(mockKeyStore).load(any(), any());
 
             KeyManagerFactory mockKeyManagerFactory = mock(KeyManagerFactory.class);
             keyManagerFactoryMockedStatic
                     .when(() -> KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm()))
                     .thenReturn(mockKeyManagerFactory);
-            doNothing().when(mockKeyManagerFactory).init(mockKeyStore, DB_KEYSTORE_PASSWORD.toCharArray());
+            willDoNothing().given(mockKeyManagerFactory).init(mockKeyStore, DB_KEYSTORE_PASSWORD.toCharArray());
 
             TrustManagerFactory mockTrustManagerFactory = mock(TrustManagerFactory.class);
             trustManagerFactoryMockedStatic
                     .when(() -> TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()))
                     .thenReturn(mockTrustManagerFactory);
-            doNothing().when(mockTrustManagerFactory).init(mockKeyStore);
+            willDoNothing().given(mockTrustManagerFactory).init(mockKeyStore);
 
             MongoClientSettings.Builder builder = MongoClientSettings.builder();
             config.configureClientSettings(builder);
@@ -176,7 +176,8 @@ class MongoDBConfigurationTest {
         try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class)) {
             KeyStore mockKeyStore = mock(KeyStore.class);
             keyStoreMockedStatic.when(() -> KeyStore.getInstance("PKCS12")).thenReturn(mockKeyStore);
-            doThrow(new CertificateException("CertificateException Exception")).when(mockKeyStore).load(any(), any());
+            willThrow(new CertificateException("CertificateException Exception")).given(mockKeyStore).load(any(),
+                    any());
 
             MongoClientSettings.Builder builder = MongoClientSettings.builder();
             IllegalStateException thrown = assertThrows(IllegalStateException.class,
