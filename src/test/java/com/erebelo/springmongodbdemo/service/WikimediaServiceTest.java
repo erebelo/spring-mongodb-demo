@@ -78,9 +78,9 @@ class WikimediaServiceTest {
                 ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any()))
                 .willReturn(ResponseEntity.ok(getWikimediaResponse()));
 
-        var result = service.getWikimediaProjectPageviews();
+        WikimediaResponse response = service.getWikimediaProjectPageviews();
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(getWikimediaResponse());
+        assertThat(response).usingRecursiveComparison().isEqualTo(getWikimediaResponse());
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any());

@@ -25,10 +25,10 @@ class HeaderInterceptorTest {
     private HeaderInterceptor headerInterceptor;
 
     @Mock
-    private HttpServletRequest request;
+    private HttpServletRequest httpServletRequest;
 
     @Mock
-    private HttpServletResponse response;
+    private HttpServletResponse httpServletResponse;
 
     @Mock
     private HandlerMethod handlerMethod;
@@ -36,11 +36,11 @@ class HeaderInterceptorTest {
     @Test
     void testPreHandleWithLoggedInUserAnnotation() {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(createLoggedInUserAnnotation());
-        given(request.getHeader(anyString())).willReturn("someValue");
+        given(httpServletRequest.getHeader(anyString())).willReturn("someValue");
 
-        boolean result = headerInterceptor.preHandle(request, response, handlerMethod);
+        boolean response = headerInterceptor.preHandle(httpServletRequest, this.httpServletResponse, handlerMethod);
 
-        assertTrue(result);
+        assertTrue(response);
     }
 
     @Test
@@ -48,29 +48,30 @@ class HeaderInterceptorTest {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(null);
         given(handlerMethod.getMethod()).willReturn(TestController.class.getDeclaredMethod("testMethod"));
 
-        boolean result = headerInterceptor.preHandle(request, response, handlerMethod);
+        boolean response = headerInterceptor.preHandle(httpServletRequest, httpServletResponse, handlerMethod);
 
-        assertTrue(result);
+        assertTrue(response);
     }
 
     @Test
     void testPreHandleMissingHeader() throws Exception {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(createLoggedInUserAnnotation());
-        given(request.getHeader(anyString())).willReturn(null);
-        given(response.getWriter()).willReturn(Mockito.mock(PrintWriter.class));
+        given(httpServletRequest.getHeader(anyString())).willReturn(null);
+        given(httpServletResponse.getWriter()).willReturn(Mockito.mock(PrintWriter.class));
 
-        boolean result = headerInterceptor.preHandle(request, response, handlerMethod);
+        boolean response = headerInterceptor.preHandle(httpServletRequest, httpServletResponse, handlerMethod);
 
-        assertFalse(result);
+        assertFalse(response);
     }
 
     @Test
     void testPreHandleMissingHeaderThrowsException() throws IOException {
         given(handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class)).willReturn(createLoggedInUserAnnotation());
-        given(request.getHeader(anyString())).willReturn(null);
-        given(response.getWriter()).willThrow(new IOException("Error serializing object"));
+        given(httpServletRequest.getHeader(anyString())).willReturn(null);
+        given(httpServletResponse.getWriter()).willThrow(new IOException("Error serializing object"));
 
-        assertThrows(IllegalStateException.class, () -> headerInterceptor.preHandle(request, response, handlerMethod));
+        assertThrows(IllegalStateException.class,
+                () -> headerInterceptor.preHandle(httpServletRequest, httpServletResponse, handlerMethod));
     }
 
     private HeaderLoggedInUser createLoggedInUserAnnotation() {

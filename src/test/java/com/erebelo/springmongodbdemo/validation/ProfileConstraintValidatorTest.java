@@ -9,9 +9,11 @@ import static org.mockito.BDDMockito.given;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
 import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
+import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,7 +55,7 @@ class ProfileConstraintValidatorTest {
         given(context.buildConstraintViolationWithTemplate(anyString())).willReturn(builderContext);
         given(builderContext.addPropertyNode(anyString())).willReturn(nodeBuilderContext);
 
-        var profileRequest = getProfileRequest();
+        ProfileRequest profileRequest = getProfileRequest();
         profileRequest.setDateOfBirth(LocalDate.now());
         profileRequest.getSpouseProfile().setDateOfBirth(LocalDate.now());
 
@@ -67,9 +69,9 @@ class ProfileConstraintValidatorTest {
         given(context.buildConstraintViolationWithTemplate(anyString())).willReturn(builderContext);
         given(builderContext.addPropertyNode(anyString())).willReturn(nodeBuilderContext);
 
-        var contactNumbers = new ArrayList<ProfileContactDTO>();
+        List<ProfileContactDTO> contactNumbers = new ArrayList<>();
         contactNumbers.add(null);
-        var profileRequest = getProfileRequest();
+        ProfileRequest profileRequest = getProfileRequest();
         profileRequest.setContactNumbers(contactNumbers);
 
         boolean isValid = validator.isValid(profileRequest, context);
@@ -82,7 +84,7 @@ class ProfileConstraintValidatorTest {
         given(context.buildConstraintViolationWithTemplate(anyString())).willReturn(builderContext);
         given(builderContext.addPropertyNode(anyString())).willReturn(nodeBuilderContext);
 
-        var profileRequest = getProfileRequest();
+        ProfileRequest profileRequest = getProfileRequest();
         profileRequest.setMaritalStatus(MaritalStatusEnum.SINGLE);
 
         boolean isValid = validator.isValid(profileRequest, context);

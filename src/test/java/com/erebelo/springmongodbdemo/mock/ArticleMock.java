@@ -35,7 +35,7 @@ public class ArticleMock {
     }
 
     public static List<ArticleDataResponseDTO> getArticleDataResponseDTONextPage() {
-        var responseDTO = getArticleDataResponseDTO();
+        List<ArticleDataResponseDTO> responseDTO = getArticleDataResponseDTO();
         return Collections.singletonList(ArticleDataResponseDTO.builder().title(NEW_TITLE).url(NEW_URL)
                 .author(responseDTO.get(0).getAuthor()).numComments(responseDTO.get(0).getNumComments())
                 .storyId(responseDTO.get(0).getStoryId()).storyTitle(responseDTO.get(0).getStoryTitle())
@@ -52,7 +52,7 @@ public class ArticleMock {
     }
 
     public static ArticleResponse getArticleResponseNextPage() {
-        var response = getArticleResponse();
+        ArticleResponse response = getArticleResponse();
         return ArticleResponse.builder().page(NEXT_PAGE).perPage(response.getPerPage()).total(response.getTotal())
                 .totalPages(response.getTotalPages())
                 .data(Collections.singletonList(ArticleDataResponse.builder().title(NEW_TITLE).url(NEW_URL)

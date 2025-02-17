@@ -82,9 +82,9 @@ class ProfileServiceTest {
     void testGetProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        var result = service.getProfile(USER_ID);
+        ProfileResponse response = service.getProfile(USER_ID);
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
+        assertThat(response).usingRecursiveComparison().isEqualTo(getProfileResponse());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).entityToResponse(any(UserProfile.class));
@@ -108,9 +108,9 @@ class ProfileServiceTest {
         given(repository.findByUserId(anyString())).willReturn(Optional.empty());
         given(repository.insert(any(ProfileEntity.class))).willReturn(getProfileEntity());
 
-        var result = service.insertProfile(USER_ID, getProfileRequest());
+        ProfileResponse response = service.insertProfile(USER_ID, getProfileRequest());
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
+        assertThat(response).usingRecursiveComparison().isEqualTo(getProfileResponse());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).requestToEntity(any(ProfileRequest.class));
@@ -142,22 +142,22 @@ class ProfileServiceTest {
     void testUpdateProfileSuccessful() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        var profileEntity = getProfileEntity();
+        ProfileEntity profileEntity = getProfileEntity();
         profileEntity.getProfile().setEstimatedAnnualIncome(NEW_ESTIMATED_ANNUAL_INCOME);
         profileEntity.getProfile().setEmploymentStatus(EmploymentStatusEnum.RETIRED);
 
         given(repository.save(any(ProfileEntity.class))).willReturn(profileEntity);
 
-        var profileRequest = getProfileRequest();
+        ProfileRequest profileRequest = getProfileRequest();
         profileRequest.setEstimatedAnnualIncome(NEW_ESTIMATED_ANNUAL_INCOME);
         profileRequest.setEmploymentStatus(EmploymentStatusEnum.RETIRED);
 
-        var result = service.updateProfile(USER_ID, profileRequest);
+        ProfileResponse response = service.updateProfile(USER_ID, profileRequest);
 
-        assertThat(result).usingRecursiveComparison().ignoringFields("estimatedAnnualIncome", "employmentStatus")
+        assertThat(response).usingRecursiveComparison().ignoringFields("estimatedAnnualIncome", "employmentStatus")
                 .isEqualTo(getProfileResponse());
-        assertEquals(NEW_ESTIMATED_ANNUAL_INCOME, result.getEstimatedAnnualIncome());
-        assertEquals(EmploymentStatusEnum.RETIRED, result.getEmploymentStatus());
+        assertEquals(NEW_ESTIMATED_ANNUAL_INCOME, response.getEstimatedAnnualIncome());
+        assertEquals(EmploymentStatusEnum.RETIRED, response.getEmploymentStatus());
 
         verify(repository).findByUserId(USER_ID);
         verify(mapper).requestToEntity(any(ProfileRequest.class));
@@ -175,9 +175,9 @@ class ProfileServiceTest {
         try (MockedStatic<ByteHandler> mockedStatic = Mockito.mockStatic(ByteHandler.class)) {
             mockedStatic.when(() -> ByteHandler.byteArrayComparison(any(), any())).thenReturn(true);
 
-            var result = service.updateProfile(USER_ID, getProfileRequest());
+            ProfileResponse response = service.updateProfile(USER_ID, getProfileRequest());
 
-            assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponse());
+            assertThat(response).usingRecursiveComparison().isEqualTo(getProfileResponse());
 
             verify(repository).findByUserId(USER_ID);
             verify(mapper).requestToEntity(any(ProfileRequest.class));
@@ -208,9 +208,9 @@ class ProfileServiceTest {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
         given(repository.save(any(ProfileEntity.class))).willReturn(getProfileEntityPatch());
 
-        var result = service.patchProfile(USER_ID, getProfileRequestMapPatch());
+        ProfileResponse response = service.patchProfile(USER_ID, getProfileRequestMapPatch());
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(getProfileResponsePatch());
+        assertThat(response).usingRecursiveComparison().isEqualTo(getProfileResponsePatch());
 
         verify(repository, times(2)).findByUserId(USER_ID);
         verify(mapper).entityToRequest(any(UserProfile.class));
@@ -234,9 +234,9 @@ class ProfileServiceTest {
             }
         };
 
-        var result = service.patchProfile(USER_ID, profileRequestMap);
+        ProfileResponse response = service.patchProfile(USER_ID, profileRequestMap);
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(ProfileResponse.builder().firstName(FIRST_NAME)
+        assertThat(response).usingRecursiveComparison().isEqualTo(ProfileResponse.builder().firstName(FIRST_NAME)
                 .employmentStatus(EmploymentStatusEnum.NOT_EMPLOYED).build());
 
         verify(repository).findByUserId(USER_ID);
@@ -305,7 +305,7 @@ class ProfileServiceTest {
     void testPatchProfileWithNonMapAttributesThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        var profileRequestMap = getProfileRequestMapPatch();
+        Map<String, Object> profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("firstName", new LinkedHashMap<>());
 
         CommonException exception = assertThrows(CommonException.class,
@@ -327,7 +327,7 @@ class ProfileServiceTest {
     void testPatchProfileWithInvalidRequestAttributesThrowsUnprocessableEntityException() {
         given(repository.findByUserId(anyString())).willReturn(getOptionalProfileEntity());
 
-        var profileRequestMap = getProfileRequestMapPatch();
+        Map<String, Object> profileRequestMap = getProfileRequestMapPatch();
         profileRequestMap.put("maritalStatus", MaritalStatusEnum.SINGLE.getValue());
 
         CommonException exception = assertThrows(CommonException.class,

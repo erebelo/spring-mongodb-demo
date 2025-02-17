@@ -64,7 +64,7 @@ class MongoDBConfigurationTest {
 
     @Test
     void testGetDatabaseName() {
-        var databaseName = config.getDatabaseName();
+        String databaseName = config.getDatabaseName();
 
         assertEquals(DB_NAME, databaseName);
     }

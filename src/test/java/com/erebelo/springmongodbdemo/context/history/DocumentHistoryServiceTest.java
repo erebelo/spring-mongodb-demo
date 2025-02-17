@@ -45,18 +45,19 @@ class DocumentHistoryServiceTest {
     void testCreateHistory() {
         given(mongoTemplate.insert(any(Document.class), anyString())).willReturn(new Document());
 
-        var document = new Document().append("_id", new ObjectId()).append("name", "test-create").append("version", 0L);
+        Document document = new Document().append("_id", new ObjectId()).append("name", "test-create").append("version",
+                0L);
 
         service.saveChangeHistory(document, new TestEntity(null, "test-create"));
 
         verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
-        var capturedValue = documentArgumentCaptor.getValue();
+        Document capturedValue = documentArgumentCaptor.getValue();
         assertEquals("INSERT", capturedValue.get("action"));
         assertEquals(capturedValue.get("documentId"), document.getObjectId("_id").toString());
         assertNotNull(capturedValue.get("document"));
 
-        var capturedDocument = (Document) capturedValue.get("document");
+        Document capturedDocument = (Document) capturedValue.get("document");
         assertNull(capturedDocument.getObjectId("_id"));
         assertEquals("test-create", capturedDocument.get("name"));
         assertEquals(0L, capturedDocument.get("version"));
@@ -66,18 +67,19 @@ class DocumentHistoryServiceTest {
     void testUpdateHistory() {
         given(mongoTemplate.insert(any(Document.class), anyString())).willReturn(new Document());
 
-        var document = new Document().append("_id", new ObjectId()).append("name", "test-update").append("version", 1L);
+        Document document = new Document().append("_id", new ObjectId()).append("name", "test-update").append("version",
+                1L);
 
         service.saveChangeHistory(document, new TestEntity(null, "test-update"));
 
         verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
-        var capturedValue = documentArgumentCaptor.getValue();
+        Document capturedValue = documentArgumentCaptor.getValue();
         assertEquals("UPDATE", capturedValue.get("action"));
         assertEquals(capturedValue.get("documentId"), document.getObjectId("_id").toString());
         assertNotNull(capturedValue.get("document"));
 
-        var capturedDocument = (Document) capturedValue.get("document");
+        Document capturedDocument = (Document) capturedValue.get("document");
         assertNull(capturedDocument.getObjectId("_id"));
         assertEquals("test-update", capturedDocument.get("name"));
         assertEquals(1L, capturedDocument.get("version"));
@@ -90,13 +92,13 @@ class DocumentHistoryServiceTest {
         try (MockedStatic<HttpHeadersUtil> mockedStatic = Mockito.mockStatic(HttpHeadersUtil.class)) {
             mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
 
-            var document = new Document().append("_id", new ObjectId());
+            Document document = new Document().append("_id", new ObjectId());
 
             service.saveDeleteHistory(document, TestEntity.class);
 
             verify(mongoTemplate).insert(documentArgumentCaptor.capture(), eq("test-history"));
 
-            var capturedValue = documentArgumentCaptor.getValue();
+            Document capturedValue = documentArgumentCaptor.getValue();
             assertEquals("DELETE", capturedValue.get("action"));
             assertEquals(document.getObjectId("_id").toString(), capturedValue.get("documentId"));
             assertEquals(USER_ID, capturedValue.get("historyCreatedBy"));
@@ -107,7 +109,7 @@ class DocumentHistoryServiceTest {
 
     @Test
     void testIsToSaveHistoryThrowsNullPointerException() {
-        var document = new Document().append("_id", new ObjectId());
+        Document document = new Document().append("_id", new ObjectId());
 
         assertThrows(NullPointerException.class, () -> service.saveDeleteHistory(document, null));
     }

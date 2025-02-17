@@ -28,6 +28,7 @@ import com.erebelo.springmongodbdemo.exception.model.CommonException;
 import com.erebelo.springmongodbdemo.mapper.ArticleMapper;
 import com.erebelo.springmongodbdemo.service.impl.ArticleServiceImpl;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,14 +106,14 @@ class ArticleServiceTest {
                 ArgumentMatchers.<ParameterizedTypeReference<ArticleResponse>>any()))
                 .willReturn(ResponseEntity.ok(getArticleResponseNextPage()));
 
-        var result = service.getArticles();
+        List<ArticleDataResponseDTO> response = service.getArticles();
 
-        var articlesResponseDTO = new ArrayList<ArticleDataResponseDTO>();
+        List<ArticleDataResponseDTO> articlesResponseDTO = new ArrayList<>();
         articlesResponseDTO.add(getArticleDataResponseDTO().get(0));
         articlesResponseDTO.add(getArticleDataResponseDTONextPage().get(0));
 
-        assertThat(result).hasSize(TOTAL_PAGES);
-        assertThat(result).usingRecursiveComparison().isEqualTo(articlesResponseDTO);
+        assertThat(response).hasSize(TOTAL_PAGES);
+        assertThat(response).usingRecursiveComparison().isEqualTo(articlesResponseDTO);
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(),

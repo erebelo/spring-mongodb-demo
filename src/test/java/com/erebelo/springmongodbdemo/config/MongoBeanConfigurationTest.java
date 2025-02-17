@@ -9,6 +9,7 @@ import com.erebelo.springmongodbdemo.util.HttpHeadersUtil;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
@@ -41,7 +42,7 @@ class MongoBeanConfigurationTest {
         try (MockedStatic<HttpHeadersUtil> mockedStatic = mockStatic(HttpHeadersUtil.class)) {
             mockedStatic.when(HttpHeadersUtil::getLoggedInUser).thenReturn(USER_ID);
 
-            var auditorProvider = mongoBeanConfiguration.auditorProvider();
+            AuditorAware<String> auditorProvider = mongoBeanConfiguration.auditorProvider();
 
             assertEquals(Optional.of(USER_ID), auditorProvider.getCurrentAuditor());
             assertEquals(USER_ID, HttpHeadersUtil.getLoggedInUser());

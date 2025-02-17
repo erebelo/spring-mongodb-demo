@@ -177,7 +177,7 @@ class ProfileControllerTest {
 
     @Test
     void testPatchProfileFailure() throws Exception {
-        var errorMsg = "request body is mandatory and must contain some attribute";
+        String errorMsg = "request body is mandatory and must contain some attribute";
         given(service.patchProfile(anyString(), anyMap()))
                 .willThrow(new CommonException(COMMON_ERROR_400_001, Collections.singletonList(errorMsg)));
 

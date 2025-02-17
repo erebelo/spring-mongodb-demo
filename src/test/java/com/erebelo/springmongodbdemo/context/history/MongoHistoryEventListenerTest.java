@@ -22,7 +22,7 @@ class MongoHistoryEventListenerTest {
 
     @Test
     void testOnAfterSave() {
-        var event = new AfterSaveEvent<>(new Object(), new Document(), "collection");
+        AfterSaveEvent<Object> event = new AfterSaveEvent<>(new Object(), new Document(), "collection");
 
         eventListener.onAfterSave(event);
 
@@ -31,7 +31,7 @@ class MongoHistoryEventListenerTest {
 
     @Test
     void testOnAfterDelete() {
-        var event = new AfterDeleteEvent<>(new Document(), Object.class, "collection");
+        AfterDeleteEvent<Object> event = new AfterDeleteEvent<>(new Document(), Object.class, "collection");
 
         eventListener.onAfterDelete(event);
 

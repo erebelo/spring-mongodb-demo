@@ -44,9 +44,9 @@ class UserIdArgumentResolverTest {
         given(methodParameter.getParameterType()).willAnswer(invocation -> String.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(true);
 
-        var result = userIdArgumentResolver.supportsParameter(methodParameter);
+        boolean response = userIdArgumentResolver.supportsParameter(methodParameter);
 
-        assertTrue(result);
+        assertTrue(response);
     }
 
     @Test
@@ -54,9 +54,9 @@ class UserIdArgumentResolverTest {
         given(methodParameter.getParameterType()).willAnswer(invocation -> Boolean.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(true);
 
-        var result = userIdArgumentResolver.supportsParameter(methodParameter);
+        boolean response = userIdArgumentResolver.supportsParameter(methodParameter);
 
-        assertFalse(result);
+        assertFalse(response);
     }
 
     @Test
@@ -64,17 +64,17 @@ class UserIdArgumentResolverTest {
         given(methodParameter.getParameterType()).willAnswer(invocation -> String.class);
         given(methodParameter.hasParameterAnnotation(any())).willReturn(false);
 
-        boolean result = userIdArgumentResolver.supportsParameter(methodParameter);
+        boolean response = userIdArgumentResolver.supportsParameter(methodParameter);
 
-        assertFalse(result);
+        assertFalse(response);
     }
 
     @Test
     void testResolveArgumentThenReturnObject() {
-        var result = userIdArgumentResolver.resolveArgument(mock(MethodParameter.class),
+        Object response = userIdArgumentResolver.resolveArgument(mock(MethodParameter.class),
                 mock(ModelAndViewContainer.class), mock(NativeWebRequest.class), mock(WebDataBinderFactory.class));
 
-        assertEquals(USER_ID, result);
+        assertEquals(USER_ID, response);
         assertEquals(USER_ID, HttpHeadersUtil.getLoggedInUser());
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 public class HttpHeadersMock {
 
     public static HttpHeaders getDownstreamApiHttpHeaders() {
-        var httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
         httpHeaders.setAcceptCharset(List.of(StandardCharsets.UTF_8));
 

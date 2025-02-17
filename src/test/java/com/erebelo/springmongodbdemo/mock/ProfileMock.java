@@ -99,7 +99,7 @@ public class ProfileMock {
     }
 
     public static ProfileEntity getProfileEntityPatch() {
-        var entity = getProfileEntity();
+        ProfileEntity entity = getProfileEntity();
         entity.getProfile().setFirstName(NEW_FIRST_NAME);
         entity.getProfile().setDateOfBirth(NEW_DATE_OF_BIRTH);
         entity.getProfile().setHealthLevel(NEW_HEALTH_LEVEL);
@@ -111,7 +111,7 @@ public class ProfileMock {
     }
 
     public static ProfileRequest getProfileRequest() {
-        var request = getProfileEntity().getProfile();
+        UserProfile request = getProfileEntity().getProfile();
         return ProfileRequest.builder().firstName(request.getFirstName()).lastName(request.getLastName())
                 .dateOfBirth(request.getDateOfBirth()).numberOfDependents(request.getNumberOfDependents())
                 .estimatedAnnualIncome(request.getEstimatedAnnualIncome())
@@ -156,7 +156,7 @@ public class ProfileMock {
     }
 
     public static ProfileResponse getProfileResponse() {
-        var response = getProfileRequest();
+        ProfileRequest response = getProfileRequest();
         return ProfileResponse.builder().firstName(response.getFirstName()).lastName(response.getLastName())
                 .dateOfBirth(response.getDateOfBirth()).numberOfDependents(response.getNumberOfDependents())
                 .estimatedAnnualIncome(response.getEstimatedAnnualIncome())
@@ -179,7 +179,7 @@ public class ProfileMock {
     }
 
     public static ProfileResponse getProfileResponsePatch() {
-        var response = getProfileResponse();
+        ProfileResponse response = getProfileResponse();
         response.setFirstName(NEW_FIRST_NAME);
         response.setDateOfBirth(NEW_DATE_OF_BIRTH);
         response.setHealthLevel(NEW_HEALTH_LEVEL);
@@ -191,7 +191,7 @@ public class ProfileMock {
     }
 
     public static ResultMatcher[] getProfileResponseResultMatcher() {
-        var response = getProfileResponse();
+        ProfileResponse response = getProfileResponse();
         return new ResultMatcher[]{jsonPath("$.firstName").value(response.getFirstName()),
                 jsonPath("$.lastName").value(response.getLastName()),
                 jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
@@ -220,7 +220,7 @@ public class ProfileMock {
     }
 
     public static ResultMatcher[] getProfileResponsePatchResultMatcher() {
-        var response = getProfileResponsePatch();
+        ProfileResponse response = getProfileResponsePatch();
         return new ResultMatcher[]{jsonPath("$.firstName").value(response.getFirstName()),
                 jsonPath("$.lastName").value(response.getLastName()),
                 jsonPath("$.dateOfBirth").value(response.getDateOfBirth().toString()),
