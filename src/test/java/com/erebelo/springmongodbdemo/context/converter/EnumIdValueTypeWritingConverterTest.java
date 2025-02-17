@@ -12,7 +12,6 @@ class EnumIdValueTypeWritingConverterTest {
     void testConvertEnumIdValueTypeToDocument() {
         EnumIdValueTypeWritingConverter converter = new EnumIdValueTypeWritingConverter();
         EnumIdValueTypeReadingConverterTest.TestEnum source = EnumIdValueTypeReadingConverterTest.TestEnum.VALUE_1;
-
         Document convertedDocument = converter.convert(source);
 
         assertNotNull(convertedDocument);

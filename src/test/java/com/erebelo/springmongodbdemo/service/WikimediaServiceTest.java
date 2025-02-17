@@ -5,7 +5,9 @@ import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getDownstreamAp
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.WIKIMEDIA_URL;
 import static com.erebelo.springmongodbdemo.mock.WikimediaMock.getWikimediaResponse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -92,9 +94,11 @@ class WikimediaServiceTest {
         given(restTemplate.exchange(anyString(), any(), any(), ArgumentMatchers.<ParameterizedTypeReference<?>>any()))
                 .willThrow(new RestClientException("Internal Server Error"));
 
-        assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
-                .withCauseExactlyInstanceOf(RestClientException.class)
-                .withMessage("Error getting Wikimedia project pageviews. Error message: Internal Server Error");
+        ClientException exception = assertThrows(ClientException.class, () -> service.getWikimediaProjectPageviews());
+
+        assertInstanceOf(RestClientException.class, exception.getCause());
+        assertEquals("Error getting Wikimedia project pageviews. Error message: Internal Server Error",
+                exception.getMessage());
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 ArgumentMatchers.<ParameterizedTypeReference<?>>any());
@@ -109,8 +113,9 @@ class WikimediaServiceTest {
                 ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any()))
                 .willReturn(ResponseEntity.ok(new WikimediaResponse()));
 
-        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getWikimediaProjectPageviews())
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_004);
+        CommonException exception = assertThrows(CommonException.class, () -> service.getWikimediaProjectPageviews());
+
+        assertEquals(COMMON_ERROR_404_004, exception.getErrorCode());
 
         verify(restTemplate).exchange(eq(WIKIMEDIA_URL), eq(HttpMethod.GET), httpEntityArgumentCaptor.capture(),
                 ArgumentMatchers.<ParameterizedTypeReference<WikimediaResponse>>any());

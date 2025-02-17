@@ -9,7 +9,9 @@ import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponse;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponseNextPage;
 import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getDownstreamApiHttpHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -132,8 +134,9 @@ class ArticleServiceTest {
         given(restTemplate.exchange(eq(ARTICLES_URL + "?page=1"), any(), any(),
                 ArgumentMatchers.<ParameterizedTypeReference<?>>any())).willReturn(ResponseEntity.notFound().build());
 
-        assertThatExceptionOfType(CommonException.class).isThrownBy(() -> service.getArticles())
-                .hasFieldOrPropertyWithValue("errorCode", COMMON_ERROR_404_005);
+        CommonException exception = assertThrows(CommonException.class, () -> service.getArticles());
+
+        assertEquals(COMMON_ERROR_404_005, exception.getErrorCode());
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(), ArgumentMatchers.<ParameterizedTypeReference<?>>any());
@@ -158,9 +161,11 @@ class ArticleServiceTest {
                 ArgumentMatchers.<ParameterizedTypeReference<?>>any()))
                 .willThrow(new RestClientException("Async error"));
 
-        assertThatExceptionOfType(ClientException.class).isThrownBy(() -> service.getArticles())
-                .withCauseExactlyInstanceOf(RestClientException.class)
-                .withMessage("Error getting articles from downstream API for page: 2. Error message: Async error");
+        ClientException exception = assertThrows(ClientException.class, () -> service.getArticles());
+
+        assertInstanceOf(RestClientException.class, exception.getCause());
+        assertEquals("Error getting articles from downstream API for page: 2. Error message: Async error",
+                exception.getMessage());
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(),

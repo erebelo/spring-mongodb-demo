@@ -1,8 +1,8 @@
 package com.erebelo.springmongodbdemo.context.converter;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumIdValueType;
 import org.bson.Document;
@@ -15,11 +15,11 @@ class EnumIdValueTypeReadingConverterTest {
     void testConvertDocumentToEnumIdValueType() {
         EnumIdValueTypeReadingConverter factory = new EnumIdValueTypeReadingConverter();
         Converter<Document, TestEnum> converter = factory.getConverter(TestEnum.class);
-
         Document document = new Document("value", "value-1");
 
-        assertNotNull(converter);
         EnumIdValueType convertedValue = converter.convert(document);
+
+        assertNotNull(converter);
         assertEquals(TestEnum.VALUE_1, convertedValue);
     }
 
@@ -27,24 +27,24 @@ class EnumIdValueTypeReadingConverterTest {
     void testConvertDocumentToANonEnumTypeThrowsIllegalStateException() {
         EnumIdValueTypeReadingConverter factory = new EnumIdValueTypeReadingConverter();
         Converter<Document, EnumIdValueType> converter = factory.getConverter(EnumIdValueType.class);
-
         Document document = new Document("value", "value-1");
 
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> converter.convert(document));
+
         assertNotNull(converter);
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> converter.convert(document))
-                .withMessage("The targetType [EnumIdValueType] was expected to be an enum.");
+        assertEquals("The targetType [EnumIdValueType] was expected to be an enum.", exception.getMessage());
     }
 
     @Test
     void testConvertNonValidDocumentThrowsIllegalStateException() {
         EnumIdValueTypeReadingConverter factory = new EnumIdValueTypeReadingConverter();
         Converter<Document, TestEnum> converter = factory.getConverter(TestEnum.class);
-
         Document document = new Document("value", "value-invalid");
 
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> converter.convert(document));
+
         assertNotNull(converter);
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> converter.convert(document))
-                .withMessage("The value [value-invalid] doesn't match any instance of enum [TestEnum]");
+        assertEquals("The value [value-invalid] doesn't match any instance of enum [TestEnum]", exception.getMessage());
     }
 
     enum TestEnum implements EnumIdValueType {

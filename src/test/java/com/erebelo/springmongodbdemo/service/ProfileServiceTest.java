@@ -311,8 +311,7 @@ class ProfileServiceTest {
         CommonException exception = assertThrows(CommonException.class,
                 () -> service.patchProfile(USER_ID, profileRequestMap));
 
-        assertInstanceOf(MismatchedInputException.class, exception.getCause(),
-                "Cause should be an instance of " + "MismatchedInputException");
+        assertInstanceOf(MismatchedInputException.class, exception.getCause());
         assertEquals(COMMON_ERROR_422_001, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("Cannot deserialize value of type"));
 
