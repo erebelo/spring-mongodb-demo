@@ -24,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,9 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testException() {
+    void testExceptionWithLocalProfile() {
+        given(env.acceptsProfiles(Profiles.of("local"))).willReturn(true);
+
         ResponseEntity<ExceptionResponse> responseEntity = handler.handleException(new Exception("Exception error"));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
 
@@ -250,11 +253,14 @@ class GlobalExceptionHandlerTest {
     void testCommonException() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        ExceptionResponse exceptionResponse = handler.handleCommonException(
+        ResponseEntity<ExceptionResponse> responseEntity = handler.handleCommonException(
                 new CommonException(COMMON_ERROR_400_000, new Exception("Exception error"), "CommonException error"),
                 response);
-
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("CommonException error", exceptionResponse.getMessage());
@@ -266,10 +272,13 @@ class GlobalExceptionHandlerTest {
     void testCommonExceptionWithNoArgs() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|%s");
 
-        ExceptionResponse exceptionResponse = handler.handleCommonException(
+        ResponseEntity<ExceptionResponse> responseEntity = handler.handleCommonException(
                 new CommonException(COMMON_ERROR_400_000, new Exception("Exception error")), response);
-
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("null", exceptionResponse.getMessage());
@@ -281,10 +290,13 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionSuccessful() {
         given(env.getProperty(COMMON_ERROR_400_000.propertyKey())).willReturn("400|Bad Request to user %s");
 
-        ExceptionResponse exceptionResponse = handler
-                .parseCommonException(new CommonException(COMMON_ERROR_400_000, "foo"), response);
-
+        ResponseEntity<ExceptionResponse> responseEntity = handler
+                .handleCommonException(new CommonException(COMMON_ERROR_400_000, "foo"), response);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, exceptionResponse.getStatus());
         assertEquals("COMMON-ERROR-400-000", exceptionResponse.getCode());
         assertEquals("Bad Request to user foo", exceptionResponse.getMessage());
@@ -294,10 +306,13 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testParseCommonExceptionNullErrorCode() {
-        ExceptionResponse exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_KEY),
-                response);
-
+        ResponseEntity<ExceptionResponse> responseEntity = handler
+                .handleCommonException(new CommonException(ERROR_CODE_NO_KEY), response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: null errorCode", exceptionResponse.getMessage());
@@ -307,10 +322,13 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testParseCommonExceptionMissingProperties() {
-        ExceptionResponse exceptionResponse = handler.parseCommonException(new CommonException(COMMON_ERROR_500_000),
-                response);
-
+        ResponseEntity<ExceptionResponse> responseEntity = handler
+                .handleCommonException(new CommonException(COMMON_ERROR_500_000), response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: no properties found for COMMON-ERROR-500-000",
@@ -323,10 +341,13 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionBadMessageProperties() {
         given(env.getProperty(ERROR_CODE_NO_DESC.propertyKey())).willReturn("900|");
 
-        ExceptionResponse exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_DESC),
-                response);
-
+        ResponseEntity<ExceptionResponse> responseEntity = handler
+                .handleCommonException(new CommonException(ERROR_CODE_NO_DESC), response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: badly formatted message 900|", exceptionResponse.getMessage());
@@ -338,10 +359,13 @@ class GlobalExceptionHandlerTest {
     void testParseCommonExceptionBadStatusCodeProperties() {
         given(env.getProperty(ERROR_CODE_NO_CODE.propertyKey())).willReturn("|Other stuff");
 
-        ExceptionResponse exceptionResponse = handler.parseCommonException(new CommonException(ERROR_CODE_NO_CODE),
-                response);
-
+        ResponseEntity<ExceptionResponse> responseEntity = handler
+                .handleCommonException(new CommonException(ERROR_CODE_NO_CODE), response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+
+        ExceptionResponse exceptionResponse = responseEntity.getBody();
+        assertNotNull(exceptionResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exceptionResponse.getStatus());
         assertEquals("COMMON_ERROR_500_000", exceptionResponse.getCode());
         assertEquals("Basic error handling failure: could not get http status code from |Other stuff",

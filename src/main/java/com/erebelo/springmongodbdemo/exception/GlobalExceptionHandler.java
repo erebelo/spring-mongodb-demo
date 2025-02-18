@@ -94,6 +94,7 @@ public class GlobalExceptionHandler {
         return parseGeneralException(HttpStatus.BAD_REQUEST, e, errorMessage);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionSystemException(TransactionSystemException e) {
         String errorMessage = "An error occurred during transaction processing";
@@ -111,7 +112,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CommonException.class)
-    public ExceptionResponse handleCommonException(CommonException e, HttpServletResponse response) {
+    public ResponseEntity<ExceptionResponse> handleCommonException(CommonException e, HttpServletResponse response) {
         return parseCommonException(e, response);
     }
 
@@ -129,6 +130,26 @@ public class GlobalExceptionHandler {
         log.error(GLOBAL_EXCEPTION_MESSAGE + " {}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse,
                 getStackTrace(e));
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
+    }
+
+    private String getStackTrace(Exception e) {
+        if (env.acceptsProfiles(Profiles.of("local"))) {
+            return ExceptionUtils.getStackTrace(e);
+        }
+
+        StringBuilder stackTrace = new StringBuilder();
+        List<Throwable> causeChain = ExceptionUtils.getThrowableList(e);
+
+        for (Throwable cause : causeChain) {
+            String[] stackTraceElements = ExceptionUtils.getStackFrames(cause);
+            stackTrace.append("Caused by: ");
+
+            for (int i = 0; i < Math.min(4, stackTraceElements.length); i++) {
+                stackTrace.append(stackTraceElements[i]).append(" ");
+            }
+        }
+
+        return stackTrace.toString().replaceAll(LINE_DELIMITERS, "").trim();
     }
 
     private ResponseEntity<ExceptionResponse> parseClientException(final HttpStatus httpStatus, final String message,
@@ -152,8 +173,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
+    private Object extractJsonObject(String clientErrorMessage) {
+        try {
+            int startIndex = clientErrorMessage.indexOf('{');
+            int endIndex = clientErrorMessage.lastIndexOf('}') + 1;
+            String jsonString = clientErrorMessage.substring(startIndex, endIndex);
+
+            return ObjectMapperProvider.INSTANCE.readValue(jsonString, Object.class);
+        } catch (Exception e) {
+            log.warn("Error parsing JSON string to JSON object", e);
+            return null;
+        }
+    }
+
+    private ResponseEntity<ExceptionResponse> parseCommonException(final CommonException e,
+            HttpServletResponse response) {
+        ExceptionResponse exceptionResponse = createCommonExceptionResponse(e, response);
+        return ResponseEntity.status(exceptionResponse.getStatus()).body(exceptionResponse);
+    }
+
     @SuppressWarnings("ConstantConditions")
-    ExceptionResponse parseCommonException(final CommonException e, HttpServletResponse response) {
+    private ExceptionResponse createCommonExceptionResponse(final CommonException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                 COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis(), null);
@@ -196,39 +236,6 @@ public class GlobalExceptionHandler {
 
         exceptionResponseLogError(exceptionResponse);
         return exceptionResponse;
-    }
-
-    private Object extractJsonObject(String clientErrorMessage) {
-        try {
-            int startIndex = clientErrorMessage.indexOf('{');
-            int endIndex = clientErrorMessage.lastIndexOf('}') + 1;
-            String jsonString = clientErrorMessage.substring(startIndex, endIndex);
-
-            return ObjectMapperProvider.INSTANCE.readValue(jsonString, Object.class);
-        } catch (Exception e) {
-            log.warn("Error parsing JSON string to JSON object", e);
-            return null;
-        }
-    }
-
-    private String getStackTrace(Exception e) {
-        if (env.acceptsProfiles(Profiles.of("local"))) {
-            return ExceptionUtils.getStackTrace(e);
-        }
-
-        StringBuilder stackTrace = new StringBuilder();
-        List<Throwable> causeChain = ExceptionUtils.getThrowableList(e);
-
-        for (Throwable cause : causeChain) {
-            String[] stackTraceElements = ExceptionUtils.getStackFrames(cause);
-            stackTrace.append("Caused by: ");
-
-            for (int i = 0; i < Math.min(4, stackTraceElements.length); i++) {
-                stackTrace.append(stackTraceElements[i]).append(" ");
-            }
-        }
-
-        return stackTrace.toString().replaceAll(LINE_DELIMITERS, "").trim();
     }
 
     private void exceptionResponseLogError(ExceptionResponse exceptionResponse) {

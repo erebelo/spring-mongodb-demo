@@ -7,6 +7,7 @@ import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
 import com.erebelo.springmongodbdemo.context.resolver.UserId;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.domain.response.ProfileResponse;
+import com.erebelo.springmongodbdemo.service.ProfilePatchService;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,13 +35,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Tag(name = "Profiles API")
 public class ProfileController {
 
-    private final ProfileService service;
+    private final ProfileService profileService;
+    private final ProfilePatchService profilePatchService;
 
     @Operation(summary = "GET Profiles")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileResponse> getProfile(@UserId String userId) {
         log.info("GET {}", PROFILES_PATH);
-        return ResponseEntity.ok(service.getProfile(userId));
+        return ResponseEntity.ok(profileService.getProfile(userId));
     }
 
     @Operation(summary = "POST Profiles")
@@ -49,7 +51,7 @@ public class ProfileController {
             @Valid @RequestBody ProfileRequest profileRequest) {
         log.info("POST {} - userId={}", PROFILES_PATH, userId);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri())
-                .body(service.insertProfile(userId, profileRequest));
+                .body(profileService.insertProfile(userId, profileRequest));
     }
 
     @Operation(summary = "PUT Profiles")
@@ -57,7 +59,7 @@ public class ProfileController {
     public ResponseEntity<ProfileResponse> updateProfile(@UserId String userId,
             @Valid @RequestBody ProfileRequest profileRequest) {
         log.info("PUT {} - userId={}", PROFILES_PATH, userId);
-        return ResponseEntity.ok(service.updateProfile(userId, profileRequest));
+        return ResponseEntity.ok(profileService.updateProfile(userId, profileRequest));
     }
 
     @Operation(summary = "PATCH Profiles")
@@ -65,14 +67,14 @@ public class ProfileController {
     public ResponseEntity<ProfileResponse> patchProfile(@UserId String userId,
             @Valid @RequestBody Map<String, Object> profileRequestMap) {
         log.info("PATCH {} - userId={}", PROFILES_PATH, userId);
-        return ResponseEntity.ok(service.patchProfile(userId, profileRequestMap));
+        return ResponseEntity.ok(profilePatchService.patchProfile(userId, profileRequestMap));
     }
 
     @Operation(summary = "DELETE Profiles")
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProfile(@UserId String userId) {
         log.info("DELETE {} - userId={}", PROFILES_PATH, userId);
-        service.deleteProfile(userId);
+        profileService.deleteProfile(userId);
 
         return ResponseEntity.noContent().build();
     }

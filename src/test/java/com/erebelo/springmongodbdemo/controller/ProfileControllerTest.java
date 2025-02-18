@@ -40,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import com.erebelo.springmongodbdemo.exception.model.CommonException;
+import com.erebelo.springmongodbdemo.service.ProfilePatchService;
 import com.erebelo.springmongodbdemo.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
@@ -64,7 +65,10 @@ class ProfileControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private ProfileService service;
+    private ProfileService profileService;
+
+    @MockitoBean
+    private ProfilePatchService profilePatchService;
 
     @Captor
     private ArgumentCaptor<ProfileRequest> profileRequestArgumentCaptor;
@@ -76,17 +80,17 @@ class ProfileControllerTest {
 
     @Test
     void testGetProfileSuccessful() throws Exception {
-        given(service.getProfile(anyString())).willReturn(getProfileResponse());
+        given(profileService.getProfile(anyString())).willReturn(getProfileResponse());
 
         mockMvc.perform(get(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
-        verify(service).getProfile(USER_ID);
+        verify(profileService).getProfile(USER_ID);
     }
 
     @Test
     void testGetProfileNotFoundFailure() throws Exception {
-        given(service.getProfile(anyString())).willThrow(new CommonException(COMMON_ERROR_404_001, USER_ID));
+        given(profileService.getProfile(anyString())).willThrow(new CommonException(COMMON_ERROR_404_001, USER_ID));
 
         mockMvc.perform(get(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value("NOT_FOUND"))
@@ -94,26 +98,26 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.message").value("Object not found by userId: 12345"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).getProfile(USER_ID);
+        verify(profileService).getProfile(USER_ID);
     }
 
     @Test
     void testInsertProfileSuccessful() throws Exception {
-        given(service.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
+        given(profileService.insertProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(post(PROFILES_PATH).header(USER_ID_HEADER, USER_ID)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated()).andExpectAll(getProfileResponseResultMatcher());
 
-        verify(service).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
+        verify(profileService).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
         assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
     void testInsertProfileFailure() throws Exception {
-        given(service.insertProfile(anyString(), any(ProfileRequest.class)))
+        given(profileService.insertProfile(anyString(), any(ProfileRequest.class)))
                 .willThrow(new CommonException(COMMON_ERROR_409_001));
 
         mockMvc.perform(post(PROFILES_PATH).header(USER_ID_HEADER, USER_ID)
@@ -125,27 +129,27 @@ class ProfileControllerTest {
                         .value("The object already exists. Try updating it instead of entering it"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
+        verify(profileService).insertProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
         assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
     void testUpdateProfileSuccessful() throws Exception {
-        given(service.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
+        given(profileService.updateProfile(anyString(), any(ProfileRequest.class))).willReturn(getProfileResponse());
 
         mockMvc.perform(put(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(getProfileRequest())).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpectAll(getProfileResponseResultMatcher());
 
-        verify(service).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
+        verify(profileService).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
         assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
     void testUpdateProfileFailure() throws Exception {
-        given(service.updateProfile(anyString(), any(ProfileRequest.class)))
+        given(profileService.updateProfile(anyString(), any(ProfileRequest.class)))
                 .willThrow(new CommonException(COMMON_ERROR_404_002, USER_ID));
 
         mockMvc.perform(put(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -156,21 +160,21 @@ class ProfileControllerTest {
                         .format("Object not found by userId: %s. Try entering it instead of updating it", USER_ID)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
+        verify(profileService).updateProfile(eq(USER_ID), profileRequestArgumentCaptor.capture());
 
         assertThat(profileRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(getProfileRequest());
     }
 
     @Test
     void testPatchProfileSuccessful() throws Exception {
-        given(service.patchProfile(anyString(), anyMap())).willReturn(getProfileResponsePatch());
+        given(profilePatchService.patchProfile(anyString(), anyMap())).willReturn(getProfileResponsePatch());
 
         mockMvc.perform(patch(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
                 .content(objectMapper.writeValueAsString(getProfileRequestMapPatch()))
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpectAll(getProfileResponsePatchResultMatcher());
 
-        verify(service).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
+        verify(profilePatchService).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
 
         assertPatchArgumentCaptorValues(mapArgumentCaptor.getValue());
     }
@@ -178,7 +182,7 @@ class ProfileControllerTest {
     @Test
     void testPatchProfileFailure() throws Exception {
         String errorMsg = "request body is mandatory and must contain some attribute";
-        given(service.patchProfile(anyString(), anyMap()))
+        given(profilePatchService.patchProfile(anyString(), anyMap()))
                 .willThrow(new CommonException(COMMON_ERROR_400_001, Collections.singletonList(errorMsg)));
 
         mockMvc.perform(patch(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MERGE_PATCH_MEDIA_TYPE)
@@ -189,25 +193,25 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.message", containsString(errorMsg)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
+        verify(profilePatchService).patchProfile(eq(USER_ID), mapArgumentCaptor.capture());
 
         assertPatchArgumentCaptorValues(mapArgumentCaptor.getValue());
     }
 
     @Test
     void testDeleteProfileSuccessful() throws Exception {
-        willDoNothing().given(service).deleteProfile(anyString());
+        willDoNothing().given(profileService).deleteProfile(anyString());
 
         mockMvc.perform(
                 delete(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent());
 
-        verify(service).deleteProfile(USER_ID);
+        verify(profileService).deleteProfile(USER_ID);
     }
 
     @Test
     void testDeleteProfileFailure() throws Exception {
-        willThrow(new CommonException(COMMON_ERROR_404_003, USER_ID)).given(service).deleteProfile(anyString());
+        willThrow(new CommonException(COMMON_ERROR_404_003, USER_ID)).given(profileService).deleteProfile(anyString());
 
         mockMvc.perform(
                 delete(PROFILES_PATH).header(USER_ID_HEADER, USER_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -218,7 +222,7 @@ class ProfileControllerTest {
                                 + USER_ID))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
-        verify(service).deleteProfile(USER_ID);
+        verify(profileService).deleteProfile(USER_ID);
     }
 
     private void assertPatchArgumentCaptorValues(Map<String, Object> profileRequestMap) {
