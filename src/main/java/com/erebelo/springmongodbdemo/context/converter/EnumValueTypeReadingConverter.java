@@ -2,6 +2,7 @@ package com.erebelo.springmongodbdemo.context.converter;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.type.EnumValueType;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
@@ -33,10 +34,10 @@ public class EnumValueTypeReadingConverter implements ConverterFactory<String, E
         EnumValueType enumType;
 
         try {
-            var fromValueMethod = targetType.getDeclaredMethod("fromValue", String.class);
+            Method fromValueMethod = targetType.getDeclaredMethod("fromValue", String.class);
             enumType = (EnumValueType) fromValueMethod.invoke(null, source);
         } catch (NoSuchMethodException e) {
-            var valuesMethod = targetType.getDeclaredMethod("values");
+            Method valuesMethod = targetType.getDeclaredMethod("values");
 
             enumType = Arrays.stream((EnumValueType[]) valuesMethod.invoke(null))
                     .filter(obj -> obj.getValue().equalsIgnoreCase(source)).findFirst()

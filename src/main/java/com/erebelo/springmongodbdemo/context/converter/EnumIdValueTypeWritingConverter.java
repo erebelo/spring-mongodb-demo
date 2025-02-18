@@ -10,7 +10,7 @@ public class EnumIdValueTypeWritingConverter implements Converter<EnumIdValueTyp
 
     @Override
     public Document convert(EnumIdValueType source) {
-        var document = new Document();
+        Document document = new Document();
         document.put("id", source.getId());
         document.put("value", source.getValue());
 

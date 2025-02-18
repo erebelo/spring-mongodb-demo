@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException e) {
         String errorMessage = e.getMessage();
-        var supportedHttpMethods = e.getSupportedMethods();
+        String[] supportedHttpMethods = e.getSupportedMethods();
         if (!ObjectUtils.isEmpty(supportedHttpMethods)) {
             errorMessage += ". Supported methods: " + String.join(", ", supportedHttpMethods);
         }
@@ -105,8 +105,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionSystemException(TransactionSystemException e) {
-        var errorMessage = "An error occurred during transaction processing";
-        var rootCause = e.getRootCause();
+        String errorMessage = "An error occurred during transaction processing";
+        Throwable rootCause = e.getRootCause();
         if (rootCause != null && !ObjectUtils.isEmpty(rootCause.getMessage())) {
             errorMessage += ". Root cause: " + rootCause.getMessage();
         }
@@ -132,10 +132,10 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ExceptionResponse> parseGeneralException(final HttpStatus httpStatus, final Exception e,
             final String message) {
-        var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
-        var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
-        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(),
-                null);
+        HttpStatus errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
+        String errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage,
+                System.currentTimeMillis(), null);
 
         log.error(GLOBAL_EXCEPTION_MESSAGE + " {}", ThreadContext.get(REQUEST_ID_HEADER), exceptionResponse,
                 getStackTrace(e));
@@ -144,38 +144,39 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ExceptionResponse> parseClientException(final HttpStatus httpStatus, final String message,
             final Throwable cause) {
-        var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
-        var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
+        HttpStatus errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
+        String errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
 
         Object clientErrorObj = null;
         if (cause != null) {
-            var clientErrorMessage = ObjectUtils.isEmpty(cause.getMessage()) ? null : cause.getMessage();
+            String clientErrorMessage = ObjectUtils.isEmpty(cause.getMessage()) ? null : cause.getMessage();
 
             if (!ObjectUtils.isEmpty(clientErrorMessage)) {
                 clientErrorObj = extractJsonObject(clientErrorMessage);
             }
         }
 
-        var exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage, System.currentTimeMillis(),
-                clientErrorObj);
+        ExceptionResponse exceptionResponse = new ExceptionResponse(errorHttpStatus, null, errorMessage,
+                System.currentTimeMillis(), clientErrorObj);
 
         exceptionResponseLogError(exceptionResponse);
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
+    @SuppressWarnings("ConstantConditions")
     ExceptionResponse parseCommonException(final CommonException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        var exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, COMMON_ERROR_500_000.toString(),
-                "", System.currentTimeMillis(), null);
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                COMMON_ERROR_500_000.toString(), "", System.currentTimeMillis(), null);
 
-        var propertyKey = e.getErrorCode().propertyKey();
+        String propertyKey = e.getErrorCode().propertyKey();
         if (Objects.isNull(propertyKey)) {
             exceptionResponse.setMessage("Basic error handling failure: null errorCode");
             exceptionResponseLogError(exceptionResponse);
             return exceptionResponse;
         }
 
-        var properties = env.getProperty(propertyKey);
+        String properties = env.getProperty(propertyKey);
         if (Objects.isNull(properties)) {
             exceptionResponse
                     .setMessage(String.format("Basic error handling failure: no properties found for %s", propertyKey));
@@ -183,7 +184,7 @@ public class GlobalExceptionHandler {
             return exceptionResponse;
         }
 
-        var formatArray = properties.split("\\|");
+        String[] formatArray = properties.split("\\|");
         if (formatArray.length < 2) {
             exceptionResponse
                     .setMessage(String.format("Basic error handling failure: badly formatted message %s", properties));

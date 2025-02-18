@@ -28,7 +28,7 @@ public class ArticleController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ArticleDataResponseDTO>> getArticles() {
         log.info("GET {}", ARTICLES_PATH);
-        var response = service.getArticles();
+        List<ArticleDataResponseDTO> response = service.getArticles();
 
         return ResponseEntity.ok(response);
     }

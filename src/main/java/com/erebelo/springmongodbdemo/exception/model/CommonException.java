@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public class CommonException extends RuntimeException {
 
-    private final ErrorCode errorCode;
-    private final Object[] args;
+    private final transient ErrorCode errorCode;
+    private final transient Object[] args;
 
     public CommonException(ErrorCode errorCode) {
         this.errorCode = errorCode;

@@ -10,7 +10,7 @@ public class EnumCodeValueTypeWritingConverter implements Converter<EnumCodeValu
 
     @Override
     public Document convert(EnumCodeValueType source) {
-        var document = new Document();
+        Document document = new Document();
         document.put("code", source.getCode());
         document.put("value", source.getValue());
 

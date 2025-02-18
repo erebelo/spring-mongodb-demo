@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_001;
 import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getDownstreamApiHttpHeaders;
 
 import com.erebelo.spring.common.utils.threading.AsyncThreadContext;
@@ -83,10 +84,10 @@ public class ArticleServiceImpl implements ArticleService {
                 allArticleResponses = futures.stream().map(CompletableFuture::join).filter(Objects::nonNull)
                         .collect(Collectors.toList());
             } catch (CompletionException e) {
-                if (e.getCause() instanceof ClientException) {
-                    throw (ClientException) e.getCause();
+                if (e.getCause() instanceof ClientException clientException) {
+                    throw clientException;
                 }
-                throw new RuntimeException(e);
+                throw new CommonException(COMMON_ERROR_500_001, e);
             }
 
             long totalTime = System.currentTimeMillis() - startTime;

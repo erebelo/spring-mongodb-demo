@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -190,7 +191,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void validateRequestAttributes(ProfileRequest dbProfileRequest) {
-        var errorMessages = new ArrayList<FieldMessage>();
+        List<FieldMessage> errorMessages = new ArrayList<>();
 
         validateDateOfBirth(dbProfileRequest, errorMessages);
         validateContactNumbers(dbProfileRequest, errorMessages);

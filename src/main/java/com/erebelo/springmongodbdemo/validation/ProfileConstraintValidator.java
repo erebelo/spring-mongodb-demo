@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.validation;
 
 import com.erebelo.springmongodbdemo.domain.enumeration.MaritalStatusEnum;
+import com.erebelo.springmongodbdemo.domain.request.ProfileContactDTO;
 import com.erebelo.springmongodbdemo.domain.request.ProfileRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -38,7 +39,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     public static void validateDateOfBirth(ProfileRequest request, List<FieldMessage> errorMessages) {
         log.info("Validating dateOfBirth field");
-        var dob = request.getDateOfBirth();
+        LocalDate dob = request.getDateOfBirth();
 
         if (Objects.nonNull(dob) && !dob.isBefore(LocalDate.now())) {
             errorMessages.add(new FieldMessage("dateOfBirth", "dateOfBirth must be less than current date"));
@@ -53,7 +54,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     public static void validateContactNumbers(ProfileRequest request, List<FieldMessage> errorMessages) {
         log.info("Validating contactNumbers object");
-        var contactNumbers = request.getContactNumbers();
+        List<ProfileContactDTO> contactNumbers = request.getContactNumbers();
 
         if (Objects.nonNull(contactNumbers) && contactNumbers.stream().anyMatch(Objects::isNull)) {
             errorMessages.add(new FieldMessage("contactNumbers", "contactNumbers list cannot contain null elements"));
@@ -62,7 +63,7 @@ public class ProfileConstraintValidator implements ConstraintValidator<ProfileVa
 
     public static void validateSpouseProfile(ProfileRequest request, List<FieldMessage> errorMessages) {
         log.info("Validating spouseProfile object");
-        var maritalStatus = request.getMaritalStatus();
+        MaritalStatusEnum maritalStatus = request.getMaritalStatus();
 
         if (Objects.nonNull(maritalStatus) && Objects.nonNull(request.getSpouseProfile())
                 && (maritalStatus.equals(MaritalStatusEnum.SINGLE) || maritalStatus.equals(MaritalStatusEnum.DIVORCED)

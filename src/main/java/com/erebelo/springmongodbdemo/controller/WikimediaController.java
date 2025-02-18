@@ -27,7 +27,7 @@ public class WikimediaController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WikimediaResponse> getWikimediaProjectPageviews() {
         log.info("GET {}", WIKIMEDIA_PATH);
-        var response = service.getWikimediaProjectPageviews();
+        WikimediaResponse response = service.getWikimediaProjectPageviews();
 
         return ResponseEntity.ok(response);
     }

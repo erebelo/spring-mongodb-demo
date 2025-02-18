@@ -23,13 +23,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class HeaderInterceptor implements HandlerInterceptor {
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull Object handler) {
-        if (handler instanceof HandlerMethod) {
-            HeaderLoggedInUser annotation = ((HandlerMethod) handler).getMethodAnnotation(HeaderLoggedInUser.class);
+        if (handler instanceof HandlerMethod handlerMethod) {
+            HeaderLoggedInUser annotation = handlerMethod.getMethodAnnotation(HeaderLoggedInUser.class);
             if (annotation == null) {
-                annotation = ((HandlerMethod) handler).getMethod().getDeclaringClass()
-                        .getAnnotation(HeaderLoggedInUser.class);
+                annotation = handlerMethod.getMethod().getDeclaringClass().getAnnotation(HeaderLoggedInUser.class);
             }
             if (annotation != null) {
                 log.info("Checking whether request contains the loggedInUser http headers");

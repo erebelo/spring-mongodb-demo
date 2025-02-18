@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.service;
 
 import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_404_005;
+import static com.erebelo.springmongodbdemo.exception.model.CommonErrorCodesEnum.COMMON_ERROR_500_001;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.ARTICLES_URL;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.TOTAL_PAGES;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataResponseDTO;
@@ -8,6 +9,7 @@ import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleDataRespo
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponse;
 import static com.erebelo.springmongodbdemo.mock.ArticleMock.getArticleResponseNextPage;
 import static com.erebelo.springmongodbdemo.mock.HttpHeadersMock.getDownstreamApiHttpHeaders;
+import static com.mongodb.assertions.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -167,6 +169,41 @@ class ArticleServiceTest {
         assertInstanceOf(RestClientException.class, exception.getCause());
         assertEquals("Error getting articles from downstream API for page: 2. Error message: Async error",
                 exception.getMessage());
+
+        verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(),
+                ArgumentMatchers.<ParameterizedTypeReference<ArticleResponse>>any());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getDownstreamApiHttpHeaders());
+
+        verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=2"), eq(HttpMethod.GET),
+                httpEntityArgumentCaptor.capture(), ArgumentMatchers.<ParameterizedTypeReference<?>>any());
+        assertThat(httpEntityArgumentCaptor.getValue().getHeaders()).usingRecursiveComparison()
+                .isEqualTo(getDownstreamApiHttpHeaders());
+
+        verify(mapper, never()).responseToResponseDTO(anyList());
+    }
+
+    @Test
+    void testGetArticlesThrowsCommonExceptionWhenHittingArticlesSecondTime() {
+        willAnswer(invocation -> {
+            Runnable task = invocation.getArgument(0);
+            task.run();
+            return null;
+        }).given(asyncTaskExecutor).execute(any(Runnable.class));
+
+        given(restTemplate.exchange(eq(ARTICLES_URL + "?page=1"), any(), any(),
+                ArgumentMatchers.<ParameterizedTypeReference<ArticleResponse>>any()))
+                .willReturn(ResponseEntity.ok(getArticleResponse()));
+        given(restTemplate.exchange(eq(ARTICLES_URL + "?page=2"), any(), any(),
+                ArgumentMatchers.<ParameterizedTypeReference<?>>any()))
+                .willThrow(new RuntimeException("Async processing failed"));
+
+        CommonException exception = assertThrows(CommonException.class, () -> service.getArticles());
+
+        assertInstanceOf(RuntimeException.class, exception.getCause());
+        assertEquals(COMMON_ERROR_500_001, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("Async processing failed"));
 
         verify(restTemplate).exchange(eq(ARTICLES_URL + "?page=1"), eq(HttpMethod.GET),
                 httpEntityArgumentCaptor.capture(),

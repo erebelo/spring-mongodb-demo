@@ -21,7 +21,7 @@ public class HashAlgorithmUtil {
     }
 
     public static synchronized String generateSHAHashObject(String objString) {
-        var newObjString = objString + ", currentTimeMillis=" + System.currentTimeMillis();
+        String newObjString = objString + ", currentTimeMillis=" + System.currentTimeMillis();
 
         log.info("Generating a hash value by the provided object");
         byte[] hash = digest.digest(newObjString.getBytes(StandardCharsets.UTF_8));
@@ -30,7 +30,7 @@ public class HashAlgorithmUtil {
     }
 
     private static String bytesToHex(byte[] hash) {
-        var hexString = new StringBuilder(2 * hash.length);
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
 
         for (byte b : hash) {
             String hex = Integer.toHexString(0xff & b);

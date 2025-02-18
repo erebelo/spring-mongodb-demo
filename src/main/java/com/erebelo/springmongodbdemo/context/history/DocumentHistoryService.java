@@ -6,6 +6,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,14 @@ public class DocumentHistoryService {
 
     public void saveChangeHistory(Document document, Object source) {
         if (isToSaveHistory(source.getClass())) {
-            var historyDocument = new Document(document);
-            var objectId = historyDocument.getObjectId(OBJECT_ID);
+            Document historyDocument = new Document(document);
+            ObjectId objectId = historyDocument.getObjectId(OBJECT_ID);
             historyDocument.remove(OBJECT_ID);
 
-            var version = historyDocument.getLong(VERSION);
-            var actionEnum = version == null || version == 0 ? HistoryActionEnum.INSERT : HistoryActionEnum.UPDATE;
+            Long version = historyDocument.getLong(VERSION);
+            HistoryActionEnum actionEnum = version == null || version == 0
+                    ? HistoryActionEnum.INSERT
+                    : HistoryActionEnum.UPDATE;
 
             createAndSaveHistoryDocument(actionEnum, objectId.toString(), getCollectionName(source.getClass()),
                     historyDocument);
@@ -42,7 +45,7 @@ public class DocumentHistoryService {
 
     private void createAndSaveHistoryDocument(HistoryActionEnum actionEnum, String documentId, String collectionName,
             Document document) {
-        var history = new Document().append("action", actionEnum.getValue()).append("documentId", documentId);
+        Document history = new Document().append("action", actionEnum.getValue()).append("documentId", documentId);
 
         if (HistoryActionEnum.DELETE.equals(actionEnum)) {
             history.append("historyCreatedBy", HttpHeadersUtil.getLoggedInUser());

@@ -19,7 +19,7 @@ public class HttpHeadersUtil {
     }
 
     public static HttpHeaders getDownstreamApiHttpHeaders() {
-        var httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.ACCEPT_ENCODING, "*");
         httpHeaders.setAcceptCharset(List.of(StandardCharsets.UTF_8));
 
@@ -27,7 +27,7 @@ public class HttpHeadersUtil {
     }
 
     public static HttpHeaders getFileApiResponseHeaders(String filename, long contentLength) {
-        var httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", filename);
         httpHeaders.setContentLength(contentLength);

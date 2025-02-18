@@ -106,24 +106,27 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
             Objects.requireNonNull(keystore, "Keystore path cannot be null");
             Objects.requireNonNull(keystorePassword, "Keystore password cannot be null");
 
-            KeyStore keystore = KeyStore.getInstance("PKCS12");
+            final String KEYSTORE_TYPE = "PKCS12";
+            final String SSL_PROTOCOL = "TLSv1.3";
+
+            KeyStore keyStoreInstance = KeyStore.getInstance(KEYSTORE_TYPE);
 
             try (InputStream in = getClass().getClassLoader().getResourceAsStream(this.keystore)) {
                 if (in == null) {
                     throw new IOException("Keystore file not found: " + this.keystore);
                 }
-                keystore.load(in, keystorePassword.toCharArray());
+                keyStoreInstance.load(in, keystorePassword.toCharArray());
             }
 
             KeyManagerFactory keyManagerFactory = KeyManagerFactory
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keystore, keystorePassword.toCharArray());
+            keyManagerFactory.init(keyStoreInstance, keystorePassword.toCharArray());
 
             TrustManagerFactory trustManagerFactory = TrustManagerFactory
                     .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keystore);
+            trustManagerFactory.init(keyStoreInstance);
 
-            SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+            SSLContext sslContext = SSLContext.getInstance(SSL_PROTOCOL);
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
                     SecureRandom.getInstanceStrong());
 

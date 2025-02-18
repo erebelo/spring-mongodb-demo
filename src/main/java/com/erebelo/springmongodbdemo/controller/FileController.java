@@ -3,6 +3,7 @@ package com.erebelo.springmongodbdemo.controller;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.FILES_PATH;
 import static com.erebelo.springmongodbdemo.util.HttpHeadersUtil.getFileApiResponseHeaders;
 
+import com.erebelo.springmongodbdemo.domain.response.FileResponse;
 import com.erebelo.springmongodbdemo.domain.response.FileResponseDTO;
 import com.erebelo.springmongodbdemo.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +42,7 @@ public class FileController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> getFileById(@PathVariable String id) {
         log.info("GET {}/{}", FILES_PATH, id);
-        var response = service.getFileById(id);
+        FileResponse response = service.getFileById(id);
 
         return ResponseEntity.ok().headers(getFileApiResponseHeaders(response.getName(), response.getData().length))
                 .body(response.getData());
