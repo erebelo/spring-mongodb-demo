@@ -31,7 +31,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Log4j2
 @ControllerAdvice
@@ -41,44 +40,37 @@ public class GlobalExceptionHandler {
 
     private final Environment env;
 
-    @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception e) {
         return parseGeneralException(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException e) {
         return parseGeneralException(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         return parseGeneralException(HttpStatus.BAD_REQUEST, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException e) {
         return parseGeneralException(HttpStatus.BAD_REQUEST, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMediaTypeNotSupportedException(
             HttpMediaTypeNotSupportedException e) {
         return parseGeneralException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         return parseGeneralException(HttpStatus.BAD_REQUEST, e);
     }
 
-    @ResponseBody
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException e) {
@@ -91,7 +83,6 @@ public class GlobalExceptionHandler {
         return parseGeneralException(HttpStatus.METHOD_NOT_ALLOWED, e, errorMessage);
     }
 
-    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errorMessage = null;
@@ -114,13 +105,11 @@ public class GlobalExceptionHandler {
         return parseGeneralException(HttpStatus.INTERNAL_SERVER_ERROR, e, errorMessage);
     }
 
-    @ResponseBody
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ExceptionResponse> handleClientException(ClientException e) {
         return parseClientException(e.getHttpStatus(), e.getMessage(), e.getCause());
     }
 
-    @ResponseBody
     @ExceptionHandler(CommonException.class)
     public ExceptionResponse handleCommonException(CommonException e, HttpServletResponse response) {
         return parseCommonException(e, response);
