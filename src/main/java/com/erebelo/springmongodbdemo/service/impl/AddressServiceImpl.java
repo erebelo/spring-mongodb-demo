@@ -52,9 +52,9 @@ public class AddressServiceImpl implements AddressService {
                 /*
                  * Manually track the history of successfully inserted documents.
                  *
-                 * This is only necessary for exception scenarios (in the catch block) when
-                 * AbstractMongoEventListener does not automatically trigger
-                 * DocumentChangeHistoryService.
+                 * This is only necessary for exception scenarios (in the catch block) because
+                 * AbstractMongoEventListener lifecycle events are not automatically triggered
+                 * when using BulkOperations.
                  */
                 historyTrack(successList);
             }
