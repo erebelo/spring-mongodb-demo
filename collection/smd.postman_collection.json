@@ -480,7 +480,7 @@
 							"response": []
 						},
 						{
-							"name": "POST Bulk Addresses with Duplicates",
+							"name": "POST Bulk Addresses 7 records (2 duplicates)",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -516,7 +516,7 @@
 							"response": []
 						},
 						{
-							"name": "POST Bulk Addresses 500 records with Duplicates",
+							"name": "POST Bulk Addresses 500 records (100 duplicates)",
 							"request": {
 								"method": "POST",
 								"header": [
