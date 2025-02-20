@@ -40,10 +40,9 @@ public class AddressEntity {
     private String zipCode;
 
     /*
-     * The fields createdBy, modifiedBy, createdDateTime, modifiedDateTime, and
-     * version are declared here directly instead of using a BaseEntity class
-     * because BulkOperations does not handle these fields effectively when
-     * performing bulk operations.
+     * The createdBy, modifiedBy, createdDateTime, modifiedDateTime, and version
+     * fields are declared here directly instead of using the BaseEntity class
+     * because BulkOperations does not handle these fields effectively.
      */
     private String createdBy;
     private String modifiedBy;
