@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 public class AddressResponse {
 
     private String id;
+    private String recordId;
     private String addressLine1;
     private String addressLine2;
     private String city;

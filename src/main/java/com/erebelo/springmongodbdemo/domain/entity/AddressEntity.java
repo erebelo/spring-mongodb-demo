@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -20,6 +21,9 @@ public class AddressEntity {
 
     @Id
     private String id;
+
+    @Transient
+    private String recordId;
 
     @NotBlank(message = "addressLine1 is mandatory")
     private String addressLine1;

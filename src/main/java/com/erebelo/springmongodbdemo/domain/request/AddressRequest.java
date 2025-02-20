@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressRequest {
 
+    private String recordId;
+
     @NotBlank(message = "addressLine1 is mandatory")
     private String addressLine1;
 
