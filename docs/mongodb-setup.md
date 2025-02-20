@@ -218,6 +218,22 @@ Refer to the [Enable SSL/TLS on MongoDB Server](https://github.com/erebelo/sprin
     db.profiles_history.createIndex({"document.userId": 1}, {name: "user_id_index"})
     ```
 
+    1.3 Create a compound unique constraint index for `addresses` collection and an index for efficient lookups in the `addresses_history` collection, both from `demo_db` database:
+
+    ```bash
+    use demo_db
+
+    db.auth("regular", "<REGULAR_PWD>")
+
+    db.createCollection("addresses")
+
+    db.createCollection("addresses_history")
+
+    db.addresses.createIndex({addressLine1: 1, addressLine2: 1, zipCode: 1}, {unique: true, name: "unique_address_constraint_index"})
+
+    db.addresses_history.createIndex({documentId: 1}, {name: "document_id_index"})
+    ```
+
     **NOTE**: Replace `<REGULAR_PWD>` with the correct password for 'regular' user.
 
-    1.3. Exit the MongoDB Shell, leaving the `mongod` terminal open.
+    1.4. Exit the MongoDB Shell, leaving the `mongod` terminal open.

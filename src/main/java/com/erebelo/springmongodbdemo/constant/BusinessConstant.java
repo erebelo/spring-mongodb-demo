@@ -14,5 +14,7 @@ public class BusinessConstant {
     public static final String WIKIMEDIA_PATH = "/wikimedia";
     public static final String ARTICLES_PATH = "/articles";
     public static final String FILES_PATH = "/files";
+    public static final String ADDRESSES_PATH = "/addresses";
+    public static final String ADDRESSES_BULK_PATH = "/bulk";
 
 }
