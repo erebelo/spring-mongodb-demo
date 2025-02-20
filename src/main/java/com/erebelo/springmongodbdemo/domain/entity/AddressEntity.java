@@ -39,6 +39,12 @@ public class AddressEntity {
     @NotBlank(message = "zipCode is mandatory")
     private String zipCode;
 
+    /*
+     * The fields createdBy, modifiedBy, createdDateTime, modifiedDateTime, and
+     * version are declared here directly instead of using a BaseEntity class
+     * because BulkOperations does not handle these fields effectively when
+     * performing bulk operations.
+     */
     private String createdBy;
     private String modifiedBy;
     private LocalDateTime createdDateTime;
