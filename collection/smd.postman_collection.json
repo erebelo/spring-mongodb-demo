@@ -447,6 +447,42 @@
 							"name": "Bulk Ops Engine",
 							"item": [
 								{
+									"name": "POST Bulk Ops Engine Addresses",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-UserId",
+												"value": "12345",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "[\r\n    {\r\n        \"recordId\": \"1\",\r\n        \"addressLine1\": \"123 Main St\",\r\n        \"addressLine2\": \"Apt 4B\",\r\n        \"city\": \"New York\",\r\n        \"state\": \"NY\",\r\n        \"country\": \"USA\",\r\n        \"zipCode\": \"10001\"\r\n    },\r\n    {\r\n        \"recordId\": \"2\",\r\n        \"addressLine1\": \"456 Elm St\",\r\n        \"addressLine2\": \"Suite 12\",\r\n        \"city\": \"Los Angeles\",\r\n        \"state\": \"CA\",\r\n        \"country\": \"USA\",\r\n        \"zipCode\": \"90012\"\r\n    },\r\n    {\r\n        \"recordId\": \"3\",\r\n        \"addressLine1\": \"789 Oak St\",\r\n        \"addressLine2\": \"Unit 5A\",\r\n        \"city\": \"Chicago\",\r\n        \"state\": \"IL\",\r\n        \"country\": \"USA\",\r\n        \"zipCode\": \"60601\"\r\n    },\r\n    {\r\n        \"recordId\": \"4\",\r\n        \"addressLine1\": \"321 Maple Ave\",\r\n        \"addressLine2\": \"Floor 3\",\r\n        \"city\": \"Houston\",\r\n        \"state\": \"TX\",\r\n        \"country\": \"USA\",\r\n        \"zipCode\": \"77002\"\r\n    },\r\n    {\r\n        \"recordId\": \"5\",\r\n        \"addressLine1\": \"654 Pine Rd\",\r\n        \"addressLine2\": \"Building B\",\r\n        \"city\": \"Miami\",\r\n        \"state\": \"FL\",\r\n        \"country\": \"USA\",\r\n        \"zipCode\": \"33101\"\r\n    }\r\n]",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/spring-mongodb-demo/addresses/bulk-ops-engine",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"spring-mongodb-demo",
+												"addresses",
+												"bulk-ops-engine"
+											]
+										}
+									},
+									"response": []
+								},
+								{
 									"name": "POST Bulk Ops Engine Addresses 7 records (2 duplicates)",
 									"request": {
 										"method": "POST",
