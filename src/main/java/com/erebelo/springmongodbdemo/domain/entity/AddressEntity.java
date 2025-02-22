@@ -25,6 +25,9 @@ public class AddressEntity {
     @Transient
     private String recordId;
 
+    @Transient
+    private String errorMessage;
+
     @NotBlank(message = "addressLine1 is mandatory")
     private String addressLine1;
 

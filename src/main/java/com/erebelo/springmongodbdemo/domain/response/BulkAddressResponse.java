@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class BulkAddressResponse {
 
     private List<AddressResponse> success;
-    private List<BulkErrorAddressResponse> failed;
+    private List<AddressResponse> failed;
 
 }

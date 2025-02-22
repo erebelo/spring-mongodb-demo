@@ -23,5 +23,6 @@ public class AddressResponse {
     private String state;
     private String country;
     private String zipCode;
+    private String errorMessage;
 
 }

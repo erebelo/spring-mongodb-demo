@@ -4,7 +4,7 @@ import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.domain.entity.AddressEntity;
 import com.erebelo.springmongodbdemo.domain.request.AddressRequest;
 import com.erebelo.springmongodbdemo.domain.response.BulkAddressResponse;
-import com.erebelo.springmongodbdemo.domain.response.BulkErrorAddressResponse;
+import com.erebelo.springmongodbdemo.domain.response.BulkOpsEngineResponse;
 import com.erebelo.springmongodbdemo.mapper.AddressMapper;
 import com.erebelo.springmongodbdemo.service.AddressService;
 import com.mongodb.bulk.BulkWriteError;
@@ -12,7 +12,6 @@ import com.mongodb.bulk.BulkWriteResult;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -23,19 +22,27 @@ import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
     private final MongoTemplate mongoTemplate;
     private final DocumentHistoryService historyService;
     private final AddressMapper mapper;
+    private final BulkOpsEngine bulkOpsEngine;
+
+    public AddressServiceImpl(MongoTemplate mongoTemplate, DocumentHistoryService historyService,
+            AddressMapper mapper) {
+        this.mongoTemplate = mongoTemplate;
+        this.historyService = historyService;
+        this.mapper = mapper;
+        this.bulkOpsEngine = new BulkOpsEngine(this.mongoTemplate, this.historyService);
+    }
 
     @Override
     public BulkAddressResponse bulkInsertAddresses(List<AddressRequest> addressRequestList) {
         log.info("Bulk insert addresses");
         List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
         List<AddressEntity> successList;
-        List<BulkErrorAddressResponse> failedList = new ArrayList<>();
+        List<AddressEntity> failedList = new ArrayList<>();
 
         try {
             BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AddressEntity.class);
@@ -63,8 +70,21 @@ public class AddressServiceImpl implements AddressService {
         log.info("Bulk insert completed: {} record(s) inserted successfully, {} record(s) failed to insert",
                 successList.size(), failedList.size());
 
-        return BulkAddressResponse.builder().success(mapper.entityListToResponseList(successList)).failed(failedList)
-                .build();
+        return BulkAddressResponse.builder().success(mapper.entityListToResponseList(successList))
+                .failed(mapper.entityListToResponseList(failedList)).build();
+    }
+
+    @Override
+    public BulkAddressResponse bulkInsertAddressesByBulkOpsEngine(List<AddressRequest> addressRequestList) {
+        log.info("Bulk insert addresses by bulk operations engine");
+        List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
+
+        BulkOpsEngineResponse<AddressEntity> bulkOpsEngineResponse = bulkOpsEngine.bulkInsert(addresses,
+                AddressEntity::setId, AddressEntity::getId, AddressEntity::setErrorMessage);
+
+        return BulkAddressResponse.builder()
+                .success(mapper.entityListToResponseList(bulkOpsEngineResponse.getSuccess()))
+                .failed(mapper.entityListToResponseList(bulkOpsEngineResponse.getFailed())).build();
     }
 
     private List<AddressEntity> extractSuccessfulBulkAddressInserts(BulkWriteResult bulkWriteResult,
@@ -79,14 +99,13 @@ public class AddressServiceImpl implements AddressService {
         return new ArrayList<>();
     }
 
-    private List<BulkErrorAddressResponse> extractFailedBulkAddressInserts(List<BulkWriteError> bulkWriteErrors,
+    private List<AddressEntity> extractFailedBulkAddressInserts(List<BulkWriteError> bulkWriteErrors,
             List<AddressEntity> addresses) {
         if (!bulkWriteErrors.isEmpty()) {
             return bulkWriteErrors.parallelStream().map(error -> {
-                BulkErrorAddressResponse bulkErrorAddressResponse = mapper
-                        .entityToBulkErrorAddressResponse(addresses.get(error.getIndex()));
-                bulkErrorAddressResponse.setErrorMessage(error.getMessage());
-                return bulkErrorAddressResponse;
+                AddressEntity entity = addresses.get(error.getIndex());
+                entity.setErrorMessage(error.getMessage());
+                return entity;
             }).toList();
         }
         return new ArrayList<>();
