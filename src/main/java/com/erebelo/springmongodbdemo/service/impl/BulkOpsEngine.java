@@ -25,6 +25,7 @@ public class BulkOpsEngine {
 
     public <T> BulkOpsEngineResponse<T> bulkInsert(List<T> entityList, Class<T> entityClass,
             BiConsumer<T, String> idSetter, Function<T, String> idGetter, BiConsumer<T, String> errorMessageSetter) {
+        log.info("Bulk insert by bulk operations engine");
         List<T> successList;
         List<T> failedList = new ArrayList<>();
 
@@ -33,11 +34,10 @@ public class BulkOpsEngine {
             bulkOps.insert(entityList);
             BulkWriteResult bulkWriteResult = bulkOps.execute();
 
-            successList = extractSuccessfulBulkAddressInserts(bulkWriteResult, entityList, idSetter);
+            successList = extractSuccessfulBulkInserts(bulkWriteResult, entityList, idSetter);
         } catch (BulkOperationException e) {
-            successList = extractSuccessfulBulkAddressInserts(e.getResult(), entityList, idSetter);
+            successList = extractSuccessfulBulkInserts(e.getResult(), entityList, idSetter);
             failedList = extractFailedBulkInserts(e.getErrors(), entityList, errorMessageSetter);
-            log.info("{} record(s) failed to insert", failedList.size());
 
             if (!successList.isEmpty()) {
                 /*
@@ -56,7 +56,7 @@ public class BulkOpsEngine {
         return new BulkOpsEngineResponse<>(successList, failedList);
     }
 
-    private <T> List<T> extractSuccessfulBulkAddressInserts(BulkWriteResult bulkWriteResult, List<T> entityList,
+    private <T> List<T> extractSuccessfulBulkInserts(BulkWriteResult bulkWriteResult, List<T> entityList,
             BiConsumer<T, String> idSetter) {
         if (bulkWriteResult.getInsertedCount() > 0) {
             return bulkWriteResult.getInserts().parallelStream().map(insert -> {

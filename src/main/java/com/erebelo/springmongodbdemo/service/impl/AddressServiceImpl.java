@@ -76,7 +76,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public BulkAddressResponse bulkInsertAddressesByBulkOpsEngine(List<AddressRequest> addressRequestList) {
-        log.info("Bulk insert addresses by bulk operations engine");
+        log.info("Bulk insert addresses");
         List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
 
         BulkOpsEngineResponse<AddressEntity> bulkOpsEngineResponse = bulkOpsEngine.bulkInsert(addresses,
