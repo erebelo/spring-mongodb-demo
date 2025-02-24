@@ -80,7 +80,7 @@ public class AddressServiceImpl implements AddressService {
         List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
 
         BulkOpsEngineResponse<AddressEntity> bulkOpsEngineResponse = bulkOpsEngine.bulkInsert(addresses,
-                AddressEntity::setId, AddressEntity::getId, AddressEntity::setErrorMessage);
+                AddressEntity.class, AddressEntity::setId, AddressEntity::getId, AddressEntity::setErrorMessage);
 
         return BulkAddressResponse.builder()
                 .success(mapper.entityListToResponseList(bulkOpsEngineResponse.getSuccess()))

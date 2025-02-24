@@ -1,7 +1,6 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
-import com.erebelo.springmongodbdemo.domain.entity.AddressEntity;
 import com.erebelo.springmongodbdemo.domain.response.BulkOpsEngineResponse;
 import com.mongodb.bulk.BulkWriteError;
 import com.mongodb.bulk.BulkWriteResult;
@@ -24,13 +23,13 @@ public class BulkOpsEngine {
     private MongoTemplate mongoTemplate;
     private DocumentHistoryService historyService;
 
-    public <T> BulkOpsEngineResponse<T> bulkInsert(List<T> entityList, BiConsumer<T, String> idSetter,
-            Function<T, String> idGetter, BiConsumer<T, String> errorMessageSetter) {
+    public <T> BulkOpsEngineResponse<T> bulkInsert(List<T> entityList, Class<T> entityClass,
+            BiConsumer<T, String> idSetter, Function<T, String> idGetter, BiConsumer<T, String> errorMessageSetter) {
         List<T> successList;
         List<T> failedList = new ArrayList<>();
 
         try {
-            BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AddressEntity.class);
+            BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, entityClass);
             bulkOps.insert(entityList);
             BulkWriteResult bulkWriteResult = bulkOps.execute();
 
