@@ -25,7 +25,6 @@ public class BulkOpsEngine {
 
     public <T> BulkOpsEngineResponse<T> bulkInsert(List<T> entityList, Class<T> entityClass,
             BiConsumer<T, String> idSetter, Function<T, String> idGetter, BiConsumer<T, String> errorMessageSetter) {
-        log.info("Bulk insert by bulk operations engine");
         List<T> successList;
         List<T> failedList = new ArrayList<>();
 
@@ -51,8 +50,6 @@ public class BulkOpsEngine {
             }
         }
 
-        log.info("Bulk insert completed: {} record(s) inserted successfully, {} record(s) failed to insert",
-                successList.size(), failedList.size());
         return new BulkOpsEngineResponse<>(successList, failedList);
     }
 

@@ -1,5 +1,7 @@
 package com.erebelo.springmongodbdemo.service.impl;
 
+import static com.erebelo.springmongodbdemo.validation.AddressValidator.getRequestValidationErrors;
+
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.domain.entity.AddressEntity;
 import com.erebelo.springmongodbdemo.domain.request.AddressRequest;
@@ -11,10 +13,14 @@ import com.mongodb.bulk.BulkWriteError;
 import com.mongodb.bulk.BulkWriteResult;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.extern.log4j.Log4j2;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,33 +33,39 @@ public class AddressServiceImpl implements AddressService {
     private final MongoTemplate mongoTemplate;
     private final DocumentHistoryService historyService;
     private final AddressMapper mapper;
+    private final String applicationName;
     private final BulkOpsEngine bulkOpsEngine;
 
-    public AddressServiceImpl(MongoTemplate mongoTemplate, DocumentHistoryService historyService,
-            AddressMapper mapper) {
+    public AddressServiceImpl(MongoTemplate mongoTemplate, DocumentHistoryService historyService, AddressMapper mapper,
+            @Value("${spring.application.name}") String applicationName) {
         this.mongoTemplate = mongoTemplate;
         this.historyService = historyService;
         this.mapper = mapper;
+        this.applicationName = applicationName;
         this.bulkOpsEngine = new BulkOpsEngine(this.mongoTemplate, this.historyService);
     }
 
     @Override
     public BulkAddressResponse bulkInsertAddresses(List<AddressRequest> addressRequestList) {
         log.info("Bulk insert addresses");
-        List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
+        List<AddressEntity> validAddresses = Collections.synchronizedList(new ArrayList<>());
+        List<AddressEntity> failedAddresses = Collections.synchronizedList(new ArrayList<>());
+
+        log.info("Validating addresses");
+        validateAndParseRequest(addressRequestList, validAddresses, failedAddresses);
+
         List<AddressEntity> successList;
         List<AddressEntity> failedList = new ArrayList<>();
 
         try {
             BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AddressEntity.class);
-            bulkOps.insert(addresses);
+            bulkOps.insert(validAddresses);
             BulkWriteResult bulkWriteResult = bulkOps.execute();
 
-            successList = extractSuccessfulBulkAddressInserts(bulkWriteResult, addresses);
+            successList = extractSuccessfulBulkAddressInserts(bulkWriteResult, validAddresses);
         } catch (BulkOperationException e) {
-            successList = extractSuccessfulBulkAddressInserts(e.getResult(), addresses);
-            failedList = extractFailedBulkAddressInserts(e.getErrors(), addresses);
-            log.info("{} record(s) failed to insert", failedList.size());
+            successList = extractSuccessfulBulkAddressInserts(e.getResult(), validAddresses);
+            failedList = extractFailedBulkAddressInserts(e.getErrors(), validAddresses);
 
             if (!successList.isEmpty()) {
                 /*
@@ -67,24 +79,36 @@ public class AddressServiceImpl implements AddressService {
             }
         }
 
-        log.info("Bulk insert completed: {} record(s) inserted successfully, {} record(s) failed to insert",
-                successList.size(), failedList.size());
+        // Combining failedAddresses and failedList
+        List<AddressEntity> combinedFailedList = Stream.concat(failedAddresses.stream(), failedList.stream()).toList();
 
+        log.info("Bulk insert completed: {} record(s) inserted successfully, {} record(s) failed to insert",
+                successList.size(), combinedFailedList.size());
         return BulkAddressResponse.builder().success(mapper.entityListToResponseList(successList))
-                .failed(mapper.entityListToResponseList(failedList)).build();
+                .failed(mapper.entityListToResponseList(combinedFailedList)).build();
     }
 
     @Override
     public BulkAddressResponse bulkInsertAddressesByBulkOpsEngine(List<AddressRequest> addressRequestList) {
-        log.info("Bulk insert addresses");
-        List<AddressEntity> addresses = mapper.requestListToEntityList(addressRequestList, LocalDateTime.now());
+        log.info("Bulk insert addresses by bulk operations engine");
+        List<AddressEntity> validAddresses = Collections.synchronizedList(new ArrayList<>());
+        List<AddressEntity> failedAddresses = Collections.synchronizedList(new ArrayList<>());
 
-        BulkOpsEngineResponse<AddressEntity> bulkOpsEngineResponse = bulkOpsEngine.bulkInsert(addresses,
+        log.info("Validating addresses");
+        validateAndParseRequest(addressRequestList, validAddresses, failedAddresses);
+
+        BulkOpsEngineResponse<AddressEntity> bulkOpsEngineResponse = bulkOpsEngine.bulkInsert(validAddresses,
                 AddressEntity.class, AddressEntity::setId, AddressEntity::getId, AddressEntity::setErrorMessage);
 
+        // Combining failedAddresses and BulkOpsEngineResponse failed object
+        List<AddressEntity> combinedFailedList = Stream
+                .concat(failedAddresses.stream(), bulkOpsEngineResponse.getFailed().stream()).toList();
+
+        log.info("Bulk insert completed: {} record(s) inserted successfully, {} record(s) failed to insert",
+                bulkOpsEngineResponse.getSuccess().size(), combinedFailedList.size());
         return BulkAddressResponse.builder()
                 .success(mapper.entityListToResponseList(bulkOpsEngineResponse.getSuccess()))
-                .failed(mapper.entityListToResponseList(bulkOpsEngineResponse.getFailed())).build();
+                .failed(mapper.entityListToResponseList(combinedFailedList)).build();
     }
 
     private List<AddressEntity> extractSuccessfulBulkAddressInserts(BulkWriteResult bulkWriteResult,
@@ -121,5 +145,22 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             log.error("Error creating history document for {} record(s)", successList.size());
         }
+    }
+
+    private void validateAndParseRequest(List<AddressRequest> addressRequestList, List<AddressEntity> validAddresses,
+            List<AddressEntity> failedAddresses) {
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        addressRequestList.parallelStream().forEach(request -> {
+            Optional<String> errorMessageOpt = getRequestValidationErrors(request);
+
+            if (errorMessageOpt.isEmpty()) {
+                validAddresses.add(mapper.requestToEntity(request, applicationName, dateTime));
+            } else {
+                AddressEntity failedEntry = mapper.requestToEntity(request, applicationName, dateTime);
+                failedEntry.setErrorMessage(errorMessageOpt.get());
+                failedAddresses.add(failedEntry);
+            }
+        });
     }
 }

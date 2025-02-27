@@ -4,7 +4,6 @@ import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_BULK_PATH;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_PATH;
 
-import com.erebelo.springmongodbdemo.context.interceptor.HeaderLoggedInUser;
 import com.erebelo.springmongodbdemo.domain.request.AddressRequest;
 import com.erebelo.springmongodbdemo.domain.response.BulkAddressResponse;
 import com.erebelo.springmongodbdemo.service.AddressService;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequestMapping(ADDRESSES_PATH)
-@HeaderLoggedInUser
 @RequiredArgsConstructor
 @Tag(name = "Addresses API")
 public class AddressController {

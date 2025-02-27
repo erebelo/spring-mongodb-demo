@@ -1,7 +1,6 @@
 package com.erebelo.springmongodbdemo.domain.entity;
 
 import com.erebelo.springmongodbdemo.context.history.DocumentHistory;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,22 +27,11 @@ public class AddressEntity {
     @Transient
     private String errorMessage;
 
-    @NotBlank(message = "addressLine1 is mandatory")
     private String addressLine1;
-
-    @NotBlank(message = "addressLine2 is mandatory")
     private String addressLine2;
-
-    @NotBlank(message = "city is mandatory")
     private String city;
-
-    @NotBlank(message = "state is mandatory")
     private String state;
-
-    @NotBlank(message = "country is mandatory")
     private String country;
-
-    @NotBlank(message = "zipCode is mandatory")
     private String zipCode;
 
     /*
