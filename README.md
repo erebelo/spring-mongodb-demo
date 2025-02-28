@@ -16,6 +16,7 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 - **RestTemplate**: Facilitates HTTP requests to REST APIs.
 - **SSL/TLS**: Configures secure connections to MongoDB.
 - **Unit Tests**: Comprehensive test coverage for the entire application.
+- **Bulk Insert**: Implements a reusable bulk insert engine using MongoDB's `BulkOperations` to efficiently insert large datasets while gracefully tracking failures.
 
 ## Requirements
 
