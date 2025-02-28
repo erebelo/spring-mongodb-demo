@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.mock.AddressMock.ADDRESSES_BULK_OPS_ENGINE_PATH;
 import static com.erebelo.springmongodbdemo.mock.AddressMock.ADDRESSES_BULK_PATH;
 import static com.erebelo.springmongodbdemo.mock.AddressMock.getAddressRequestList;
 import static com.erebelo.springmongodbdemo.mock.AddressMock.getBulkAddressResponse;
@@ -71,40 +70,6 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
 
         verify(addressService).bulkInsertAddresses(addressRequestArgumentCaptor.capture());
-
-        assertThat(addressRequestArgumentCaptor.getValue()).usingRecursiveComparison()
-                .isEqualTo(getAddressRequestList());
-    }
-
-    @Test
-    void testBulkInsertAddressesByBulkOpsEngineSuccessful() throws Exception {
-        given(addressService.bulkInsertAddressesByBulkOpsEngine(anyList())).willReturn(getBulkAddressResponse());
-
-        mockMvc.perform(post(ADDRESSES_BULK_OPS_ENGINE_PATH).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(getAddressRequestList()))
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
-                .andExpectAll(getBulkAddressResponseResultMatcher());
-
-        verify(addressService).bulkInsertAddressesByBulkOpsEngine(addressRequestArgumentCaptor.capture());
-
-        assertThat(addressRequestArgumentCaptor.getValue()).usingRecursiveComparison()
-                .isEqualTo(getAddressRequestList());
-    }
-
-    @Test
-    void testBulkInsertAddressesByBulkOpsEngineFailure() throws Exception {
-        given(addressService.bulkInsertAddressesByBulkOpsEngine(anyList()))
-                .willThrow(new RuntimeException("An unexpected error occurred"));
-
-        mockMvc.perform(post(ADDRESSES_BULK_OPS_ENGINE_PATH).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(getAddressRequestList()))
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value("INTERNAL_SERVER_ERROR"))
-                .andExpect(jsonPath("$.code").doesNotExist())
-                .andExpect(jsonPath("$.message").value("An unexpected error occurred"))
-                .andExpect(jsonPath("$.timestamp").isNotEmpty());
-
-        verify(addressService).bulkInsertAddressesByBulkOpsEngine(addressRequestArgumentCaptor.capture());
 
         assertThat(addressRequestArgumentCaptor.getValue()).usingRecursiveComparison()
                 .isEqualTo(getAddressRequestList());

@@ -1,6 +1,5 @@
 package com.erebelo.springmongodbdemo.controller;
 
-import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_BULK_OPS_ENGINE_PATH;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_BULK_PATH;
 import static com.erebelo.springmongodbdemo.constant.BusinessConstant.ADDRESSES_PATH;
 
@@ -35,13 +34,5 @@ public class AddressController {
             @Valid @RequestBody List<AddressRequest> addressRequestList) {
         log.info("POST {}", ADDRESSES_PATH + ADDRESSES_BULK_PATH);
         return ResponseEntity.ok(service.bulkInsertAddresses(addressRequestList));
-    }
-
-    @Operation(summary = "POST Bulk Addresses by Bulk Operations Engine")
-    @PostMapping(value = ADDRESSES_BULK_OPS_ENGINE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BulkAddressResponse> bulkInsertAddressesByBulkOpsEngine(
-            @Valid @RequestBody List<AddressRequest> addressRequestList) {
-        log.info("POST {}", ADDRESSES_PATH + ADDRESSES_BULK_OPS_ENGINE_PATH);
-        return ResponseEntity.ok(service.bulkInsertAddressesByBulkOpsEngine(addressRequestList));
     }
 }

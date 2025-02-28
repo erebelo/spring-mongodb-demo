@@ -16,6 +16,5 @@ public class BusinessConstant {
     public static final String FILES_PATH = "/files";
     public static final String ADDRESSES_PATH = "/addresses";
     public static final String ADDRESSES_BULK_PATH = "/bulk";
-    public static final String ADDRESSES_BULK_OPS_ENGINE_PATH = "/bulk-ops-engine";
 
 }

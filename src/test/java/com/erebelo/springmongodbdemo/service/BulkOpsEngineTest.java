@@ -169,6 +169,36 @@ class BulkOpsEngineTest {
         verify(historyService, never()).saveChangeHistory(any(Document.class), any(TestEntity.class));
     }
 
+    @Test
+    void testBulkInsertWithNullEntityListSuccessful() {
+        BulkOpsEngineResponse<TestEntity> response = bulkOpsEngine.bulkInsert(null, TestEntity.class, TestEntity::setId,
+                TestEntity::getId, TestEntity::setErrorMessage);
+
+        assertNotNull(response);
+        assertEquals(0, response.getSuccess().size());
+        assertEquals(0, response.getFailed().size());
+        assertTrue(response.getSuccess().isEmpty());
+        assertTrue(response.getFailed().isEmpty());
+
+        verify(mongoTemplate, never()).bulkOps(any(BulkOperations.BulkMode.class), any(Class.class));
+        verify(historyService, never()).saveChangeHistory(any(Document.class), any(TestEntity.class));
+    }
+
+    @Test
+    void testBulkInsertWithEmptyEntityListSuccessful() {
+        BulkOpsEngineResponse<TestEntity> response = bulkOpsEngine.bulkInsert(Collections.emptyList(), TestEntity.class,
+                TestEntity::setId, TestEntity::getId, TestEntity::setErrorMessage);
+
+        assertNotNull(response);
+        assertEquals(0, response.getSuccess().size());
+        assertEquals(0, response.getFailed().size());
+        assertTrue(response.getSuccess().isEmpty());
+        assertTrue(response.getFailed().isEmpty());
+
+        verify(mongoTemplate, never()).bulkOps(any(BulkOperations.BulkMode.class), any(Class.class));
+        verify(historyService, never()).saveChangeHistory(any(Document.class), any(TestEntity.class));
+    }
+
     @Getter
     @Setter
     @AllArgsConstructor

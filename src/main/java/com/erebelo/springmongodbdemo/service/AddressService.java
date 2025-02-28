@@ -8,6 +8,4 @@ public interface AddressService {
 
     BulkAddressResponse bulkInsertAddresses(List<AddressRequest> addressRequestList);
 
-    BulkAddressResponse bulkInsertAddressesByBulkOpsEngine(List<AddressRequest> addressRequestList);
-
 }
