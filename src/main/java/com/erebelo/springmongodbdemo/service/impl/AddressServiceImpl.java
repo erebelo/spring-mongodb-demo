@@ -54,28 +54,30 @@ public class AddressServiceImpl implements AddressService {
         log.info("Validating addresses");
         validateAndParseRequest(addressRequestList, validAddresses, failedAddresses);
 
-        List<AddressEntity> successList;
+        List<AddressEntity> successList = new ArrayList<>();
         List<AddressEntity> failedList = new ArrayList<>();
 
-        try {
-            BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AddressEntity.class);
-            bulkOps.insert(validAddresses);
-            BulkWriteResult bulkWriteResult = bulkOps.execute();
+        if (!validAddresses.isEmpty()) {
+            try {
+                BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AddressEntity.class);
+                bulkOps.insert(validAddresses);
+                BulkWriteResult bulkWriteResult = bulkOps.execute();
 
-            successList = extractSuccessfulBulkAddressInserts(bulkWriteResult, validAddresses);
-        } catch (BulkOperationException e) {
-            successList = extractSuccessfulBulkAddressInserts(e.getResult(), validAddresses);
-            failedList = extractFailedBulkAddressInserts(e.getErrors(), validAddresses);
+                successList = extractSuccessfulBulkAddressInserts(bulkWriteResult, validAddresses);
+            } catch (BulkOperationException e) {
+                successList = extractSuccessfulBulkAddressInserts(e.getResult(), validAddresses);
+                failedList = extractFailedBulkAddressInserts(e.getErrors(), validAddresses);
 
-            if (!successList.isEmpty()) {
-                /*
-                 * Manually track the history of successfully inserted documents.
-                 *
-                 * This is only necessary for exception scenarios (in the catch block) because
-                 * AbstractMongoEventListener lifecycle events are not automatically triggered
-                 * when using BulkOperations.
-                 */
-                historyTrack(successList);
+                if (!successList.isEmpty()) {
+                    /*
+                     * Manually track the history of successfully inserted documents.
+                     *
+                     * This is only necessary for exception scenarios (in the catch block) because
+                     * AbstractMongoEventListener lifecycle events are not automatically triggered
+                     * when using BulkOperations.
+                     */
+                    historyTrack(successList);
+                }
             }
         }
 

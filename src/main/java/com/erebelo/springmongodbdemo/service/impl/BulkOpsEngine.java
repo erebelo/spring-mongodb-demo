@@ -25,28 +25,30 @@ public class BulkOpsEngine {
 
     public <T> BulkOpsEngineResponse<T> bulkInsert(List<T> entityList, Class<T> entityClass,
             BiConsumer<T, String> idSetter, Function<T, String> idGetter, BiConsumer<T, String> errorMessageSetter) {
-        List<T> successList;
+        List<T> successList = new ArrayList<>();
         List<T> failedList = new ArrayList<>();
 
-        try {
-            BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, entityClass);
-            bulkOps.insert(entityList);
-            BulkWriteResult bulkWriteResult = bulkOps.execute();
+        if (entityList != null && !entityList.isEmpty()) {
+            try {
+                BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, entityClass);
+                bulkOps.insert(entityList);
+                BulkWriteResult bulkWriteResult = bulkOps.execute();
 
-            successList = extractSuccessfulBulkInserts(bulkWriteResult, entityList, idSetter);
-        } catch (BulkOperationException e) {
-            successList = extractSuccessfulBulkInserts(e.getResult(), entityList, idSetter);
-            failedList = extractFailedBulkInserts(e.getErrors(), entityList, errorMessageSetter);
+                successList = extractSuccessfulBulkInserts(bulkWriteResult, entityList, idSetter);
+            } catch (BulkOperationException e) {
+                successList = extractSuccessfulBulkInserts(e.getResult(), entityList, idSetter);
+                failedList = extractFailedBulkInserts(e.getErrors(), entityList, errorMessageSetter);
 
-            if (!successList.isEmpty()) {
-                /*
-                 * Manually track the history of successfully inserted documents.
-                 *
-                 * This is only necessary for exception scenarios (in the catch block) because
-                 * AbstractMongoEventListener lifecycle events are not automatically triggered
-                 * when using BulkOperations.
-                 */
-                historyTrack(successList, idGetter);
+                if (!successList.isEmpty()) {
+                    /*
+                     * Manually track the history of successfully inserted documents.
+                     *
+                     * This is only necessary for exception scenarios (in the catch block) because
+                     * AbstractMongoEventListener lifecycle events are not automatically triggered
+                     * when using BulkOperations.
+                     */
+                    historyTrack(successList, idGetter);
+                }
             }
         }
 
