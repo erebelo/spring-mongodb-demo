@@ -67,10 +67,9 @@ public class ArticleServiceImpl implements ArticleService {
             long startTime = System.currentTimeMillis();
 
             /*
-             * Creates async tasks to fetch data concurrently, using
-             * AsyncThreadContext.withThreadContext() to retain logging and request context
-             * (e.g., headers, trace IDs) across threads. asyncTaskExecutor supplies the
-             * thread pool, preserving main context for consistent logging in downstream API
+             * Creates async tasks to fetch data concurrently, using AsyncThreadContext to
+             * preserve the logging and request context across threads. The thread pool is
+             * provided by asyncTaskExecutor, ensuring consistent logging in downstream
              * calls.
              */
             log.info("Fetching articles asynchronously through CompletableFuture");
