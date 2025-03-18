@@ -2,6 +2,7 @@ package com.erebelo.springmongodbdemo.service.impl;
 
 import static com.erebelo.springmongodbdemo.validation.AddressValidator.getRequestValidationErrors;
 
+import com.erebelo.spring.common.utils.threading.ParallelStreamContext;
 import com.erebelo.springmongodbdemo.context.history.DocumentHistoryService;
 import com.erebelo.springmongodbdemo.domain.entity.AddressEntity;
 import com.erebelo.springmongodbdemo.domain.request.AddressRequest;
@@ -62,7 +63,7 @@ public class AddressServiceImpl implements AddressService {
             List<AddressEntity> failedAddresses) {
         LocalDateTime dateTime = LocalDateTime.now();
 
-        addressRequestList.parallelStream().forEach(request -> {
+        ParallelStreamContext.forEach(addressRequestList.stream(), request -> {
             Optional<String> errorMessageOpt = getRequestValidationErrors(request);
 
             if (errorMessageOpt.isEmpty()) {
