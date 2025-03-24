@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.erebelo</groupId>
         <artifactId>spring-common-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>spring-mongodb-demo</artifactId>
@@ -15,11 +15,22 @@
     <name>spring-mongodb-demo</name>
     <description>Java project using Spring Boot and MongoDB</description>
 
+    <repositories>
+        <repository>
+            <id>github-spring-common-parent</id>
+            <url>https://maven.pkg.github.com/erebelo/spring-common-parent</url>
+        </repository>
+        <repository>
+            <id>github-spring-common-lib</id>
+            <url>https://maven.pkg.github.com/erebelo/spring-common-lib</url>
+        </repository>
+    </repositories>
+
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <common.lib.version>1.0.1-SNAPSHOT</common.lib.version>
+        <common.lib.version>1.0.0</common.lib.version>
         <springdoc.openapi.version>2.8.3</springdoc.openapi.version>
         <lombok.version>1.18.36</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
