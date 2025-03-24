@@ -37,6 +37,40 @@ REST API project developed in Java using Spring Boot 3 and MongoDB.
 - [MongoDB Setup](https://github.com/erebelo/spring-mongodb-demo/blob/main/docs/mongodb-setup.md): Instructions for MongoDB setup and index creation.
 - [Git Hooks Setup](https://github.com/erebelo/spring-mongodb-demo/tree/main/git-hooks): Automated Git hooks to enforce code formatting standards with Maven and the Spotless plugin.
 
+## Configuring Maven for GitHub Dependencies
+
+To pull the `spring-common-parent` and `spring-common-lib` dependencies, follow these steps:
+
+1. **Generate a Personal Access Token**:
+
+   Go to your GitHub account -> **Settings** -> **Developer settings** -> **Personal access tokens** -> **Tokens (classic)** -> **Generate new token (classic)**:
+
+   - Fill out the **Note** field: `Pull packages`.
+   - Set the scope:
+     - `read:packages` (to download packages)
+   - Click **Generate token**.
+
+2. **Set Up Maven Authentication**:
+
+   In your local Maven `settings.xml`, define the GitHub repository authentication using the following structure:
+
+   ```xml
+   <servers>
+     <server>
+       <id>github-spring-common-parent</id>
+       <username>USERNAME</username>
+       <password>TOKEN</password>
+     </server>
+     <server>
+       <id>github-spring-common-lib</id>
+       <username>USERNAME</username>
+       <password>TOKEN</password>
+     </server>
+   </servers>
+   ```
+
+   **NOTE**: Replace `USERNAME` with your GitHub username and `TOKEN` with the personal access token you just generated.
+
 ## Run App
 
 ### Local Environment
