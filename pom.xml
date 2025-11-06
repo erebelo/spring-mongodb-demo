@@ -107,6 +107,7 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        <!--Utilities ends here-->
     </dependencies>
 
     <build>
