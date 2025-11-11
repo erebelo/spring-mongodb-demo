@@ -34,7 +34,7 @@ public class AddressEntity {
     private String country;
     private String zipCode;
 
-    /*
+    /**
      * The createdBy, modifiedBy, createdDateTime, modifiedDateTime, and version
      * fields are declared here directly instead of using the BaseEntity class
      * because BulkOperations does not handle these fields effectively.

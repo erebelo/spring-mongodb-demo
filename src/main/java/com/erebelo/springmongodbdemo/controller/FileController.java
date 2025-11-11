@@ -48,7 +48,7 @@ public class FileController {
                 .body(response.getData());
     }
 
-    /*
+    /**
      * Uploads a single file. Supports files up to 16MB in size.
      */
     @Operation(summary = "POST Files")

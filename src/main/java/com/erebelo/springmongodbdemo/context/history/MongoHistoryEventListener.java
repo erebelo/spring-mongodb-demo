@@ -6,8 +6,9 @@ import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.stereotype.Component;
 
-/* Mongo event listener handles the entity/document before/after persisting it */
-
+/**
+ * Mongo event listener handles the entity/document before/after persisting it.
+ */
 @Component
 @RequiredArgsConstructor
 public class MongoHistoryEventListener extends AbstractMongoEventListener<Object> {

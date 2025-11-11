@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.lang.NonNull;
 
 @Configuration
 @Profile("!local")
@@ -56,7 +58,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
     private String keystorePassword;
 
     @Override
-    protected String getDatabaseName() {
+    protected @NonNull String getDatabaseName() {
         return dbName;
     }
 
@@ -66,25 +68,19 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
         return env.getProperty("database.password");
     }
 
+    /**
+     * Overrides the default MongoCustomConversions registration from
+     * AbstractMongoClientConfiguration to include custom converters for MongoDB to
+     * serialize and deserialize LocalDate, EnumValueType, EnumIdValueType, and
+     * EnumCodeValueType values.
+     */
     @Override
-    protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
-        // Converts before persisting the document in the database and after fetching it
-
-        // LocalDate
-        adapter.registerConverter(new LocalDateWritingConverter());
-        adapter.registerConverter(new LocalDateReadingConverter());
-
-        // EnumValueType
-        adapter.registerConverter(new EnumValueTypeWritingConverter());
-        adapter.registerConverterFactory(new EnumValueTypeReadingConverter());
-
-        // EnumIdValueType
-        adapter.registerConverter(new EnumIdValueTypeWritingConverter());
-        adapter.registerConverterFactory(new EnumIdValueTypeReadingConverter());
-
-        // EnumCodeValueType
-        adapter.registerConverter(new EnumCodeValueTypeWritingConverter());
-        adapter.registerConverterFactory(new EnumCodeValueTypeReadingConverter());
+    public @NonNull MongoCustomConversions customConversions() {
+        return new MongoCustomConversions(
+                Arrays.asList(new LocalDateWritingConverter(), new LocalDateReadingConverter(),
+                        new EnumValueTypeWritingConverter(), new EnumValueTypeReadingConverter(),
+                        new EnumIdValueTypeWritingConverter(), new EnumIdValueTypeReadingConverter(),
+                        new EnumCodeValueTypeWritingConverter(), new EnumCodeValueTypeReadingConverter()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.erebelo.springmongodbdemo.config;
 
 import static com.mongodb.assertions.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,14 +11,22 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumCodeValueTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumIdValueTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumIdValueTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumValueTypeReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.EnumValueTypeWritingConverter;
+import com.erebelo.springmongodbdemo.context.converter.LocalDateReadingConverter;
+import com.erebelo.springmongodbdemo.context.converter.LocalDateWritingConverter;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
+import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -70,13 +79,22 @@ class MongoDBConfigurationTest {
     }
 
     @Test
-    void testConfigureConverters() {
-        MongoCustomConversions.MongoConverterConfigurationAdapter adapterMock = mock(
-                MongoCustomConversions.MongoConverterConfigurationAdapter.class);
+    void testMongoCustomConversions() {
+        MongoCustomConversions conversions = config.customConversions();
 
-        config.configureConverters(adapterMock);
+        assertNotNull(conversions);
 
-        verify(adapterMock, times(5)).registerConverter(any());
+        // Uses reflection to access getConverters()
+        List<?> converterList = (List<?>) ReflectionTestUtils.getField(conversions, "converters");
+
+        assertThat(converterList).anyMatch(LocalDateWritingConverter.class::isInstance)
+                .anyMatch(LocalDateReadingConverter.class::isInstance)
+                .anyMatch(EnumValueTypeWritingConverter.class::isInstance)
+                .anyMatch(EnumValueTypeReadingConverter.class::isInstance)
+                .anyMatch(EnumIdValueTypeWritingConverter.class::isInstance)
+                .anyMatch(EnumIdValueTypeReadingConverter.class::isInstance)
+                .anyMatch(EnumCodeValueTypeWritingConverter.class::isInstance)
+                .anyMatch(EnumCodeValueTypeReadingConverter.class::isInstance);
     }
 
     @Test

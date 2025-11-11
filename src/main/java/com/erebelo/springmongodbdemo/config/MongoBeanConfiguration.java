@@ -17,25 +17,25 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableMongoRepositories(basePackages = "com.erebelo.springmongodbdemo")
 public class MongoBeanConfiguration {
 
-    /*
-     * Enables transaction management for MongoDB operations through @Transactional
+    /**
+     * Enables transaction management for MongoDB operations through @Transactional.
      */
     @Bean
     public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
 
-    /*
-     * Enables entity validation before persisting to MongoDB
+    /**
+     * Enables entity validation before persisting to MongoDB.
      */
     @Bean
     public ValidatingMongoEventListener validatingMongoEventListener(final LocalValidatorFactoryBean factory) {
         return new ValidatingMongoEventListener(factory);
     }
 
-    /*
+    /**
      * Provides current user info for @CreatedBy and @LastModifiedBy fields used in
-     * the BaseEntity
+     * the BaseEntity.
      */
     @Bean
     public AuditorAware<String> auditorProvider() {
