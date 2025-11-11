@@ -8,12 +8,15 @@ import org.bson.Document;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.data.convert.ReadingConverter;
+import org.springframework.lang.NonNull;
 
 @ReadingConverter
 public class EnumIdValueTypeReadingConverter implements ConverterFactory<Document, EnumIdValueType> {
 
     @Override
-    public <T extends EnumIdValueType> Converter<Document, T> getConverter(Class<T> targetType) {
+    @SuppressWarnings("unchecked")
+    public @NonNull <T extends EnumIdValueType> Converter<Document, T> getConverter(
+            @NonNull final Class<T> targetType) {
         return source -> {
             if (!targetType.isEnum()) {
                 throw new IllegalStateException(

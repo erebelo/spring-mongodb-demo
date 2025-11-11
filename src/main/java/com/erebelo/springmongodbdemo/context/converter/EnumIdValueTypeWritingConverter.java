@@ -13,7 +13,6 @@ public class EnumIdValueTypeWritingConverter implements Converter<EnumIdValueTyp
         Document document = new Document();
         document.put("id", source.getId());
         document.put("value", source.getValue());
-
         return document;
     }
 }

@@ -7,14 +7,14 @@ import java.util.Arrays;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.data.convert.ReadingConverter;
+import org.springframework.lang.NonNull;
 
 @ReadingConverter
 public class EnumValueTypeReadingConverter implements ConverterFactory<String, EnumValueType> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends EnumValueType> Converter<String, T> getConverter(final Class<T> targetType) {
-
+    public @NonNull <T extends EnumValueType> Converter<String, T> getConverter(@NonNull final Class<T> targetType) {
         return source -> {
             if (!targetType.isEnum()) {
                 throw new IllegalStateException(

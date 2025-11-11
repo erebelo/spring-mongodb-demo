@@ -11,5 +11,4 @@ public class EnumValueTypeWritingConverter implements Converter<EnumValueType, S
     public String convert(EnumValueType source) {
         return source.getValue();
     }
-
 }

@@ -13,7 +13,6 @@ public class EnumCodeValueTypeWritingConverter implements Converter<EnumCodeValu
         Document document = new Document();
         document.put("code", source.getCode());
         document.put("value", source.getValue());
-
         return document;
     }
 }
